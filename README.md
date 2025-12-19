@@ -1,4 +1,4 @@
-# react-fathom
+# 😻 react-fathom
 
 Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.
 
