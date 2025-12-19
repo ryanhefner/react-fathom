@@ -10,7 +10,6 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   children,
   client: providedClient,
   clientOptions,
-  disableDefaultTrack,
   siteId,
   defaultPageviewOptions: providedDefaultPageviewOptions,
   defaultEventOptions: providedDefaultEventOptions,

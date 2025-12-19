@@ -1,11 +1,14 @@
 import React from 'react'
 import type { ComponentType } from 'react'
 
-import NextFathomProviderPages from '../NextFathomProviderPages'
+import { FathomProvider } from '../../FathomProvider'
+import type { FathomProviderProps } from '../../types'
+import { NextFathomTrackViewPages } from '../NextFathomTrackViewPages'
 import type { NextFathomProviderProps } from '../types'
 
 /**
  * Higher-order component that wraps your Next.js Pages Router app with FathomProvider
+ * and automatically tracks pageviews using NextFathomTrackViewPages.
  *
  * @example
  * ```tsx
@@ -29,10 +32,14 @@ const withPagesRouter = <P extends object>(
   providerProps?: NextFathomProviderProps,
 ): ComponentType<P> => {
   const WithPagesRouter: React.FC<P> = (props) => {
+    // Extract disableAutoTrack for the tracking component
+    const { disableAutoTrack, ...fathomProviderProps } = providerProps ?? {}
+
     return (
-      <NextFathomProviderPages {...providerProps}>
+      <FathomProvider {...(fathomProviderProps as FathomProviderProps)}>
+        <NextFathomTrackViewPages disableAutoTrack={disableAutoTrack} />
         <Component {...props} />
-      </NextFathomProviderPages>
+      </FathomProvider>
     )
   }
 

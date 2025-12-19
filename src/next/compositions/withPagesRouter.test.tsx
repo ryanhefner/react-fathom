@@ -6,17 +6,32 @@ import { render, screen } from '@testing-library/react'
 
 import { withPagesRouter } from './withPagesRouter'
 
-// Mock NextFathomProviderPages
-vi.mock('../NextFathomProviderPages', () => ({
-  default: ({
+// Mock FathomProvider and NextFathomTrackViewPages
+vi.mock('../../FathomProvider', () => ({
+  FathomProvider: ({
     children,
     siteId,
   }: {
     children: React.ReactNode
     siteId?: string
   }) => (
-    <div data-testid="pages-provider" data-site-id={siteId}>
+    <div data-testid="fathom-provider" data-site-id={siteId}>
       {children}
+    </div>
+  ),
+}))
+
+vi.mock('../NextFathomTrackViewPages', () => ({
+  NextFathomTrackViewPages: ({
+    disableAutoTrack,
+  }: {
+    disableAutoTrack?: boolean
+  }) => (
+    <div
+      data-testid="track-view-pages"
+      data-disable-auto-track={disableAutoTrack}
+    >
+      TrackViewPages
     </div>
   ),
 }))
@@ -26,7 +41,7 @@ describe('withPagesRouter', () => {
     vi.clearAllMocks()
   })
 
-  it('should wrap component with NextFathomProviderPages', () => {
+  it('should wrap component with FathomProvider and NextFathomTrackViewPages', () => {
     const TestComponent = ({ name }: { name: string }) => (
       <div>Hello {name}</div>
     )
@@ -37,11 +52,12 @@ describe('withPagesRouter', () => {
 
     render(<WrappedComponent name="World" />)
 
-    expect(screen.getByTestId('pages-provider')).toBeInTheDocument()
-    expect(screen.getByTestId('pages-provider')).toHaveAttribute(
+    expect(screen.getByTestId('fathom-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('fathom-provider')).toHaveAttribute(
       'data-site-id',
       'TEST_SITE_ID',
     )
+    expect(screen.getByTestId('track-view-pages')).toBeInTheDocument()
     expect(screen.getByText('Hello World')).toBeInTheDocument()
   })
 
@@ -57,7 +73,7 @@ describe('withPagesRouter', () => {
     expect(screen.getByText('Count: 42')).toBeInTheDocument()
   })
 
-  it('should pass provider props to NextFathomProviderPages', () => {
+  it('should pass provider props to FathomProvider and disableAutoTrack to NextFathomTrackViewPages', () => {
     const TestComponent = () => <div>Test</div>
 
     const WrappedComponent = withPagesRouter(TestComponent, {
@@ -68,7 +84,11 @@ describe('withPagesRouter', () => {
 
     render(<WrappedComponent />)
 
-    expect(screen.getByTestId('pages-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('fathom-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('track-view-pages')).toHaveAttribute(
+      'data-disable-auto-track',
+      'true',
+    )
   })
 
   it('should work without provider props', () => {
@@ -78,7 +98,8 @@ describe('withPagesRouter', () => {
 
     render(<WrappedComponent />)
 
-    expect(screen.getByTestId('pages-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('fathom-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('track-view-pages')).toBeInTheDocument()
     expect(screen.getByText('Test')).toBeInTheDocument()
   })
 

@@ -1,11 +1,14 @@
 import React from 'react'
 import type { ComponentType } from 'react'
 
-import NextFathomProviderApp from '../NextFathomProviderApp'
+import { FathomProvider } from '../../FathomProvider'
+import type { FathomProviderProps } from '../../types'
+import { NextFathomTrackViewApp } from '../NextFathomTrackViewApp'
 import type { NextFathomProviderProps } from '../types'
 
 /**
  * Higher-order component that wraps your Next.js App Router app with FathomProvider
+ * and automatically tracks pageviews using NextFathomTrackViewApp.
  *
  * @example
  * ```tsx
@@ -33,10 +36,14 @@ const withAppRouter = <P extends object>(
   providerProps?: NextFathomProviderProps,
 ): ComponentType<P> => {
   const WithAppRouter: React.FC<P> = (props) => {
+    // Extract disableAutoTrack for the tracking component
+    const { disableAutoTrack, ...fathomProviderProps } = providerProps ?? {}
+
     return (
-      <NextFathomProviderApp {...providerProps}>
+      <FathomProvider {...(fathomProviderProps as FathomProviderProps)}>
+        <NextFathomTrackViewApp disableAutoTrack={disableAutoTrack} />
         <Component {...props} />
-      </NextFathomProviderApp>
+      </FathomProvider>
     )
   }
 

@@ -155,82 +155,46 @@ function MyPage() {
 
 ### Next.js App Router
 
-Use `NextFathomProvider` (defaults to App Router) or `NextFathomProviderApp`:
+Use `FathomProvider` with `NextFathomTrackViewApp` for automatic route tracking:
 
 ```tsx
 // app/layout.tsx
-import { NextFathomProvider } from 'react-fathom/next'
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewApp } from 'react-fathom/next'
 
 export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <NextFathomProvider siteId="YOUR_SITE_ID" router="app">
+        <FathomProvider siteId="YOUR_SITE_ID">
+          <NextFathomTrackViewApp />
           {children}
-        </NextFathomProvider>
+        </FathomProvider>
       </body>
     </html>
   )
 }
 ```
 
-Or use the HOC:
-
-```tsx
-// app/layout.tsx
-import { withAppRouter } from 'react-fathom/next'
-
-function RootLayout({ children }) {
-  return (
-    <html>
-      <body>{children}</body>
-    </html>
-  )
-}
-
-export default withAppRouter(RootLayout, {
-  siteId: 'YOUR_SITE_ID',
-  clientOptions: {
-    spa: 'auto',
-  },
-})
-```
-
 ### Next.js Pages Router
 
-Use `NextFathomProvider` with `router="pages"` or `NextFathomProviderPages`:
+Use `FathomProvider` with `NextFathomTrackViewPages` for automatic route tracking:
 
 ```tsx
 // pages/_app.tsx
-import { NextFathomProvider } from 'react-fathom/next'
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewPages } from 'react-fathom/next'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <NextFathomProvider siteId="YOUR_SITE_ID" router="pages">
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <NextFathomTrackViewPages />
       <Component {...pageProps} />
-    </NextFathomProvider>
+    </FathomProvider>
   )
 }
 
 export default MyApp
-```
-
-Or use the HOC:
-
-```tsx
-// pages/_app.tsx
-import { withPagesRouter } from 'react-fathom/next'
-
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
-
-export default withPagesRouter(MyApp, {
-  siteId: 'YOUR_SITE_ID',
-  clientOptions: {
-    spa: 'auto',
-  },
-})
 ```
 
 ## API
@@ -244,7 +208,6 @@ Main provider component for React apps. Supports composable nesting - nested pro
 - `siteId` (string, optional): Your Fathom Analytics site ID
 - `client` (FathomClient, optional): Custom Fathom client instance
 - `clientOptions` (LoadOptions, optional): Options passed to `fathom-client`
-- `disableDefaultTrack` (boolean, optional): Disable automatic pageview tracking
 - `defaultPageviewOptions` (PageViewOptions, optional): Default options merged into all `trackPageview` calls
 - `defaultEventOptions` (EventOptions, optional): Default options merged into all `trackEvent` calls
 
@@ -260,27 +223,39 @@ Main provider component for React apps. Supports composable nesting - nested pro
 </FathomProvider>
 ```
 
-### `NextFathomProvider`
+### `NextFathomTrackViewApp`
 
-Unified provider for Next.js that conditionally renders the appropriate router provider.
-
-**Props:**
-
-- All `FathomProvider` props, plus:
-- `router` ('app' | 'pages', optional): Router type to use (defaults to 'app')
-- `fallback` (ReactNode, optional): Fallback component while loading (defaults to null)
-- `disableAutoTrack` (boolean, optional): Disable automatic pageview tracking on route changes
-- `trackDefaultOptions` (PageViewOptions, optional): **Deprecated** - Use `defaultPageviewOptions` instead
-
-### `NextFathomProviderApp` / `NextFathomProviderPages`
-
-Next.js-specific providers for App Router and Pages Router respectively.
+Component that tracks pageviews for Next.js App Router. Must be used within a `FathomProvider`.
 
 **Props:**
 
-- All `FathomProvider` props, plus:
-- `disableAutoTrack` (boolean, optional): Disable automatic pageview tracking on route changes
-- `trackDefaultOptions` (PageViewOptions, optional): **Deprecated** - Use `defaultPageviewOptions` instead
+- `disableAutoTrack` (boolean, optional): Disable automatic pageview tracking on route changes (defaults to false)
+
+**Example:**
+
+```tsx
+<FathomProvider siteId="YOUR_SITE_ID">
+  <NextFathomTrackViewApp />
+  {/* Your app */}
+</FathomProvider>
+```
+
+### `NextFathomTrackViewPages`
+
+Component that tracks pageviews for Next.js Pages Router. Must be used within a `FathomProvider`.
+
+**Props:**
+
+- `disableAutoTrack` (boolean, optional): Disable automatic pageview tracking on route changes (defaults to false)
+
+**Example:**
+
+```tsx
+<FathomProvider siteId="YOUR_SITE_ID">
+  <NextFathomTrackViewPages />
+  {/* Your app */}
+</FathomProvider>
+```
 
 ### `useFathom()`
 

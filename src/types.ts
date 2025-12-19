@@ -31,7 +31,6 @@ export interface FathomProviderProps extends PropsWithChildren {
   client?: FathomClient
   clientOptions?: LoadOptions
   siteId?: string
-  disableDefaultTrack?: boolean
   defaultPageviewOptions?: PageViewOptions
   defaultEventOptions?: EventOptions
 }

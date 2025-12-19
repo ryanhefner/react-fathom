@@ -6,17 +6,32 @@ import { render, screen } from '@testing-library/react'
 
 import { withAppRouter } from './withAppRouter'
 
-// Mock NextFathomProviderApp
-vi.mock('../NextFathomProviderApp', () => ({
-  default: ({
+// Mock FathomProvider and NextFathomTrackViewApp
+vi.mock('../../FathomProvider', () => ({
+  FathomProvider: ({
     children,
     siteId,
   }: {
     children: React.ReactNode
     siteId?: string
   }) => (
-    <div data-testid="app-provider" data-site-id={siteId}>
+    <div data-testid="fathom-provider" data-site-id={siteId}>
       {children}
+    </div>
+  ),
+}))
+
+vi.mock('../NextFathomTrackViewApp', () => ({
+  NextFathomTrackViewApp: ({
+    disableAutoTrack,
+  }: {
+    disableAutoTrack?: boolean
+  }) => (
+    <div
+      data-testid="track-view-app"
+      data-disable-auto-track={disableAutoTrack}
+    >
+      TrackViewApp
     </div>
   ),
 }))
@@ -26,7 +41,7 @@ describe('withAppRouter', () => {
     vi.clearAllMocks()
   })
 
-  it('should wrap component with NextFathomProviderApp', () => {
+  it('should wrap component with FathomProvider and NextFathomTrackViewApp', () => {
     const TestComponent = ({ name }: { name: string }) => (
       <div>Hello {name}</div>
     )
@@ -37,11 +52,12 @@ describe('withAppRouter', () => {
 
     render(<WrappedComponent name="World" />)
 
-    expect(screen.getByTestId('app-provider')).toBeInTheDocument()
-    expect(screen.getByTestId('app-provider')).toHaveAttribute(
+    expect(screen.getByTestId('fathom-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('fathom-provider')).toHaveAttribute(
       'data-site-id',
       'TEST_SITE_ID',
     )
+    expect(screen.getByTestId('track-view-app')).toBeInTheDocument()
     expect(screen.getByText('Hello World')).toBeInTheDocument()
   })
 
@@ -57,7 +73,7 @@ describe('withAppRouter', () => {
     expect(screen.getByText('Count: 42')).toBeInTheDocument()
   })
 
-  it('should pass provider props to NextFathomProviderApp', () => {
+  it('should pass provider props to FathomProvider and disableAutoTrack to NextFathomTrackViewApp', () => {
     const TestComponent = () => <div>Test</div>
 
     const WrappedComponent = withAppRouter(TestComponent, {
@@ -68,7 +84,11 @@ describe('withAppRouter', () => {
 
     render(<WrappedComponent />)
 
-    expect(screen.getByTestId('app-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('fathom-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('track-view-app')).toHaveAttribute(
+      'data-disable-auto-track',
+      'true',
+    )
   })
 
   it('should work without provider props', () => {
@@ -78,7 +98,8 @@ describe('withAppRouter', () => {
 
     render(<WrappedComponent />)
 
-    expect(screen.getByTestId('app-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('fathom-provider')).toBeInTheDocument()
+    expect(screen.getByTestId('track-view-app')).toBeInTheDocument()
     expect(screen.getByText('Test')).toBeInTheDocument()
   })
 
