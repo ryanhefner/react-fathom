@@ -1,5 +1,14 @@
 # 😻 react-fathom
 
+[![npm](https://img.shields.io/npm/v/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
+[![NPM](https://img.shields.io/npm/l/react-fathom?style=flat-square)](LICENSE)
+[![npm](https://img.shields.io/npm/dt/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
+[![Coveralls github](https://img.shields.io/coveralls/github/ryanhefner/react-fathom?style=flat-square)](https://coveralls.io/github/ryanhefner/react-fathom)
+[![codecov](https://codecov.io/gh/ryanhefner/react-fathom/branch/main/graph/badge.svg)](https://codecov.io/gh/ryanhefner/react-fathom)
+[![CircleCI](https://img.shields.io/circleci/build/github/ryanhefner/react-fathom?style=flat-square)](https://circleci.com/gh/ryanhefner/react-fathom)
+![Known Vulnerabilities](https://snyk.io/test/github/ryanhefner/react-fathom/badge.svg)
+![Twitter Follow](https://img.shields.io/twitter/follow/ryanhefner)
+
 Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.
 
 ## Features
