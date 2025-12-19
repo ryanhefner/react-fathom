@@ -61,7 +61,7 @@
       "default": "./dist/es/index.js"
     },
     "./next": {
-      "types": "./types/next.d.ts",
+      "types": "./types/next/index.d.ts",
       "import": "./dist/es/next/index.js",
       "require": "./dist/cjs/next/index.cjs",
       "default": "./dist/es/next/index.js"
