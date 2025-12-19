@@ -2,12 +2,20 @@
 
 [![npm](https://img.shields.io/npm/v/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
 [![NPM](https://img.shields.io/npm/l/react-fathom?style=flat-square)](LICENSE)
-[![npm](https://img.shields.io/npm/dt/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
+[![npm](https://img.shields.io/npm/dt/react-fathom?style=flat-square)](https://www.pkgstats.com/
+pkg:react-fathom)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-fathom?style=flat-square)](https://bundlephobia.com/package/react-fathom)
+[![GitHub stars](https://img.shields.io/github/stars/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/pulls)
 [![Coveralls github](https://img.shields.io/coveralls/github/ryanhefner/react-fathom?style=flat-square)](https://coveralls.io/github/ryanhefner/react-fathom)
 [![codecov](https://codecov.io/gh/ryanhefner/react-fathom/branch/main/graph/badge.svg)](https://codecov.io/gh/ryanhefner/react-fathom)
 [![CircleCI](https://img.shields.io/circleci/build/github/ryanhefner/react-fathom?style=flat-square)](https://circleci.com/gh/ryanhefner/react-fathom)
-![Known Vulnerabilities](https://snyk.io/test/github/ryanhefner/react-fathom/badge.svg)
-![Twitter Follow](https://img.shields.io/twitter/follow/ryanhefner)
+[![Known Vulnerabilities](https://snyk.io/test/github/ryanhefner/react-fathom/badge.svg)](https://snyk.io/test/github/ryanhefner/react-fathom)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/commits/main)
+[![Twitter Follow](https://img.shields.io/twitter/follow/ryanhefner?style=flat-square)](https://twitter.com/ryanhefner)
 
 Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.
 
