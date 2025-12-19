@@ -2,8 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
 [![NPM](https://img.shields.io/npm/l/react-fathom?style=flat-square)](LICENSE)
-[![npm](https://img.shields.io/npm/dt/react-fathom?style=flat-square)](https://www.pkgstats.com/
-pkg:react-fathom)
+[![npm](https://img.shields.io/npm/dt/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-fathom?style=flat-square)](https://bundlephobia.com/package/react-fathom)
 [![GitHub stars](https://img.shields.io/github/stars/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/network/members)
