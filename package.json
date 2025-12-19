@@ -29,6 +29,20 @@
     "Commune Software <hello@commune.software> (https://www.commune.software)"
   ],
   "license": "MIT",
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/ryanhefner"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/ryanhefner"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/ryanhefner"
+    }
+  ],
   "type": "module",
   "files": [
     "dist",
