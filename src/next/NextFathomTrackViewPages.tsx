@@ -51,12 +51,14 @@ export const NextFathomTrackViewPages: React.FC<
       })
     }
 
+    // router.events is stable in Next.js, so we can use it without including router in dependencies
     router.events.on('routeChangeComplete', handleRouteChangeComplete)
 
     return () => {
       router.events.off('routeChangeComplete', handleRouteChangeComplete)
     }
-  }, [router.events, trackPageview, client, disableAutoTrack])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackPageview, client, disableAutoTrack])
 
   // Track initial pageview (routeChangeComplete doesn't fire on initial load)
   useEffect(() => {
