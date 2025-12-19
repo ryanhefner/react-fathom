@@ -10,6 +10,7 @@ coverage
 # Docs / Site
 docs
 site
+tools
 
 # Config files
 rollup.config.js
