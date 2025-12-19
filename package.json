@@ -1,46 +1,82 @@
 {
-  "name": "replace-me",
+  "name": "react-fathom",
   "version": "0.1.0",
-  "description": "[Package description here]",
+  "description": "Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.",
+  "keywords": [
+    "fathom",
+    "fathom-analytics",
+    "analytics",
+    "react",
+    "react-hooks",
+    "nextjs",
+    "next.js",
+    "typescript",
+    "pageview",
+    "tracking",
+    "privacy",
+    "tree-shakeable"
+  ],
+  "homepage": "https://github.com/ryanhefner/react-fathom#readme",
+  "bugs": {
+    "url": "https://github.com/ryanhefner/react-fathom/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "[your-git-repo]"
+    "url": "https://github.com/ryanhefner/react-fathom.git"
   },
-  "author": "[Author Info]",
+  "author": "Ryan Hefner <hi@ryanhefner.com> (https://www.ryanhefner.com)",
+  "contributors": [
+    "Commune Software <hello@commune.software> (https://www.commune.software)"
+  ],
   "license": "MIT",
   "type": "module",
   "files": [
-    "es",
+    "dist",
     "src",
-    "TestComponent",
-    "types",
-    "umd",
-    "index.cjs"
+    "types"
   ],
-  "directories": {
-    "lib": "/src"
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/es/index.js",
+  "types": "./types/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.cjs",
+      "default": "./dist/es/index.js"
+    },
+    "./next": {
+      "types": "./types/next.d.ts",
+      "import": "./dist/es/next/index.js",
+      "require": "./dist/cjs/next/index.cjs",
+      "default": "./dist/es/next/index.js"
+    }
   },
-  "main": "index.cjs",
-  "module": "es/index.js",
-  "jsnext:main": "src/index.js",
-  "types": "types",
   "scripts": {
-    "clean": "rimraf index.cjs es TestComponent umd",
-    "prebuild": "npm run clean",
-    "build": "node ./tools/build.mjs",
-    "watch": "babel ./src -d . --ignore __mocks__,__tests__,**/*.test.js,**/*.test.jsx --watch",
+    "clean": "rimraf dist types",
+    "types": "tsc",
+    "build:rollup": "rollup -c",
+    "build": "tsc && rollup -c",
+    "lint": "eslint .",
     "prepare": "npm run build",
-    "prepublishOnly": "node ./tools/build.mjs",
+    "prepublishOnly": "npm run build",
     "prettier": "prettier -c",
     "push-release": "git push origin master && git push --tags",
-    "dtslint": "dtslint types",
+    "tslint": "npx eslint types/index.d.ts",
     "test": "snyk test && vitest run",
-    "test:ci": "vitest run --coverage",
-    "types": "tsc"
+    "test:ci": "vitest run --coverage"
   },
   "peerDependencies": {
+    "fathom-client": ">=3.0.0",
+    "next": ">=10.0.0",
     "react": ">=16.8",
     "react-dom": ">=16.8"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -52,36 +88,50 @@
     "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@eslint/eslintrc": "^3.0.2",
+    "@eslint/js": "^9.0.0",
     "@rollup/plugin-babel": "^6.0.2",
-    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@testing-library/react": "^14.1.2",
-    "@vitest/coverage-v8": "^1.0.1",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@testing-library/react": "^16.3.1",
+    "@types/react": "^19.2.7",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@vitest/coverage-v8": "^4.0.16",
     "babel-core": "^7.0.0-bridge.0",
     "babel-plugin-add-import-extension": "^1.6.0",
     "babel-plugin-dev-expression": "^0.2.2",
     "babel-polyfill": "^6.26.0",
     "coveralls": "^3.1.1",
     "dtslint": "^4.0.6",
-    "eslint": "^8.24.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^17.2.0",
     "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "global-jsdom": "^9.1.0",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "fathom-client": "^3.6.0",
+    "global-jsdom": "^27.0.0",
+    "globals": "^16.5.0",
     "gzip-size": "^7.0.0",
-    "jsdom": "^23.0.0",
+    "jsdom": "^27.3.0",
+    "next": "^16.1.0",
     "prettier": "^3.0.3",
-    "pretty-bytes": "^6.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "pretty-bytes": "^7.1.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "regenerator-runtime": "^0.14.0",
-    "rimraf": "^5.0.1",
+    "rimraf": "^6.1.2",
     "rollup": "^4.6.0",
     "rollup-plugin-terser": "^7.0.2",
     "snyk": "^1.437.3",
-    "typescript": "^5.2.2",
-    "vitest": "^1.0.1"
-  }
+    "typescript": "*",
+    "typescript-eslint": "^8.50.0",
+    "vitest": "^4.0.16"
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

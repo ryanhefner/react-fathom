@@ -1,12 +1,32 @@
 # Build / Test files
 coverage
-tools
 **/*.test.js
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.ts
+**/*.spec.tsx
 
 # Docs / Site
 docs
 site
 
-# Configs
-src/.babelrc
+# Config files
 rollup.config.js
+eslint.config.js
+vite.config.ts
+tsconfig.json
+.prettierrc
+.yarnrc
+.npmrc
+
+# Development files
+.vscode
+.gitignore
+.npmignore
+yarn.lock
+package-lock.json
+
+# Misc
+.DS_Store
+*.log
