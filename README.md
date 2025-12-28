@@ -18,6 +18,12 @@
 
 Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.
 
+## About Fathom Analytics
+
+This package is designed to work with [Fathom Analytics](https://usefathom.com/ref/EKONBS), a privacy-first website analytics platform. Fathom provides simple, GDPR-compliant analytics without cookies or tracking scripts that invade user privacy.
+
+**New to Fathom?** Get a **$10 credit** on your first invoice when you sign up using [this affiliate link](https://usefathom.com/ref/EKONBS). This helps support the development of this open-source package.
+
 ## Features
 
 - 🚀 **Zero-config** Fathom Analytics integration for React
