@@ -1,6 +1,6 @@
 {
   "name": "react-fathom",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.",
   "keywords": [
     "fathom",
