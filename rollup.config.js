@@ -84,7 +84,29 @@ const nodeBuiltins = [
 ]
 
 // Function to check if a module is a Node.js built-in
-const isNodeBuiltin = (id) => nodeBuiltins.includes(id)
+const isNodeBuiltin = (id) => {
+  // Check for both regular and node: prefixed imports
+  const cleanId = id.replace(/^node:/, '')
+  return nodeBuiltins.includes(cleanId) || nodeBuiltins.includes(id)
+}
+
+// Plugin to preserve 'use client' directive in output
+const preserveUseClient = () => ({
+  name: 'preserve-use-client',
+  renderChunk(code) {
+    // Check if code starts with a banner comment
+    const bannerMatch = code.match(/^(\/\*![\s\S]*?\*\/)(\n)?/)
+    if (bannerMatch) {
+      // Insert 'use client' after the banner
+      const banner = bannerMatch[1]
+      const newline = bannerMatch[2] || ''
+      const rest = code.slice(bannerMatch[0].length)
+      return `${banner}${newline}'use client';\n${rest}`
+    }
+    // No banner, add at the very top
+    return `'use client';\n${code}`
+  }
+})
 
 const defaultPlugins = [
   nodeResolve({
@@ -97,11 +119,17 @@ const defaultPlugins = [
   json(),
 ]
 
-// External function that excludes Node.js built-ins
+// External function that excludes Node.js built-ins and Next.js
 const makeExternal = (baseExternals) => (id) => {
+  // Mark all Node.js built-ins as external
   if (isNodeBuiltin(id)) {
     return true
   }
+  // Mark all Next.js imports as external (including subpaths)
+  if (id === 'next' || id.startsWith('next/')) {
+    return true
+  }
+  // Check against the base externals list
   return baseExternals.includes(id)
 }
 
@@ -173,7 +201,7 @@ export default [
       entryFileNames: '[name].js',
     },
     external: makeExternal(nextExternal),
-    plugins: defaultPlugins,
+    plugins: [...defaultPlugins, preserveUseClient()],
   },
   // CJS - next
   {
@@ -185,6 +213,6 @@ export default [
       entryFileNames: '[name].cjs',
     },
     external: makeExternal(nextExternal),
-    plugins: defaultPlugins,
+    plugins: [...defaultPlugins, preserveUseClient()],
   },
 ]
