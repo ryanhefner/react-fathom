@@ -20,7 +20,12 @@ const mockRouter = {
   asPath: '/test-page',
 }
 
+// Mock both next/router and next/compat/router since we use next/compat/router
 vi.mock('next/router', () => ({
+  useRouter: () => mockRouter,
+}))
+
+vi.mock('next/compat/router', () => ({
   useRouter: () => mockRouter,
 }))
 
