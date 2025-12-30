@@ -84,25 +84,49 @@ const nodeBuiltins = [
 ]
 
 // Function to check if a module is a Node.js built-in
-const isNodeBuiltin = (id) => nodeBuiltins.includes(id)
+const isNodeBuiltin = (id) => {
+  // Check exact match
+  if (nodeBuiltins.includes(id)) {
+    return true
+  }
+  // Check if it starts with a built-in module name (e.g., 'fs/promises')
+  return nodeBuiltins.some((builtin) => id.startsWith(`${builtin}/`))
+}
 
 const defaultPlugins = [
   nodeResolve({
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     browser: true,
     preferBuiltins: false,
+    // Skip resolving Node.js built-ins
+    skip: nodeBuiltins,
   }),
-  commonjs(),
+  commonjs({
+    // Ignore Node.js built-ins when processing CommonJS modules
+    ignore: nodeBuiltins,
+  }),
   babel(getBabelConfig()),
   json(),
 ]
 
 // External function that excludes Node.js built-ins
 const makeExternal = (baseExternals) => (id) => {
+  // Check if it's a Node.js built-in
   if (isNodeBuiltin(id)) {
     return true
   }
-  return baseExternals.includes(id)
+  // Check if it's in the base externals list
+  if (baseExternals.includes(id)) {
+    return true
+  }
+  // Check if it's a path to a Node.js built-in (e.g., 'node:fs')
+  if (id.startsWith('node:')) {
+    const moduleName = id.replace('node:', '')
+    if (isNodeBuiltin(moduleName)) {
+      return true
+    }
+  }
+  return false
 }
 
 const external = ['fathom-client', 'react']
