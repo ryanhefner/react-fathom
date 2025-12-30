@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useRef } from 'react'
 
 import { useRouter } from 'next/router.js'
@@ -32,16 +34,40 @@ export interface NextFathomTrackViewPagesProps {
  * }
  * ```
  */
-export const NextFathomTrackViewPages: React.FC<
+
+// Client-only wrapper to prevent SSR execution
+const ClientOnlyWrapper: React.FC<{
+  children: React.ReactNode
+}> = ({ children }) => {
+  // Don't render during SSR - check window directly
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  return <>{children}</>
+}
+
+// Internal component that uses the router
+// This component only renders client-side due to ClientOnlyWrapper
+const NextFathomTrackViewPagesInternal: React.FC<
   NextFathomTrackViewPagesProps
 > = ({ disableAutoTrack = false }) => {
-  const router = useRouter()
   const hasTrackedInitialPageview = useRef(false)
   const { trackPageview, client } = useFathom()
+
+  // Always call useRouter unconditionally
+  // This is safe because ClientOnlyWrapper prevents this component from rendering during SSR
+  const router = useRouter()
 
   // Track pageviews on route changes
   useEffect(() => {
     if (!trackPageview || !client || disableAutoTrack) {
+      return
+    }
+
+    // Check if router is available and has events
+    if (!router || typeof router.events === 'undefined' || !router.events) {
+      // Silently return - this component should only be used in Pages Router
       return
     }
 
@@ -55,7 +81,7 @@ export const NextFathomTrackViewPages: React.FC<
     router.events.on('routeChangeComplete', handleRouteChangeComplete)
 
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChangeComplete)
+      router?.events?.off('routeChangeComplete', handleRouteChangeComplete)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackPageview, client, disableAutoTrack])
@@ -66,6 +92,7 @@ export const NextFathomTrackViewPages: React.FC<
       !trackPageview ||
       !client ||
       disableAutoTrack ||
+      !router ||
       !router.isReady ||
       hasTrackedInitialPageview.current
     ) {
@@ -76,10 +103,21 @@ export const NextFathomTrackViewPages: React.FC<
     trackPageview({
       url: window.location.href,
     })
-  }, [trackPageview, client, disableAutoTrack, router.isReady])
+  }, [trackPageview, client, disableAutoTrack, router])
 
   // This component doesn't render anything
   return null
+}
+
+// Export component wrapped in client-only wrapper to prevent SSR errors
+export const NextFathomTrackViewPages: React.FC<
+  NextFathomTrackViewPagesProps
+> = (props) => {
+  return (
+    <ClientOnlyWrapper>
+      <NextFathomTrackViewPagesInternal {...props} />
+    </ClientOnlyWrapper>
+  )
 }
 
 NextFathomTrackViewPages.displayName = 'NextFathomTrackViewPages'
