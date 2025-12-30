@@ -1,8 +1,6 @@
-'use client'
-
 import React, { useEffect, useRef } from 'react'
 
-import { useRouter } from 'next/router.js'
+import { useRouter } from 'next/compat/router.js'
 
 import { useFathom } from '../hooks/useFathom'
 
@@ -34,29 +32,14 @@ export interface NextFathomTrackViewPagesProps {
  * }
  * ```
  */
-
-// Client-only wrapper to prevent SSR execution
-const ClientOnlyWrapper: React.FC<{
-  children: React.ReactNode
-}> = ({ children }) => {
-  // Don't render during SSR - check window directly
-  if (typeof window === 'undefined') {
-    return null
-  }
-
-  return <>{children}</>
-}
-
-// Internal component that uses the router
-// This component only renders client-side due to ClientOnlyWrapper
-const NextFathomTrackViewPagesInternal: React.FC<
+export const NextFathomTrackViewPages: React.FC<
   NextFathomTrackViewPagesProps
 > = ({ disableAutoTrack = false }) => {
   const hasTrackedInitialPageview = useRef(false)
   const { trackPageview, client } = useFathom()
 
-  // Always call useRouter unconditionally
-  // This is safe because ClientOnlyWrapper prevents this component from rendering during SSR
+  // Use next/compat/router which doesn't throw when router is not mounted
+  // This allows the component to work in various contexts without errors
   const router = useRouter()
 
   // Track pageviews on route changes
@@ -67,7 +50,7 @@ const NextFathomTrackViewPagesInternal: React.FC<
 
     // Check if router is available and has events
     if (!router || typeof router.events === 'undefined' || !router.events) {
-      // Silently return - this component should only be used in Pages Router
+      // Router not properly initialized - silently return
       return
     }
 
@@ -107,17 +90,6 @@ const NextFathomTrackViewPagesInternal: React.FC<
 
   // This component doesn't render anything
   return null
-}
-
-// Export component wrapped in client-only wrapper to prevent SSR errors
-export const NextFathomTrackViewPages: React.FC<
-  NextFathomTrackViewPagesProps
-> = (props) => {
-  return (
-    <ClientOnlyWrapper>
-      <NextFathomTrackViewPagesInternal {...props} />
-    </ClientOnlyWrapper>
-  )
 }
 
 NextFathomTrackViewPages.displayName = 'NextFathomTrackViewPages'

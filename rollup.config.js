@@ -134,6 +134,7 @@ const nextExternal = [
   'fathom-client',
   'react',
   'next/router',
+  'next/compat/router',
   'next/navigation',
 ]
 
