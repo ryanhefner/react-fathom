@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router.js'
 
 import { useFathom } from '../hooks/useFathom'
 

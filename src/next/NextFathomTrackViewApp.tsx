@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation.js'
 
 import { useFathom } from '../hooks/useFathom'
 
