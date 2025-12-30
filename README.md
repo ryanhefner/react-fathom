@@ -168,7 +168,26 @@ function MyPage() {
 
 ### Next.js App Router
 
-Use `FathomProvider` with `NextFathomTrackViewApp` for automatic route tracking:
+**Recommended:** Use `NextFathomProviderApp` for easy integration in App Router layouts:
+
+```tsx
+// app/layout.tsx
+import { NextFathomProviderApp } from 'react-fathom/next'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NextFathomProviderApp siteId="YOUR_SITE_ID">
+          {children}
+        </NextFathomProviderApp>
+      </body>
+    </html>
+  )
+}
+```
+
+**Alternative:** You can also use `FathomProvider` with `NextFathomTrackViewApp` separately if you need more control:
 
 ```tsx
 // app/layout.tsx
@@ -188,6 +207,8 @@ export default function RootLayout({ children }) {
   )
 }
 ```
+
+> **Note:** Since `FathomProvider` uses React hooks, you'll need to wrap it in a Client Component when using it directly in a Server Component layout. `NextFathomProviderApp` handles this for you automatically.
 
 ### Next.js Pages Router
 
@@ -234,6 +255,39 @@ Main provider component for React apps. Supports composable nesting - nested pro
 >
   {/* Your app */}
 </FathomProvider>
+```
+
+### `NextFathomProviderApp`
+
+Client component wrapper that combines `FathomProvider` and `NextFathomTrackViewApp` for easy integration in Next.js App Router layouts. This component is marked with `'use client'` and can be used directly in Server Components like the root `layout.tsx` file.
+
+**Props:**
+
+- `siteId` (string, optional): Your Fathom Analytics site ID
+- `client` (FathomClient, optional): Custom Fathom client instance
+- `clientOptions` (LoadOptions, optional): Options passed to `fathom-client`
+- `defaultPageviewOptions` (PageViewOptions, optional): Default options merged into all `trackPageview` calls
+- `defaultEventOptions` (EventOptions, optional): Default options merged into all `trackEvent` calls
+- `disableAutoTrack` (boolean, optional): Disable automatic pageview tracking on route changes (defaults to false)
+- `children` (ReactNode, required): Child components to render
+
+**Example:**
+
+```tsx
+// app/layout.tsx
+import { NextFathomProviderApp } from 'react-fathom/next'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NextFathomProviderApp siteId="YOUR_SITE_ID">
+          {children}
+        </NextFathomProviderApp>
+      </body>
+    </html>
+  )
+}
 ```
 
 ### `NextFathomTrackViewApp`
