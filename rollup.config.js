@@ -53,12 +53,57 @@ const getBabelConfig = () => {
   }
 }
 
+// List of Node.js built-in modules to exclude from browser bundles
+const nodeBuiltins = [
+  'fs',
+  'path',
+  'os',
+  'util',
+  'crypto',
+  'stream',
+  'buffer',
+  'events',
+  'http',
+  'https',
+  'net',
+  'tls',
+  'url',
+  'zlib',
+  'querystring',
+  'child_process',
+  'cluster',
+  'dgram',
+  'dns',
+  'module',
+  'readline',
+  'repl',
+  'string_decoder',
+  'tty',
+  'vm',
+  'worker_threads',
+]
+
+// Function to check if a module is a Node.js built-in
+const isNodeBuiltin = (id) => nodeBuiltins.includes(id)
+
 const defaultPlugins = [
-  nodeResolve({ extensions: ['.js', '.jsx', '.ts', '.tsx'] }),
+  nodeResolve({
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    browser: true,
+    preferBuiltins: false,
+  }),
   commonjs(),
   babel(getBabelConfig()),
   json(),
 ]
+
+// External function that excludes Node.js built-ins
+const makeExternal = (baseExternals) => (id) => {
+  if (isNodeBuiltin(id)) {
+    return true
+  }
+  return baseExternals.includes(id)
+}
 
 const external = ['fathom-client', 'react']
 const nextExternal = [
@@ -80,7 +125,7 @@ export default [
       file: `dist/${pkg.name}.min.js`,
       format: 'umd',
     },
-    external,
+    external: makeExternal(external),
     plugins: [...defaultPlugins, terser()],
   },
   // UMD
@@ -91,7 +136,7 @@ export default [
       file: `dist/${pkg.name}.js`,
       format: 'umd',
     },
-    external,
+    external: makeExternal(external),
     plugins: [...defaultPlugins],
   },
   // ES - index
@@ -103,7 +148,7 @@ export default [
       format: 'esm',
       entryFileNames: '[name].js',
     },
-    external,
+    external: makeExternal(external),
     plugins: defaultPlugins,
   },
   // CJS - index
@@ -115,7 +160,7 @@ export default [
       format: 'cjs',
       entryFileNames: '[name].cjs',
     },
-    external,
+    external: makeExternal(external),
     plugins: defaultPlugins,
   },
   // ES - next
@@ -127,7 +172,7 @@ export default [
       format: 'esm',
       entryFileNames: '[name].js',
     },
-    external: nextExternal,
+    external: makeExternal(nextExternal),
     plugins: defaultPlugins,
   },
   // CJS - next
@@ -139,7 +184,7 @@ export default [
       format: 'cjs',
       entryFileNames: '[name].cjs',
     },
-    external: nextExternal,
+    external: makeExternal(nextExternal),
     plugins: defaultPlugins,
   },
 ]
