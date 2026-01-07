@@ -66,12 +66,12 @@ export const NativeFathomProvider: React.FC<NativeFathomProviderProps> = ({
 
   // Create the WebView-based client
   const client = useMemo(
-    () =>
+    (): WebViewFathomClient =>
       createWebViewClient(() => webViewRef.current, {
         debug,
         enableQueue: true,
         maxQueueSize: 100,
-      }) as WebViewFathomClient,
+      }),
     [debug],
   )
 

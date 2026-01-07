@@ -52,10 +52,16 @@ interface QueuedCommand {
  * }
  * ```
  */
+export interface WebViewFathomClient extends FathomClient {
+  processQueue: () => number
+  getQueueLength: () => number
+  setWebViewReady: () => void
+}
+
 export function createWebViewClient(
   getWebViewRef: () => FathomWebViewRef | null | undefined,
   options: WebViewClientOptions = {},
-): FathomClient {
+): WebViewFathomClient {
   const { debug = false, enableQueue = true, maxQueueSize = 100 } = options
 
   let isTrackingBlocked = false
@@ -160,11 +166,7 @@ export function createWebViewClient(
     }
   }
 
-  const client: FathomClient & {
-    processQueue: () => number
-    getQueueLength: () => number
-    setWebViewReady: () => void
-  } = {
+  const client: WebViewFathomClient = {
     load: (siteId: string, opts?: LoadOptions) => {
       currentSiteId = siteId
       isLoaded = true
@@ -267,5 +269,3 @@ export function createWebViewClient(
 
   return client
 }
-
-export type WebViewFathomClient = ReturnType<typeof createWebViewClient>

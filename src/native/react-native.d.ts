@@ -38,7 +38,7 @@ declare module 'react-native' {
 }
 
 declare module 'react-native-webview' {
-  import type { RefObject } from 'react'
+  import type { Ref, RefObject, Component } from 'react'
 
   export interface WebViewMessageEvent {
     nativeEvent: {
@@ -56,7 +56,6 @@ declare module 'react-native-webview' {
   }
 
   export interface WebViewProps {
-    ref?: RefObject<WebView>
     source?: { html: string; uri?: never } | { uri: string; html?: never }
     onMessage?: (event: WebViewMessageEvent) => void
     onError?: (event: WebViewErrorEvent) => void
@@ -69,7 +68,7 @@ declare module 'react-native-webview' {
     incognito?: boolean
   }
 
-  export class WebView extends React.Component<WebViewProps> {
+  export class WebView extends Component<WebViewProps> {
     injectJavaScript(script: string): void
   }
 }

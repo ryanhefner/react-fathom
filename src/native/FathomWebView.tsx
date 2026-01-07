@@ -96,25 +96,25 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
       [debug],
     )
 
-    // Build the load options string for the script
-    const buildLoadOptionsString = useCallback(() => {
-      const opts: string[] = []
+    // Build data attributes for load options
+    const buildDataAttributes = useCallback(() => {
+      const attrs: string[] = [`data-site="${siteId}"`]
 
       if (loadOptions.auto === false) {
-        opts.push('auto: false')
+        attrs.push('data-auto="false"')
       }
       if (loadOptions.honorDNT) {
-        opts.push('honorDNT: true')
+        attrs.push('data-honor-dnt="true"')
       }
       if (loadOptions.canonical === false) {
-        opts.push('canonical: false')
+        attrs.push('data-canonical="false"')
       }
       if (loadOptions.spa) {
-        opts.push(`spa: "${loadOptions.spa}"`)
+        attrs.push(`data-spa="${loadOptions.spa}"`)
       }
 
-      return opts.length > 0 ? `{ ${opts.join(', ')} }` : '{}'
-    }, [loadOptions])
+      return attrs.join(' ')
+    }, [siteId, loadOptions])
 
     // HTML content that loads the Fathom script
     const htmlContent = `
@@ -122,7 +122,7 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
       <html>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <script src="https://${scriptDomain}/script.js" data-site="${siteId}" defer></script>
+          <script src="https://${scriptDomain}/script.js" ${buildDataAttributes()} defer></script>
           <script>
             // Wait for Fathom to be available
             function waitForFathom(callback, maxAttempts = 50) {
