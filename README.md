@@ -1,28 +1,88 @@
-# 😻 react-fathom
+# react-fathom
 
 [![npm](https://img.shields.io/npm/v/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
 [![NPM](https://img.shields.io/npm/l/react-fathom?style=flat-square)](LICENSE)
 [![npm](https://img.shields.io/npm/dt/react-fathom?style=flat-square)](https://www.pkgstats.com/pkg:react-fathom)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-fathom?style=flat-square)](https://bundlephobia.com/package/react-fathom)
 [![GitHub stars](https://img.shields.io/github/stars/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/pulls)
-[![Coveralls github](https://img.shields.io/coveralls/github/ryanhefner/react-fathom?style=flat-square)](https://coveralls.io/github/ryanhefner/react-fathom)
-[![codecov](https://codecov.io/gh/ryanhefner/react-fathom/branch/main/graph/badge.svg)](https://codecov.io/gh/ryanhefner/react-fathom)
-[![CircleCI](https://img.shields.io/circleci/build/github/ryanhefner/react-fathom?style=flat-square)](https://circleci.com/gh/ryanhefner/react-fathom)
-[![Known Vulnerabilities](https://snyk.io/test/github/ryanhefner/react-fathom/badge.svg)](https://snyk.io/test/github/ryanhefner/react-fathom)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![GitHub last commit](https://img.shields.io/github/last-commit/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/commits/main)
-[![Twitter Follow](https://img.shields.io/twitter/follow/ryanhefner?style=flat-square)](https://twitter.com/ryanhefner)
+[![codecov](https://codecov.io/gh/ryanhefner/react-fathom/branch/main/graph/badge.svg)](https://codecov.io/gh/ryanhefner/react-fathom)
 
-Easily compose Fathom Analytics into your React, Next.js, and React Native apps with automatic pageview tracking and full TypeScript support.
+**Privacy-focused analytics for React, Next.js, and React Native.** Easily integrate [Fathom Analytics](https://usefathom.com/ref/EKONBS) into your applications with automatic pageview tracking, custom event tracking, and full TypeScript support.
 
-## About Fathom Analytics
+## Table of Contents
 
-This package is designed to work with [Fathom Analytics](https://usefathom.com/ref/EKONBS), a privacy-first website analytics platform. Fathom provides simple, GDPR-compliant analytics without cookies or tracking scripts that invade user privacy.
+- [Quick Start](#quick-start)
+- [Why react-fathom?](#why-react-fathom)
+- [Features](#features)
+- [Installation](#install)
+- [Usage](#usage)
+  - [Basic React Setup](#basic-react-setup)
+  - [Next.js App Router](#nextjs-app-router)
+  - [Next.js Pages Router](#nextjs-pages-router)
+  - [React Native](#react-native)
+- [API Reference](#api)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
 
-**New to Fathom?** Get a **$10 credit** on your first invoice when you sign up using [this affiliate link](https://usefathom.com/ref/EKONBS). This helps support the development of this open-source package.
+## Quick Start
+
+```bash
+npm install react-fathom fathom-client
+```
+
+```tsx
+// App.tsx or layout.tsx
+import { FathomProvider } from 'react-fathom'
+
+function App() {
+  return (
+    <FathomProvider siteId="YOUR_FATHOM_SITE_ID">
+      <YourApp />
+    </FathomProvider>
+  )
+}
+```
+
+```tsx
+// Any component
+import { useFathom } from 'react-fathom'
+
+function MyComponent() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <button onClick={() => trackEvent('button-click')}>
+      Click me
+    </button>
+  )
+}
+```
+
+That's it! Pageviews are tracked automatically.
+
+## Why react-fathom?
+
+### Privacy-First Analytics
+
+[Fathom Analytics](https://usefathom.com/ref/EKONBS) is a privacy-focused alternative to Google Analytics. Unlike traditional analytics platforms:
+
+- **No cookies required** - GDPR, CCPA, and PECR compliant out of the box
+- **No personal data collection** - Respects user privacy by design
+- **No consent banners needed** - Simplified compliance for your websites
+- **Fast and lightweight** - Won't slow down your site
+
+### Why Use This Package?
+
+- **React-native integration** - Works seamlessly with React's component model and hooks
+- **Automatic tracking** - Pageviews tracked automatically on route changes
+- **Next.js optimized** - First-class support for both App Router and Pages Router
+- **React Native support** - Full mobile support with offline queuing
+- **TypeScript-first** - Complete type definitions for a great developer experience
+- **Tree-shakeable** - Only bundle what you use
+
+**New to Fathom?** Get a **$10 credit** when you sign up using [this referral link](https://usefathom.com/ref/EKONBS).
 
 ## Features
 
@@ -746,6 +806,114 @@ import type {
 ```
 
 This simplifies your imports when building custom clients or working with typed event options.
+
+## Troubleshooting
+
+### Common Issues
+
+#### Events not appearing in Fathom dashboard
+
+1. **Check your site ID** - Ensure `YOUR_SITE_ID` matches the ID in your Fathom dashboard
+2. **Ad blockers** - Some ad blockers block analytics scripts. Test in an incognito window with extensions disabled
+3. **Development mode** - Fathom may not track localhost by default. Add your development domain to Fathom's allowed domains, or use the `includedDomains` option
+4. **Check the console** - Enable debug mode to see tracking calls:
+   ```tsx
+   <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
+   ```
+
+#### "useFathom must be used within a FathomProvider" error
+
+Ensure your component is wrapped in a `FathomProvider`:
+
+```tsx
+// Correct
+<FathomProvider siteId="YOUR_SITE_ID">
+  <MyComponent /> {/* useFathom works here */}
+</FathomProvider>
+
+// Incorrect - MyComponent is outside the provider
+<MyComponent />
+<FathomProvider siteId="YOUR_SITE_ID">...</FathomProvider>
+```
+
+#### Next.js App Router: "use client" errors
+
+When using `FathomProvider` directly in a Server Component (like `app/layout.tsx`), use `NextFathomProviderApp` instead which is pre-configured as a Client Component:
+
+```tsx
+// app/layout.tsx
+import { NextFathomProviderApp } from 'react-fathom/next'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NextFathomProviderApp siteId="YOUR_SITE_ID">
+          {children}
+        </NextFathomProviderApp>
+      </body>
+    </html>
+  )
+}
+```
+
+#### React Native: Events not sending
+
+1. **Check network connectivity** - Events are queued when offline and sent when connectivity is restored
+2. **Process the queue manually** - Use `client.processQueue()` to force-send queued events
+3. **Check queue length** - Use `client.getQueueLength()` to see pending events
+
+### Getting Help
+
+- [Open an issue](https://github.com/ryanhefner/react-fathom/issues) on GitHub
+- Check [existing issues](https://github.com/ryanhefner/react-fathom/issues?q=is%3Aissue) for solutions
+
+## Contributing
+
+Contributions are welcome! Here's how you can help:
+
+### Development Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ryanhefner/react-fathom.git
+   cd react-fathom
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run tests:
+   ```bash
+   npm test
+   ```
+
+4. Build the package:
+   ```bash
+   npm run build
+   ```
+
+### Testing with Examples
+
+The `examples/` directory contains Next.js applications for testing:
+
+```bash
+cd examples/next-app
+npm install
+npm run dev
+```
+
+### Submitting Changes
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/my-feature`
+3. Make your changes and add tests
+4. Ensure all tests pass: `npm test`
+5. Submit a pull request
+
+Please follow the existing code style and include tests for new features.
 
 ## License
 
