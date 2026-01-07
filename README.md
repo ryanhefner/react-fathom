@@ -813,32 +813,68 @@ This simplifies your imports when building custom clients or working with typed 
 
 #### Events not appearing in Fathom dashboard
 
-1. **Check your site ID** - Ensure `YOUR_SITE_ID` matches the ID in your Fathom dashboard
-2. **Ad blockers** - Some ad blockers block analytics scripts. Test in an incognito window with extensions disabled
-3. **Development mode** - Fathom may not track localhost by default. Add your development domain to Fathom's allowed domains, or use the `includedDomains` option
-4. **Check the console** - Enable debug mode to see tracking calls:
-   ```tsx
-   <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
-   ```
+**1. Verify your site ID**
 
-#### "useFathom must be used within a FathomProvider" error
-
-Ensure your component is wrapped in a `FathomProvider`:
+Your site ID should match exactly what's shown in your [Fathom dashboard](https://app.usefathom.com). It's typically an 8-character alphanumeric string like `ABCD1234`.
 
 ```tsx
-// Correct
+// Double-check this value
+<FathomProvider siteId="ABCD1234">
+```
+
+**2. Check for ad blockers**
+
+Many ad blockers and privacy extensions block analytics scripts. To test:
+- Open an incognito/private window with extensions disabled
+- Or temporarily whitelist your development domain
+
+**3. Domain restrictions**
+
+Fathom only tracks events from domains you've configured. For local development:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{
+    includedDomains: ['localhost', 'yourdomain.com']
+  }}
+>
+```
+
+**4. Inspect network requests**
+
+Open your browser's Network tab and look for requests to `cdn.usefathom.com`. If you see:
+- **No requests**: The script isn't loading (check provider setup)
+- **Blocked requests**: Ad blocker is interfering
+- **Failed requests**: Check your site ID and domain configuration
+
+#### Duplicate pageview tracking
+
+If you're seeing double pageviews, you likely have multiple tracking setups:
+
+```tsx
+// WRONG: Both auto tracking AND manual tracking
 <FathomProvider siteId="YOUR_SITE_ID">
-  <MyComponent /> {/* useFathom works here */}
+  <NextFathomTrackViewApp /> {/* This tracks pageviews */}
+  {/* AND clientOptions.auto defaults to true, which also tracks */}
 </FathomProvider>
 
-// Incorrect - MyComponent is outside the provider
-<MyComponent />
-<FathomProvider siteId="YOUR_SITE_ID">...</FathomProvider>
+// CORRECT: Use one or the other
+<FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
+  <NextFathomTrackViewApp />
+</FathomProvider>
 ```
+
+#### useFathom returns undefined methods
+
+This was the old behavior. As of the latest version, `useFathom()` returns stub methods that warn in development when called outside a provider. If you're seeing `undefined`:
+
+1. Update to the latest version: `npm update react-fathom`
+2. Ensure your component is inside a `FathomProvider`
 
 #### Next.js App Router: "use client" errors
 
-When using `FathomProvider` directly in a Server Component (like `app/layout.tsx`), use `NextFathomProviderApp` instead which is pre-configured as a Client Component:
+Server Components can't use hooks directly. Use the pre-configured client component:
 
 ```tsx
 // app/layout.tsx
@@ -857,63 +893,275 @@ export default function RootLayout({ children }) {
 }
 ```
 
+If you need a custom setup, create your own client component wrapper:
+
+```tsx
+// components/AnalyticsProvider.tsx
+'use client'
+import { FathomProvider } from 'react-fathom'
+
+export function AnalyticsProvider({ children }) {
+  return (
+    <FathomProvider siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
+      {children}
+    </FathomProvider>
+  )
+}
+```
+
+#### Next.js: Environment variables not loading
+
+Ensure your environment variable is prefixed with `NEXT_PUBLIC_` to be available client-side:
+
+```bash
+# .env.local
+NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID  # ✓ Correct
+FATHOM_SITE_ID=YOUR_SITE_ID               # ✗ Won't work client-side
+```
+
 #### React Native: Events not sending
 
-1. **Check network connectivity** - Events are queued when offline and sent when connectivity is restored
-2. **Process the queue manually** - Use `client.processQueue()` to force-send queued events
-3. **Check queue length** - Use `client.getQueueLength()` to see pending events
+**1. Verify network connectivity**
+
+Events are automatically queued when offline. Check if the device has network access.
+
+**2. Debug with logging**
+
+Enable debug mode to see what's happening:
+
+```tsx
+const client = createNativeClient({
+  siteId: 'YOUR_SITE_ID',
+  debug: true,  // Logs all tracking calls
+})
+```
+
+**3. Manually process the queue**
+
+```tsx
+// Check how many events are queued
+console.log('Queued events:', client.getQueueLength())
+
+// Force send queued events
+const sent = await client.processQueue()
+console.log('Sent events:', sent)
+```
+
+**4. Check for API endpoint issues**
+
+If using a custom endpoint, verify it's accessible from the device:
+
+```tsx
+const client = createNativeClient({
+  siteId: 'YOUR_SITE_ID',
+  apiEndpoint: 'https://your-custom-endpoint.com/collect',
+  timeout: 15000, // Increase timeout for slow connections
+})
+```
+
+### Debugging Tips
+
+#### Enable verbose logging
+
+For web, check the browser console. For React Native, enable debug mode:
+
+```tsx
+// React Native
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{ debug: __DEV__ }}
+>
+```
+
+#### Verify tracking in real-time
+
+Fathom's dashboard updates in real-time. Open your dashboard alongside your app to see events as they're tracked.
+
+#### Test with a mock client
+
+For debugging, replace the real client with a mock that logs everything:
+
+```tsx
+const debugClient = {
+  load: (id, opts) => console.log('load:', id, opts),
+  trackPageview: (opts) => console.log('pageview:', opts),
+  trackEvent: (name, opts) => console.log('event:', name, opts),
+  trackGoal: (code, cents) => console.log('goal:', code, cents),
+  setSite: (id) => console.log('setSite:', id),
+  blockTrackingForMe: () => console.log('blocked'),
+  enableTrackingForMe: () => console.log('enabled'),
+  isTrackingEnabled: () => true,
+}
+
+<FathomProvider client={debugClient}>
+```
 
 ### Getting Help
 
 - [Open an issue](https://github.com/ryanhefner/react-fathom/issues) on GitHub
-- Check [existing issues](https://github.com/ryanhefner/react-fathom/issues?q=is%3Aissue) for solutions
+- [Search existing issues](https://github.com/ryanhefner/react-fathom/issues?q=is%3Aissue) for solutions
+- [Fathom Analytics documentation](https://usefathom.com/docs) for platform-specific questions
 
 ## Contributing
 
-Contributions are welcome! Here's how you can help:
+Contributions are welcome! Whether it's bug fixes, new features, documentation improvements, or examples, we appreciate your help.
+
+### Ways to Contribute
+
+| Type | Description |
+|------|-------------|
+| **Bug Reports** | Found a bug? [Open an issue](https://github.com/ryanhefner/react-fathom/issues/new) with reproduction steps |
+| **Feature Requests** | Have an idea? Discuss it in an issue first |
+| **Bug Fixes** | PRs for documented issues are always welcome |
+| **Documentation** | Help improve docs, add examples, fix typos |
+| **Tests** | Increase test coverage or add edge case tests |
 
 ### Development Setup
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/ryanhefner/react-fathom.git
-   cd react-fathom
-   ```
+**Prerequisites:**
+- Node.js 18+
+- npm 9+
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Run tests:
-   ```bash
-   npm test
-   ```
-
-4. Build the package:
-   ```bash
-   npm run build
-   ```
-
-### Testing with Examples
-
-The `examples/` directory contains Next.js applications for testing:
+**1. Clone and install:**
 
 ```bash
-cd examples/next-app
+git clone https://github.com/ryanhefner/react-fathom.git
+cd react-fathom
 npm install
-npm run dev
 ```
 
-### Submitting Changes
+**2. Run the development workflow:**
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Make your changes and add tests
-4. Ensure all tests pass: `npm test`
-5. Submit a pull request
+```bash
+# Run tests in watch mode during development
+npm run test:watch
 
-Please follow the existing code style and include tests for new features.
+# Run the full test suite
+npm test
+
+# Build the package
+npm run build
+
+# Type check without emitting
+npm run typecheck
+```
+
+### Project Structure
+
+```
+react-fathom/
+├── src/
+│   ├── index.ts              # Main entry point
+│   ├── FathomProvider.tsx    # Core provider component
+│   ├── FathomContext.tsx     # React context
+│   ├── types.ts              # TypeScript definitions
+│   ├── hooks/                # React hooks
+│   │   ├── useFathom.ts
+│   │   ├── useTrackOnClick.ts
+│   │   ├── useTrackOnMount.ts
+│   │   └── useTrackOnVisible.ts
+│   ├── components/           # Declarative tracking components
+│   │   ├── TrackClick.tsx
+│   │   ├── TrackPageview.tsx
+│   │   └── TrackVisible.tsx
+│   ├── next/                 # Next.js-specific exports
+│   │   └── index.ts
+│   └── native/               # React Native exports
+│       ├── index.ts
+│       ├── createNativeClient.ts
+│       └── useNavigationTracking.ts
+├── examples/                 # Example applications
+│   ├── next-app/            # Next.js App Router example
+│   └── next-pages/          # Next.js Pages Router example
+└── dist/                    # Built output (generated)
+```
+
+### Testing Guidelines
+
+We use [Vitest](https://vitest.dev/) for testing. All new features should include tests.
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+**Writing tests:**
+
+```tsx
+// src/hooks/useMyHook.test.tsx
+import { renderHook } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { useMyHook } from './useMyHook'
+import { FathomProvider } from '../FathomProvider'
+
+describe('useMyHook', () => {
+  it('should track events correctly', () => {
+    const mockClient = {
+      trackEvent: vi.fn(),
+      // ... other required methods
+    }
+
+    const wrapper = ({ children }) => (
+      <FathomProvider client={mockClient}>{children}</FathomProvider>
+    )
+
+    const { result } = renderHook(() => useMyHook(), { wrapper })
+
+    result.current.doSomething()
+
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('expected-event', {})
+  })
+})
+```
+
+### Code Style
+
+- **TypeScript**: All code should be fully typed
+- **Formatting**: We use Prettier (run `npm run format` before committing)
+- **Linting**: ESLint catches common issues (run `npm run lint`)
+- **Naming**:
+  - Components: PascalCase (`TrackClick.tsx`)
+  - Hooks: camelCase with `use` prefix (`useFathom.ts`)
+  - Types: PascalCase (`FathomClient`)
+
+### Submitting a Pull Request
+
+1. **Fork** the repository
+2. **Create a branch** from `main`:
+   ```bash
+   git checkout -b fix/my-bug-fix
+   # or
+   git checkout -b feature/my-new-feature
+   ```
+3. **Make your changes** with clear, focused commits
+4. **Add or update tests** for your changes
+5. **Ensure CI passes**:
+   ```bash
+   npm run lint
+   npm test
+   npm run build
+   ```
+6. **Submit a PR** with a clear description of what and why
+
+### Commit Message Guidelines
+
+Use clear, descriptive commit messages:
+
+```
+feat: add useTrackOnScroll hook for scroll tracking
+fix: resolve duplicate pageview tracking in Next.js
+docs: add troubleshooting section for ad blockers
+test: add tests for native offline queue
+refactor: simplify FathomContext default values
+```
+
+Prefixes: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`
 
 ## License
 
