@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useCallback } from 'react'
+import React, { useMemo, useRef, useCallback, useEffect } from 'react'
 
 import { FathomProvider } from '../FathomProvider'
 import { FathomWebView, type FathomWebViewRef } from './FathomWebView'
@@ -60,6 +60,7 @@ export const NativeFathomProvider: React.FC<NativeFathomProviderProps> = ({
   debug = false,
   onReady,
   onError,
+  clientRef,
   children,
 }) => {
   const webViewRef = useRef<FathomWebViewRef>(null)
@@ -74,6 +75,13 @@ export const NativeFathomProvider: React.FC<NativeFathomProviderProps> = ({
       }),
     [debug],
   )
+
+  // Populate the clientRef so the parent component can access the client
+  useEffect(() => {
+    if (clientRef) {
+      clientRef.current = client
+    }
+  }, [client, clientRef])
 
   // Handle WebView ready event
   const handleReady = useCallback(() => {

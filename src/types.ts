@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react'
+import type { MutableRefObject, PropsWithChildren } from 'react'
 
 import type { EventOptions, LoadOptions, PageViewOptions } from 'fathom-client'
 
@@ -32,6 +32,30 @@ export interface FathomContextInterface {
 
 export interface FathomProviderProps extends PropsWithChildren {
   client?: FathomClient
+  /**
+   * A ref that will be populated with the resolved Fathom client instance.
+   * This allows the parent component that composes the provider to access
+   * the client directly, since it cannot use useFathom() (context only flows
+   * downward to children).
+   *
+   * @example
+   * ```tsx
+   * function App() {
+   *   const clientRef = useRef<FathomClient>(null);
+   *
+   *   const handleDeepLink = (url: string) => {
+   *     clientRef.current?.trackEvent('deep_link', { _url: url });
+   *   };
+   *
+   *   return (
+   *     <FathomProvider siteId="..." clientRef={clientRef}>
+   *       <YourApp />
+   *     </FathomProvider>
+   *   );
+   * }
+   * ```
+   */
+  clientRef?: MutableRefObject<FathomClient | null>
   clientOptions?: LoadOptions
   siteId?: string
   defaultPageviewOptions?: PageViewOptions

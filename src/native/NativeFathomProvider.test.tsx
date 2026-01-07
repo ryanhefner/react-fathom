@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
 import { useFathom } from '../hooks/useFathom'
 import { NativeFathomProvider } from './NativeFathomProvider'
+import type { WebViewFathomClient } from './createWebViewClient'
 
 // Mock the FathomWebView component
 vi.mock('./FathomWebView', () => ({
@@ -286,6 +287,86 @@ describe('NativeFathomProvider', () => {
 
       // The goal should be queued since WebView isn't ready
       // We just verify no errors are thrown
+    })
+  })
+
+  describe('clientRef', () => {
+    it('should populate clientRef with the WebViewFathomClient', async () => {
+      let clientRefValue: WebViewFathomClient | null = null
+
+      const TestComponent = () => {
+        const clientRef = useRef<WebViewFathomClient>(null)
+        React.useEffect(() => {
+          clientRefValue = clientRef.current
+        })
+        return (
+          <NativeFathomProvider siteId="TEST_SITE" clientRef={clientRef}>
+            <div>Test</div>
+          </NativeFathomProvider>
+        )
+      }
+
+      render(<TestComponent />)
+
+      await waitFor(() => {
+        expect(clientRefValue).not.toBeNull()
+        expect(clientRefValue).toBeDefined()
+      })
+
+      // Verify it's a WebViewFathomClient with the extended methods
+      expect(typeof clientRefValue?.trackEvent).toBe('function')
+      expect(typeof clientRefValue?.trackPageview).toBe('function')
+      expect(typeof clientRefValue?.processQueue).toBe('function')
+      expect(typeof clientRefValue?.getQueueLength).toBe('function')
+      expect(typeof clientRefValue?.setWebViewReady).toBe('function')
+    })
+
+    it('should allow parent to call client methods via clientRef', async () => {
+      const clientRef = React.createRef<WebViewFathomClient>() as React.MutableRefObject<WebViewFathomClient | null>
+      clientRef.current = null
+
+      render(
+        <NativeFathomProvider siteId="TEST_SITE" clientRef={clientRef}>
+          <div>Test</div>
+        </NativeFathomProvider>,
+      )
+
+      await waitFor(() => {
+        expect(clientRef.current).not.toBeNull()
+      })
+
+      // Parent can use the client directly
+      // Events will be queued since WebView isn't ready
+      clientRef.current?.trackEvent('parent-event', { _value: 100 })
+
+      // Verify the event was queued
+      expect(clientRef.current?.getQueueLength()).toBeGreaterThan(0)
+    })
+
+    it('should allow parent to check queue status via clientRef', async () => {
+      const clientRef = React.createRef<WebViewFathomClient>() as React.MutableRefObject<WebViewFathomClient | null>
+      clientRef.current = null
+
+      render(
+        <NativeFathomProvider siteId="TEST_SITE" clientRef={clientRef}>
+          <div>Test</div>
+        </NativeFathomProvider>,
+      )
+
+      await waitFor(() => {
+        expect(clientRef.current).not.toBeNull()
+      })
+
+      // Initially, queue should be empty
+      expect(clientRef.current?.getQueueLength()).toBe(0)
+
+      // Track some events (they'll be queued)
+      clientRef.current?.trackEvent('event-1')
+      clientRef.current?.trackPageview({ url: '/page-1' })
+      clientRef.current?.trackGoal('GOAL', 100)
+
+      // Queue should now have 3 items
+      expect(clientRef.current?.getQueueLength()).toBe(3)
     })
   })
 })
