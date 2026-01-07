@@ -1,10 +1,12 @@
 // Client factory
 export { createNativeClient, type NativeFathomClient } from './createNativeClient'
 
-// Provider component
+// Provider components
 export { NativeFathomProvider } from './NativeFathomProvider'
+export { FathomProvider } from '../FathomProvider'
 
 // Hooks
+export { useFathom } from '../hooks/useFathom'
 export { useAppStateTracking } from './useAppStateTracking'
 export { useNavigationTracking } from './useNavigationTracking'
 
@@ -20,3 +22,8 @@ export type {
   LoadOptions,
   PageViewOptions,
 } from './types'
+
+export type {
+  FathomContextInterface,
+  FathomProviderProps,
+} from '../types'

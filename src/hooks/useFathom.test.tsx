@@ -37,12 +37,23 @@ describe('useFathom', () => {
     expect(result.current.isTrackingEnabled).toBeDefined()
   })
 
-  it('should return empty context when used outside FathomProvider', () => {
+  it('should return stub methods when used outside FathomProvider', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
     const { result } = renderHook(() => useFathom())
 
+    // Client should be undefined, but methods should be stub functions
     expect(result.current.client).toBeUndefined()
-    expect(result.current.trackEvent).toBeUndefined()
-    expect(result.current.trackPageview).toBeUndefined()
+    expect(typeof result.current.trackEvent).toBe('function')
+    expect(typeof result.current.trackPageview).toBe('function')
+
+    // Calling stub methods should warn in development
+    result.current.trackEvent('test')
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[react-fathom] trackEvent() called without a FathomProvider. Wrap your app with <FathomProvider> to enable analytics tracking.',
+    )
+
+    consoleSpy.mockRestore()
   })
 
   it('should have displayName', () => {
