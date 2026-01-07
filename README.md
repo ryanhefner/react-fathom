@@ -115,6 +115,7 @@ yarn add react-fathom fathom-client
 - `fathom-client` >= 3.0.0 (only if using web, not needed for React Native)
 - `next` >= 10.0.0 (only if using Next.js providers)
 - `react-native` >= 0.60.0 (only if using React Native)
+- `react-native-webview` >= 11.0.0 (only if using React Native)
 
 ## Usage
 
@@ -392,7 +393,17 @@ const myCustomClient: FathomClient = {
 
 ### React Native
 
-For React Native apps, use the dedicated `/native` export which includes a pre-built client with offline support:
+For React Native apps, use the dedicated `/native` export. This uses a hidden WebView to load Fathom's official tracking script, ensuring full compatibility with Fathom Analytics.
+
+**Install the required peer dependency:**
+
+```bash
+npm install react-native-webview
+# or
+yarn add react-native-webview
+```
+
+**Basic setup:**
 
 ```tsx
 import { NativeFathomProvider } from 'react-fathom/native'
@@ -401,14 +412,17 @@ function App() {
   return (
     <NativeFathomProvider
       siteId="YOUR_SITE_ID"
-      clientOptions={{ debug: __DEV__ }}
+      debug={__DEV__}
       trackAppState
+      onReady={() => console.log('Fathom ready!')}
     >
       <YourApp />
     </NativeFathomProvider>
   )
 }
 ```
+
+> **Note:** The provider renders a hidden WebView (0x0 pixels) that loads the Fathom script. Events are queued until the WebView is ready, then automatically sent.
 
 #### React Navigation Integration
 
@@ -457,24 +471,51 @@ function AppTracker() {
 }
 ```
 
-#### Creating a Custom Native Client
+#### Using Custom Domains
 
-For advanced use cases, create your own native client:
+If you use [Fathom's custom domains feature](https://usefathom.com/docs/script/custom-domains), specify your domain:
 
 ```tsx
-import { createNativeClient, FathomProvider } from 'react-fathom/native'
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  scriptDomain="your-custom-domain.com"
+>
+  <YourApp />
+</NativeFathomProvider>
+```
 
-const client = createNativeClient({
-  siteId: 'YOUR_SITE_ID',
-  debug: __DEV__,
-  enableOfflineQueue: true,
-  maxQueueSize: 100,
-  timeout: 10000,
-})
+#### Advanced: Manual WebView Client Setup
+
+For advanced use cases, you can manually set up the WebView client:
+
+```tsx
+import { useRef, useMemo, useCallback } from 'react'
+import {
+  FathomWebView,
+  createWebViewClient,
+  FathomProvider,
+  type FathomWebViewRef,
+} from 'react-fathom/native'
 
 function App() {
+  const webViewRef = useRef<FathomWebViewRef>(null)
+
+  const client = useMemo(
+    () => createWebViewClient(() => webViewRef.current, { debug: __DEV__ }),
+    []
+  )
+
+  const handleReady = useCallback(() => {
+    client.setWebViewReady()
+  }, [client])
+
   return (
-    <FathomProvider client={client}>
+    <FathomProvider client={client} siteId="YOUR_SITE_ID">
+      <FathomWebView
+        ref={webViewRef}
+        siteId="YOUR_SITE_ID"
+        onReady={handleReady}
+      />
       <YourApp />
     </FathomProvider>
   )
@@ -689,19 +730,23 @@ Component that tracks an event when it becomes visible.
 
 ## Native API
 
-The `/native` export provides React Native-specific components and hooks.
+The `/native` export provides React Native-specific components and hooks. It uses a hidden WebView to load Fathom's official tracking script, ensuring full compatibility with Fathom Analytics (both Fathom Pro and self-hosted Fathom Lite).
 
 ### `NativeFathomProvider`
 
-Convenience provider for React Native apps that creates and manages a native Fathom client automatically.
+Convenience provider for React Native apps that manages a hidden WebView with Fathom's tracking script.
 
 **Props:**
 
 - `siteId` (string, required): Your Fathom Analytics site ID
-- `clientOptions` (NativeClientOptions, optional): Configuration for the native client
+- `loadOptions` (LoadOptions, optional): Options passed to `fathom.load()` in the WebView
+- `scriptDomain` (string, optional): Custom domain for Fathom script (defaults to 'cdn.usefathom.com')
 - `defaultPageviewOptions` (PageViewOptions, optional): Default options merged into all `trackPageview` calls
 - `defaultEventOptions` (EventOptions, optional): Default options merged into all `trackEvent` calls
 - `trackAppState` (boolean, optional): Enable automatic app state tracking (defaults to false)
+- `debug` (boolean, optional): Enable debug logging (defaults to false)
+- `onReady` (() => void, optional): Called when the Fathom script has loaded
+- `onError` ((error: string) => void, optional): Called when an error occurs loading the script
 - `children` (ReactNode, required): Child components to render
 
 **Example:**
@@ -709,32 +754,54 @@ Convenience provider for React Native apps that creates and manages a native Fat
 ```tsx
 <NativeFathomProvider
   siteId="YOUR_SITE_ID"
-  clientOptions={{ debug: __DEV__, enableOfflineQueue: true }}
+  debug={__DEV__}
   trackAppState
+  onReady={() => console.log('Analytics ready!')}
+  onError={(err) => console.error('Analytics error:', err)}
 >
   <App />
 </NativeFathomProvider>
 ```
 
-### `createNativeClient(options)`
+### `FathomWebView`
 
-Factory function to create a custom native Fathom client.
+Hidden WebView component that loads and manages the Fathom Analytics script. Used internally by `NativeFathomProvider`, but can be used directly for advanced setups.
 
-**Options (NativeClientOptions):**
+**Props:**
 
 - `siteId` (string, required): Your Fathom Analytics site ID
-- `apiEndpoint` (string, optional): Custom API endpoint (defaults to Fathom's collect endpoint)
-- `enableOfflineQueue` (boolean, optional): Enable offline request queuing (defaults to true)
-- `maxQueueSize` (number, optional): Maximum events to queue when offline (defaults to 100)
-- `customHeaders` (Record<string, string>, optional): Custom headers for requests
+- `loadOptions` (LoadOptions, optional): Options passed to `fathom.load()`
+- `scriptDomain` (string, optional): Custom domain for Fathom script (defaults to 'cdn.usefathom.com')
+- `onReady` (() => void, optional): Called when the Fathom script has loaded
+- `onError` ((error: string) => void, optional): Called when an error occurs
 - `debug` (boolean, optional): Enable debug logging (defaults to false)
-- `userAgent` (string, optional): Custom user agent string
-- `timeout` (number, optional): Request timeout in milliseconds (defaults to 10000)
+
+**Ref Methods (FathomWebViewRef):**
+
+- `trackPageview(opts?)`: Track a pageview
+- `trackEvent(eventName, opts?)`: Track a custom event
+- `trackGoal(code, cents)`: Track a goal conversion
+- `blockTrackingForMe()`: Block tracking for current user
+- `enableTrackingForMe()`: Enable tracking for current user
+- `isReady()`: Check if the WebView is ready
+
+### `createWebViewClient(getWebViewRef, options?)`
+
+Factory function to create a client that communicates with a FathomWebView.
+
+**Parameters:**
+
+- `getWebViewRef` (() => FathomWebViewRef | null): Function that returns the WebView ref
+- `options` (WebViewClientOptions, optional):
+  - `debug` (boolean): Enable debug logging (defaults to false)
+  - `enableQueue` (boolean): Enable command queuing before WebView is ready (defaults to true)
+  - `maxQueueSize` (number): Maximum commands to queue (defaults to 100)
 
 **Returns:** A `FathomClient` instance with additional methods:
 
-- `processQueue()`: Manually process queued events (returns Promise<number>)
+- `processQueue()`: Manually process queued commands (returns number of processed)
 - `getQueueLength()`: Get the current queue length
+- `setWebViewReady()`: Call when WebView signals it's ready (flushes queue)
 
 ### `useAppStateTracking(options?)`
 
@@ -921,42 +988,46 @@ FATHOM_SITE_ID=YOUR_SITE_ID               # ✗ Won't work client-side
 
 #### React Native: Events not sending
 
-**1. Verify network connectivity**
+**1. Verify react-native-webview is installed**
 
-Events are automatically queued when offline. Check if the device has network access.
+The native module requires `react-native-webview`:
 
-**2. Debug with logging**
-
-Enable debug mode to see what's happening:
-
-```tsx
-const client = createNativeClient({
-  siteId: 'YOUR_SITE_ID',
-  debug: true,  // Logs all tracking calls
-})
+```bash
+npm install react-native-webview
+# For iOS, also run:
+cd ios && pod install
 ```
 
-**3. Manually process the queue**
+**2. Check WebView is ready**
+
+Events are queued until the WebView loads. Use the `onReady` callback to verify:
 
 ```tsx
-// Check how many events are queued
-console.log('Queued events:', client.getQueueLength())
-
-// Force send queued events
-const sent = await client.processQueue()
-console.log('Sent events:', sent)
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  debug={true}
+  onReady={() => console.log('Fathom WebView ready!')}
+  onError={(err) => console.error('Fathom error:', err)}
+>
 ```
 
-**4. Check for API endpoint issues**
+**3. Verify network connectivity**
 
-If using a custom endpoint, verify it's accessible from the device:
+The WebView needs network access to load the Fathom script. Events are queued before the WebView is ready but won't send if the script fails to load.
+
+**4. Check for WebView restrictions**
+
+Some enterprise MDM solutions or app configurations may block WebViews from loading external scripts. Verify that `cdn.usefathom.com` (or your custom domain) is accessible.
+
+**5. Debug with logging**
+
+Enable debug mode to see all tracking activity:
 
 ```tsx
-const client = createNativeClient({
-  siteId: 'YOUR_SITE_ID',
-  apiEndpoint: 'https://your-custom-endpoint.com/collect',
-  timeout: 15000, // Increase timeout for slow connections
-})
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  debug={__DEV__}  // Logs all tracking calls
+>
 ```
 
 ### Debugging Tips
@@ -969,7 +1040,7 @@ For web, check the browser console. For React Native, enable debug mode:
 // React Native
 <NativeFathomProvider
   siteId="YOUR_SITE_ID"
-  clientOptions={{ debug: __DEV__ }}
+  debug={__DEV__}
 >
 ```
 
@@ -1068,8 +1139,11 @@ react-fathom/
 │   │   └── index.ts
 │   └── native/               # React Native exports
 │       ├── index.ts
-│       ├── createNativeClient.ts
-│       └── useNavigationTracking.ts
+│       ├── FathomWebView.tsx
+│       ├── createWebViewClient.ts
+│       ├── NativeFathomProvider.tsx
+│       ├── useNavigationTracking.ts
+│       └── useAppStateTracking.ts
 ├── examples/                 # Example applications
 │   ├── next-app/            # Next.js App Router example
 │   └── next-pages/          # Next.js Pages Router example

@@ -1,5 +1,6 @@
-// Client factory
-export { createNativeClient, type NativeFathomClient } from './createNativeClient'
+// WebView-based client (recommended for Fathom Pro)
+export { FathomWebView, type FathomWebViewRef, type FathomWebViewProps } from './FathomWebView'
+export { createWebViewClient, type WebViewFathomClient, type WebViewClientOptions } from './createWebViewClient'
 
 // Provider components
 export { NativeFathomProvider } from './NativeFathomProvider'
@@ -12,7 +13,6 @@ export { useNavigationTracking } from './useNavigationTracking'
 
 // Types
 export type {
-  NativeClientOptions,
   NativeFathomProviderProps,
   UseNavigationTrackingOptions,
   UseAppStateTrackingOptions,

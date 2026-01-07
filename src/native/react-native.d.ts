@@ -14,4 +14,61 @@ declare module 'react-native' {
   }
 
   export const AppState: AppStateStatic
+
+  export interface ViewStyle {
+    position?: 'absolute' | 'relative'
+    width?: number | string
+    height?: number | string
+    overflow?: 'visible' | 'hidden' | 'scroll'
+    opacity?: number
+  }
+
+  export interface StyleSheetStatic {
+    create<T extends Record<string, ViewStyle>>(styles: T): T
+  }
+
+  export const StyleSheet: StyleSheetStatic
+
+  export interface ViewProps {
+    style?: ViewStyle
+    children?: React.ReactNode
+  }
+
+  export const View: React.FC<ViewProps>
+}
+
+declare module 'react-native-webview' {
+  import type { Ref, RefObject, Component } from 'react'
+
+  export interface WebViewMessageEvent {
+    nativeEvent: {
+      data: string
+    }
+  }
+
+  export interface WebViewErrorEvent {
+    nativeEvent: {
+      description?: string
+      code?: number
+      domain?: string
+      url?: string
+    }
+  }
+
+  export interface WebViewProps {
+    source?: { html: string; uri?: never } | { uri: string; html?: never }
+    onMessage?: (event: WebViewMessageEvent) => void
+    onError?: (event: WebViewErrorEvent) => void
+    javaScriptEnabled?: boolean
+    domStorageEnabled?: boolean
+    style?: Record<string, unknown>
+    scrollEnabled?: boolean
+    bounces?: boolean
+    cacheEnabled?: boolean
+    incognito?: boolean
+  }
+
+  export class WebView extends Component<WebViewProps> {
+    injectJavaScript(script: string): void
+  }
 }

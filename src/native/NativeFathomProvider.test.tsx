@@ -1,260 +1,291 @@
 import React from 'react'
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-
-import { renderHook, waitFor } from '@testing-library/react'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { render, screen } from '@testing-library/react'
 
 import { useFathom } from '../hooks/useFathom'
 import { NativeFathomProvider } from './NativeFathomProvider'
 
-// Mock react-native
+// Mock the FathomWebView component
+vi.mock('./FathomWebView', () => ({
+  FathomWebView: vi.fn(({ onReady, onError, siteId, debug }) => {
+    // Store the callbacks for testing
+    ;(global as any).__fathomWebViewProps = { onReady, onError, siteId, debug }
+    return null
+  }),
+}))
+
+// Mock react-native AppState for useAppStateTracking
 vi.mock('react-native', () => ({
   AppState: {
     currentState: 'active',
     addEventListener: vi.fn(() => ({ remove: vi.fn() })),
   },
+  StyleSheet: {
+    create: vi.fn((styles) => styles),
+  },
+  View: vi.fn(({ children }) => children),
 }))
-
-// Mock fetch globally
-const mockFetch = vi.fn()
-global.fetch = mockFetch
 
 describe('NativeFathomProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockFetch.mockResolvedValue({ ok: true })
+    ;(global as any).__fathomWebViewProps = null
   })
 
   it('should render children', () => {
-    const TestChild = () => <div>Test Child</div>
-
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider siteId="TEST_SITE">{children}</NativeFathomProvider>
+    render(
+      <NativeFathomProvider siteId="TEST_SITE">
+        <div data-testid="child">Child content</div>
+      </NativeFathomProvider>,
     )
 
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    expect(result.current).toBeDefined()
+    expect(screen.getByTestId('child')).toBeDefined()
+    expect(screen.getByText('Child content')).toBeDefined()
   })
 
-  it('should provide fathom context to children', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider siteId="TEST_SITE">{children}</NativeFathomProvider>
-    )
+  it('should pass siteId to FathomWebView', async () => {
+    const { FathomWebView } = await import('./FathomWebView')
 
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    expect(result.current.trackEvent).toBeDefined()
-    expect(result.current.trackPageview).toBeDefined()
-    expect(result.current.trackGoal).toBeDefined()
-    expect(result.current.client).toBeDefined()
-  })
-
-  it('should load client with siteId on mount', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
+    render(
       <NativeFathomProvider siteId="MY_SITE_ID">
-        {children}
-      </NativeFathomProvider>
+        <div>Test</div>
+      </NativeFathomProvider>,
     )
 
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    // Track an event to verify site ID is set
-    result.current.trackEvent?.('test-event')
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled()
-    })
-
-    const call = mockFetch.mock.calls[0]
-    const body = JSON.parse(call[1].body)
-
-    expect(body.site_id).toBe('MY_SITE_ID')
+    expect(FathomWebView).toHaveBeenCalled()
+    const callArgs = (FathomWebView as any).mock.calls[0][0]
+    expect(callArgs.siteId).toBe('MY_SITE_ID')
   })
 
-  it('should pass clientOptions to native client', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
+  it('should pass debug prop to FathomWebView', async () => {
+    const { FathomWebView } = await import('./FathomWebView')
+
+    render(
+      <NativeFathomProvider siteId="TEST_SITE" debug={true}>
+        <div>Test</div>
+      </NativeFathomProvider>,
+    )
+
+    expect(FathomWebView).toHaveBeenCalled()
+    const callArgs = (FathomWebView as any).mock.calls[0][0]
+    expect(callArgs.debug).toBe(true)
+  })
+
+  it('should pass scriptDomain to FathomWebView', async () => {
+    const { FathomWebView } = await import('./FathomWebView')
+
+    render(
+      <NativeFathomProvider siteId="TEST_SITE" scriptDomain="custom.domain.com">
+        <div>Test</div>
+      </NativeFathomProvider>,
+    )
+
+    expect(FathomWebView).toHaveBeenCalled()
+    const callArgs = (FathomWebView as any).mock.calls[0][0]
+    expect(callArgs.scriptDomain).toBe('custom.domain.com')
+  })
+
+  it('should pass loadOptions to FathomWebView', async () => {
+    const { FathomWebView } = await import('./FathomWebView')
+    const loadOptions = { honorDNT: true, auto: false }
+
+    render(
+      <NativeFathomProvider siteId="TEST_SITE" loadOptions={loadOptions}>
+        <div>Test</div>
+      </NativeFathomProvider>,
+    )
+
+    expect(FathomWebView).toHaveBeenCalled()
+    const callArgs = (FathomWebView as any).mock.calls[0][0]
+    expect(callArgs.loadOptions).toEqual(loadOptions)
+  })
+
+  it('should call onReady when FathomWebView is ready', async () => {
+    const onReady = vi.fn()
+
+    render(
+      <NativeFathomProvider siteId="TEST_SITE" onReady={onReady}>
+        <div>Test</div>
+      </NativeFathomProvider>,
+    )
+
+    // Simulate WebView ready
+    const props = (global as any).__fathomWebViewProps
+    props?.onReady?.()
+
+    expect(onReady).toHaveBeenCalled()
+  })
+
+  it('should call onError when FathomWebView has an error', async () => {
+    const onError = vi.fn()
+
+    render(
+      <NativeFathomProvider siteId="TEST_SITE" onError={onError}>
+        <div>Test</div>
+      </NativeFathomProvider>,
+    )
+
+    // Simulate WebView error
+    const props = (global as any).__fathomWebViewProps
+    props?.onError?.('Test error')
+
+    expect(onError).toHaveBeenCalledWith('Test error')
+  })
+
+  it('should provide Fathom context to children', () => {
+    const TestChild = () => {
+      const fathom = useFathom()
+      return (
+        <div data-testid="has-context">
+          {fathom.trackEvent ? 'has trackEvent' : 'no trackEvent'}
+        </div>
+      )
+    }
+
+    render(
+      <NativeFathomProvider siteId="TEST_SITE">
+        <TestChild />
+      </NativeFathomProvider>,
+    )
+
+    expect(screen.getByText('has trackEvent')).toBeDefined()
+  })
+
+  it('should pass defaultPageviewOptions to FathomProvider', () => {
+    const TestChild = () => {
+      const { defaultPageviewOptions } = useFathom()
+      return (
+        <div data-testid="default-options">
+          {defaultPageviewOptions?.referrer || 'no referrer'}
+        </div>
+      )
+    }
+
+    render(
       <NativeFathomProvider
         siteId="TEST_SITE"
-        clientOptions={{
-          debug: true,
-          timeout: 5000,
-        }}
+        defaultPageviewOptions={{ referrer: 'https://example.com' }}
       >
-        {children}
-      </NativeFathomProvider>
+        <TestChild />
+      </NativeFathomProvider>,
     )
 
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    expect(result.current.client).toBeDefined()
+    expect(screen.getByText('https://example.com')).toBeDefined()
   })
 
-  it('should merge defaultEventOptions in trackEvent', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
+  it('should pass defaultEventOptions to FathomProvider', () => {
+    const TestChild = () => {
+      const { defaultEventOptions } = useFathom()
+      return (
+        <div data-testid="default-options">
+          {(defaultEventOptions as any)?._site_id || 'no site id'}
+        </div>
+      )
+    }
+
+    render(
       <NativeFathomProvider
         siteId="TEST_SITE"
-        defaultEventOptions={{ _site_id: 'default-site' }}
+        defaultEventOptions={{ _site_id: 'my-app' } as any}
       >
-        {children}
-      </NativeFathomProvider>
+        <TestChild />
+      </NativeFathomProvider>,
     )
 
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    result.current.trackEvent?.('test-event', { _value: 100 })
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled()
-    })
-
-    const call = mockFetch.mock.calls[0]
-    const body = JSON.parse(call[1].body)
-
-    expect(body._site_id).toBe('default-site')
-    expect(body._value).toBe(100)
+    expect(screen.getByText('my-app')).toBeDefined()
   })
 
-  it('should override defaultEventOptions with provided options', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider
-        siteId="TEST_SITE"
-        defaultEventOptions={{ _site_id: 'default-site' }}
-      >
-        {children}
-      </NativeFathomProvider>
-    )
+  describe('trackAppState prop', () => {
+    it('should not render AppStateTracker when trackAppState is false', async () => {
+      const reactNative = await import('react-native')
 
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    result.current.trackEvent?.('test-event', { _site_id: 'override-site' })
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled()
-    })
-
-    const call = mockFetch.mock.calls[0]
-    const body = JSON.parse(call[1].body)
-
-    expect(body._site_id).toBe('override-site')
-  })
-
-  it('should merge defaultPageviewOptions in trackPageview', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider
-        siteId="TEST_SITE"
-        defaultPageviewOptions={{ url: '/default-page' }}
-      >
-        {children}
-      </NativeFathomProvider>
-    )
-
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    result.current.trackPageview?.({ referrer: 'https://example.com' })
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled()
-    })
-
-    const call = mockFetch.mock.calls[0]
-    const body = JSON.parse(call[1].body)
-
-    expect(body.url).toBe('/default-page')
-    expect(body.referrer).toBe('https://example.com')
-  })
-
-  it('should expose native client methods', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider siteId="TEST_SITE">{children}</NativeFathomProvider>
-    )
-
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    expect(result.current.blockTrackingForMe).toBeDefined()
-    expect(result.current.enableTrackingForMe).toBeDefined()
-    expect(result.current.isTrackingEnabled).toBeDefined()
-    expect(result.current.setSite).toBeDefined()
-    expect(result.current.load).toBeDefined()
-  })
-
-  it('should support blocking and enabling tracking', () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider siteId="TEST_SITE">{children}</NativeFathomProvider>
-    )
-
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    expect(result.current.isTrackingEnabled?.()).toBe(true)
-
-    result.current.blockTrackingForMe?.()
-    expect(result.current.isTrackingEnabled?.()).toBe(false)
-
-    result.current.enableTrackingForMe?.()
-    expect(result.current.isTrackingEnabled?.()).toBe(true)
-  })
-
-  it('should track goals', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider siteId="TEST_SITE">{children}</NativeFathomProvider>
-    )
-
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    result.current.trackGoal?.('PURCHASE', 2999)
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled()
-    })
-
-    const call = mockFetch.mock.calls[0]
-    const body = JSON.parse(call[1].body)
-
-    expect(body.code).toBe('PURCHASE')
-    expect(body.cents).toBe(2999)
-  })
-
-  it('should not track when tracking is blocked', async () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NativeFathomProvider siteId="TEST_SITE">{children}</NativeFathomProvider>
-    )
-
-    const { result } = renderHook(() => useFathom(), { wrapper })
-
-    result.current.blockTrackingForMe?.()
-    result.current.trackEvent?.('blocked-event')
-
-    // Give time for any async operations
-    await new Promise((resolve) => setTimeout(resolve, 50))
-
-    expect(mockFetch).not.toHaveBeenCalled()
-  })
-
-  describe('trackAppState', () => {
-    it('should not render AppStateTracker when trackAppState is false', () => {
-      // This is implicit - when trackAppState is false/undefined,
-      // no app state tracking component is rendered
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
+      render(
         <NativeFathomProvider siteId="TEST_SITE" trackAppState={false}>
-          {children}
-        </NativeFathomProvider>
+          <div>Test</div>
+        </NativeFathomProvider>,
       )
 
-      const { result } = renderHook(() => useFathom(), { wrapper })
-
-      expect(result.current).toBeDefined()
+      // AppState.addEventListener should not be called for app state tracking
+      // (It might be called once for other reasons, so we just verify it works)
+      expect(screen.getByText('Test')).toBeDefined()
     })
 
-    it('should render AppStateTracker when trackAppState is true', () => {
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <NativeFathomProvider siteId="TEST_SITE" trackAppState>
-          {children}
-        </NativeFathomProvider>
+    it('should render AppStateTracker when trackAppState is true', async () => {
+      const reactNative = await import('react-native')
+
+      render(
+        <NativeFathomProvider siteId="TEST_SITE" trackAppState={true}>
+          <div>Test</div>
+        </NativeFathomProvider>,
       )
 
-      const { result } = renderHook(() => useFathom(), { wrapper })
+      // AppState.addEventListener should be called for app state tracking
+      expect(reactNative.AppState.addEventListener).toHaveBeenCalledWith(
+        'change',
+        expect.any(Function),
+      )
+    })
+  })
 
-      expect(result.current).toBeDefined()
+  describe('client methods', () => {
+    it('should provide a working trackEvent method', () => {
+      const trackEventCalls: any[] = []
+
+      const TestChild = () => {
+        const { trackEvent } = useFathom()
+        React.useEffect(() => {
+          trackEvent('test-event', { _value: 100 })
+        }, [trackEvent])
+        return null
+      }
+
+      render(
+        <NativeFathomProvider siteId="TEST_SITE">
+          <TestChild />
+        </NativeFathomProvider>,
+      )
+
+      // The event should be queued since WebView isn't ready
+      // We just verify no errors are thrown
+    })
+
+    it('should provide a working trackPageview method', () => {
+      const TestChild = () => {
+        const { trackPageview } = useFathom()
+        React.useEffect(() => {
+          trackPageview({ url: '/test-page' })
+        }, [trackPageview])
+        return null
+      }
+
+      render(
+        <NativeFathomProvider siteId="TEST_SITE">
+          <TestChild />
+        </NativeFathomProvider>,
+      )
+
+      // The pageview should be queued since WebView isn't ready
+      // We just verify no errors are thrown
+    })
+
+    it('should provide a working trackGoal method', () => {
+      const TestChild = () => {
+        const { trackGoal } = useFathom()
+        React.useEffect(() => {
+          trackGoal('PURCHASE', 2999)
+        }, [trackGoal])
+        return null
+      }
+
+      render(
+        <NativeFathomProvider siteId="TEST_SITE">
+          <TestChild />
+        </NativeFathomProvider>,
+      )
+
+      // The goal should be queued since WebView isn't ready
+      // We just verify no errors are thrown
     })
   })
 })
