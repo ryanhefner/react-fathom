@@ -7,6 +7,7 @@
     "fathom-analytics",
     "analytics",
     "react",
+    "react-native",
     "react-hooks",
     "nextjs",
     "next.js",
@@ -85,6 +86,9 @@
     "*": {
       "next": [
         "./types/next/index.d.ts"
+      ],
+      "native": [
+        "./types/native/index.d.ts"
       ]
     }
   },
@@ -100,6 +104,12 @@
       "import": "./dist/es/next/index.js",
       "require": "./dist/cjs/next/index.cjs",
       "default": "./dist/es/next/index.js"
+    },
+    "./native": {
+      "types": "./types/native/index.d.ts",
+      "import": "./dist/es/native/index.js",
+      "require": "./dist/cjs/native/index.cjs",
+      "default": "./dist/es/native/index.js"
     }
   },
   "scripts": {
@@ -120,10 +130,17 @@
     "fathom-client": ">=3.0.0",
     "next": ">=10.0.0",
     "react": ">=16.8",
-    "react-dom": ">=16.8"
+    "react-dom": ">=16.8",
+    "react-native": ">=0.60.0"
   },
   "peerDependenciesMeta": {
     "next": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    },
+    "fathom-client": {
       "optional": true
     }
   },

@@ -137,9 +137,11 @@ const nextExternal = [
   'next/compat/router',
   'next/navigation',
 ]
+const nativeExternal = ['react', 'react-native']
 
 const input = 'src/index.ts'
 const nextInput = 'src/next/index.ts'
+const nativeInput = 'src/native/index.ts'
 
 export default [
   // UMD - Minified
@@ -210,6 +212,30 @@ export default [
       entryFileNames: '[name].cjs',
     },
     external: makeExternal(nextExternal),
+    plugins: defaultPlugins,
+  },
+  // ES - native
+  {
+    input: nativeInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/es/native',
+      format: 'esm',
+      entryFileNames: '[name].js',
+    },
+    external: makeExternal(nativeExternal),
+    plugins: defaultPlugins,
+  },
+  // CJS - native
+  {
+    input: nativeInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/cjs/native',
+      format: 'cjs',
+      entryFileNames: '[name].cjs',
+    },
+    external: makeExternal(nativeExternal),
     plugins: defaultPlugins,
   },
 ]

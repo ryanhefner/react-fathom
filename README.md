@@ -16,7 +16,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/ryanhefner/react-fathom?style=flat-square)](https://github.com/ryanhefner/react-fathom/commits/main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/ryanhefner?style=flat-square)](https://twitter.com/ryanhefner)
 
-Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.
+Easily compose Fathom Analytics into your React, Next.js, and React Native apps with automatic pageview tracking and full TypeScript support.
 
 ## About Fathom Analytics
 
@@ -29,8 +29,9 @@ This package is designed to work with [Fathom Analytics](https://usefathom.com/r
 - 🚀 **Zero-config** Fathom Analytics integration for React
 - 📦 **Tree-shakeable** - Only bundle what you use
 - 🔄 **Automatic pageview tracking** for Next.js (Pages Router & App Router)
+- 📱 **React Native support** with offline queuing and navigation tracking
 - 💪 **Full TypeScript** support with type definitions
-- 🎯 **Flexible** - Works with any React app or Next.js
+- 🎯 **Flexible** - Works with any React app, Next.js, or React Native
 - ⚡ **Lightweight** - Minimal bundle size impact
 
 ## Install
@@ -50,9 +51,10 @@ yarn add react-fathom fathom-client
 ## Peer Dependencies
 
 - `react` >= 16.8
-- `react-dom` >= 16.8
-- `fathom-client` >= 3.0.0
+- `react-dom` >= 16.8 (only if using web)
+- `fathom-client` >= 3.0.0 (only if using web, not needed for React Native)
 - `next` >= 10.0.0 (only if using Next.js providers)
+- `react-native` >= 0.60.0 (only if using React Native)
 
 ## Usage
 
@@ -328,78 +330,96 @@ const myCustomClient: FathomClient = {
 }
 ```
 
-### Using with React Native
+### React Native
 
-Since `fathom-client` is designed for web browsers, you'll need a custom client for React Native. Here's an example implementation:
+For React Native apps, use the dedicated `/native` export which includes a pre-built client with offline support:
 
 ```tsx
-import { FathomProvider, type FathomClient } from 'react-fathom'
+import { NativeFathomProvider } from 'react-fathom/native'
 
-// Custom React Native client that sends events to Fathom's API
-const reactNativeClient: FathomClient = {
-  load: (siteId, options) => {
-    // Store siteId for later use
-    globalThis.__fathomSiteId = siteId
-  },
-
-  trackPageview: async (opts) => {
-    await fetch('https://cdn.usefathom.com/script.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        site: globalThis.__fathomSiteId,
-        url: opts?.url,
-        referrer: opts?.referrer,
-      }),
-    })
-  },
-
-  trackEvent: async (eventName, opts) => {
-    await fetch('https://cdn.usefathom.com/script.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        site: globalThis.__fathomSiteId,
-        event: eventName,
-        ...opts,
-      }),
-    })
-  },
-
-  trackGoal: async (code, cents) => {
-    // Implement goal tracking
-  },
-
-  setSite: (id) => {
-    globalThis.__fathomSiteId = id
-  },
-
-  blockTrackingForMe: () => {
-    globalThis.__fathomBlocked = true
-  },
-
-  enableTrackingForMe: () => {
-    globalThis.__fathomBlocked = false
-  },
-
-  isTrackingEnabled: () => !globalThis.__fathomBlocked,
-}
-
-// Use in your React Native app
 function App() {
   return (
-    <FathomProvider client={reactNativeClient} siteId="YOUR_SITE_ID">
-      {/* Your app */}
-    </FathomProvider>
+    <NativeFathomProvider
+      siteId="YOUR_SITE_ID"
+      clientOptions={{ debug: __DEV__ }}
+      trackAppState
+    >
+      <YourApp />
+    </NativeFathomProvider>
   )
 }
 ```
 
-> **Note:** The example above is simplified. For production React Native apps, consider implementing proper error handling, request queuing, and offline support.
+#### React Navigation Integration
 
-### Future: @react-fathom/native
+Track screen navigation as pageviews with React Navigation:
 
-If there's sufficient demand, a companion `@react-fathom/native` package with a pre-built React Native client could reduce boilerplate for mobile developers. If you're interested in this, please [open an issue](https://github.com/ryanhefner/react-fathom/issues) or contribute!
+```tsx
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native'
+import { NativeFathomProvider, useNavigationTracking } from 'react-fathom/native'
+
+function App() {
+  const navigationRef = useNavigationContainerRef()
+
+  return (
+    <NativeFathomProvider siteId="YOUR_SITE_ID">
+      <NavigationContainer ref={navigationRef}>
+        <NavigationTracker navigationRef={navigationRef} />
+        <RootNavigator />
+      </NavigationContainer>
+    </NativeFathomProvider>
+  )
+}
+
+function NavigationTracker({ navigationRef }) {
+  useNavigationTracking({
+    navigationRef,
+    transformRouteName: (name) => `/screens/${name}`,
+  })
+  return null
+}
+```
+
+#### App State Tracking
+
+Track when users foreground/background your app:
+
+```tsx
+import { useAppStateTracking } from 'react-fathom/native'
+
+function AppTracker() {
+  useAppStateTracking({
+    foregroundEventName: 'app-resumed',
+    backgroundEventName: 'app-paused',
+    onStateChange: (state) => console.log('App state:', state),
+  })
+  return null
+}
+```
+
+#### Creating a Custom Native Client
+
+For advanced use cases, create your own native client:
+
+```tsx
+import { createNativeClient, FathomProvider } from 'react-fathom/native'
+
+const client = createNativeClient({
+  siteId: 'YOUR_SITE_ID',
+  debug: __DEV__,
+  enableOfflineQueue: true,
+  maxQueueSize: 100,
+  timeout: 10000,
+})
+
+function App() {
+  return (
+    <FathomProvider client={client}>
+      <YourApp />
+    </FathomProvider>
+  )
+}
+```
 
 ### Mock Client for Testing
 
@@ -606,6 +626,90 @@ Component that tracks an event when it becomes visible.
 - `children` (ReactNode, required): Child element(s) to render
 - `as` (string, optional): HTML element type to render (defaults to 'div')
 - All other `EventOptions` from `fathom-client`
+
+## Native API
+
+The `/native` export provides React Native-specific components and hooks.
+
+### `NativeFathomProvider`
+
+Convenience provider for React Native apps that creates and manages a native Fathom client automatically.
+
+**Props:**
+
+- `siteId` (string, required): Your Fathom Analytics site ID
+- `clientOptions` (NativeClientOptions, optional): Configuration for the native client
+- `defaultPageviewOptions` (PageViewOptions, optional): Default options merged into all `trackPageview` calls
+- `defaultEventOptions` (EventOptions, optional): Default options merged into all `trackEvent` calls
+- `trackAppState` (boolean, optional): Enable automatic app state tracking (defaults to false)
+- `children` (ReactNode, required): Child components to render
+
+**Example:**
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{ debug: __DEV__, enableOfflineQueue: true }}
+  trackAppState
+>
+  <App />
+</NativeFathomProvider>
+```
+
+### `createNativeClient(options)`
+
+Factory function to create a custom native Fathom client.
+
+**Options (NativeClientOptions):**
+
+- `siteId` (string, required): Your Fathom Analytics site ID
+- `apiEndpoint` (string, optional): Custom API endpoint (defaults to Fathom's collect endpoint)
+- `enableOfflineQueue` (boolean, optional): Enable offline request queuing (defaults to true)
+- `maxQueueSize` (number, optional): Maximum events to queue when offline (defaults to 100)
+- `customHeaders` (Record<string, string>, optional): Custom headers for requests
+- `debug` (boolean, optional): Enable debug logging (defaults to false)
+- `userAgent` (string, optional): Custom user agent string
+- `timeout` (number, optional): Request timeout in milliseconds (defaults to 10000)
+
+**Returns:** A `FathomClient` instance with additional methods:
+
+- `processQueue()`: Manually process queued events (returns Promise<number>)
+- `getQueueLength()`: Get the current queue length
+
+### `useAppStateTracking(options?)`
+
+Hook that tracks app state changes (foreground/background) as Fathom events.
+
+**Options:**
+
+- `foregroundEventName` (string, optional): Event name for foreground (defaults to 'app-foreground')
+- `backgroundEventName` (string, optional): Event name for background (defaults to 'app-background')
+- `eventOptions` (EventOptions, optional): Additional options for app state events
+- `onStateChange` ((state: 'active' | 'background' | 'inactive') => void, optional): Callback on state change
+
+### `useNavigationTracking(options)`
+
+Hook that tracks React Navigation screen changes as pageviews.
+
+**Options:**
+
+- `navigationRef` (RefObject, required): React Navigation container ref
+- `transformRouteName` ((name: string) => string, optional): Transform route names before tracking
+- `shouldTrackRoute` ((name: string, params?: object) => boolean, optional): Filter which routes to track
+- `includeParams` (boolean, optional): Include route params in tracked URL (defaults to false)
+
+**Example:**
+
+```tsx
+const navigationRef = useNavigationContainerRef()
+
+useNavigationTracking({
+  navigationRef,
+  transformRouteName: (name) => `/app/${name.toLowerCase()}`,
+  shouldTrackRoute: (name) => !name.startsWith('Modal'),
+  includeParams: true,
+})
+```
 
 ## Tree-shaking
 
