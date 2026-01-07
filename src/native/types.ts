@@ -1,52 +1,6 @@
 import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from '../types'
 
 /**
- * Configuration options for creating a React Native Fathom client
- */
-export interface NativeClientOptions {
-  /**
-   * Your Fathom Analytics site ID
-   */
-  siteId: string
-
-  /**
-   * Custom API endpoint for sending events (defaults to Fathom's collect endpoint)
-   */
-  apiEndpoint?: string
-
-  /**
-   * Enable offline request queuing (default: true)
-   * When enabled, failed requests are queued and retried when the app comes back online
-   */
-  enableOfflineQueue?: boolean
-
-  /**
-   * Maximum number of events to queue when offline (default: 100)
-   */
-  maxQueueSize?: number
-
-  /**
-   * Custom headers to include with each request
-   */
-  customHeaders?: Record<string, string>
-
-  /**
-   * Enable debug logging (default: false)
-   */
-  debug?: boolean
-
-  /**
-   * Custom user agent string (useful for identifying your app in analytics)
-   */
-  userAgent?: string
-
-  /**
-   * Request timeout in milliseconds (default: 10000)
-   */
-  timeout?: number
-}
-
-/**
  * Options for the NativeFathomProvider component
  */
 export interface NativeFathomProviderProps {
@@ -56,9 +10,15 @@ export interface NativeFathomProviderProps {
   siteId: string
 
   /**
-   * Native client configuration options
+   * Options passed to fathom.load() in the WebView
    */
-  clientOptions?: Omit<NativeClientOptions, 'siteId'>
+  loadOptions?: LoadOptions
+
+  /**
+   * Custom domain for Fathom script (if using Fathom's custom domains feature)
+   * @default 'cdn.usefathom.com'
+   */
+  scriptDomain?: string
 
   /**
    * Default options merged into all trackPageview calls
@@ -73,8 +33,25 @@ export interface NativeFathomProviderProps {
   /**
    * Enable automatic app state tracking (foreground/background)
    * Tracks 'app-foreground' and 'app-background' events
+   * @default false
    */
   trackAppState?: boolean
+
+  /**
+   * Enable debug logging
+   * @default false
+   */
+  debug?: boolean
+
+  /**
+   * Called when the Fathom script has loaded and is ready
+   */
+  onReady?: () => void
+
+  /**
+   * Called when an error occurs loading the script
+   */
+  onError?: (error: string) => void
 
   /**
    * Children to render
