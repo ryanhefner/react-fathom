@@ -1,6 +1,6 @@
 {
   "name": "react-fathom",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "description": "Privacy-focused Fathom Analytics for React, Next.js, and React Native with automatic pageview tracking and TypeScript support.",
   "keywords": [
     "fathom",
