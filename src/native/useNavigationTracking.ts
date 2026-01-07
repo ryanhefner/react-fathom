@@ -39,7 +39,7 @@ export function useNavigationTracking(options: UseNavigationTrackingOptions) {
   } = options
 
   const { trackPageview } = useFathom()
-  const routeNameRef = useRef<string | undefined>()
+  const routeNameRef = useRef<string | undefined>(undefined)
 
   /**
    * Get the current route name from the navigation state
