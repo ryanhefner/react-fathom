@@ -9,7 +9,7 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    trackEvent?.('form-submit')
+    trackEvent('form-submit')
     setSubmitted(true)
     setTimeout(() => setSubmitted(false), 3000)
   }

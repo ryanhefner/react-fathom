@@ -1,17 +1,20 @@
 {
   "name": "react-fathom",
   "version": "0.1.11",
-  "description": "Easily compose Fathom Analytics into your React/Next.js apps with automatic pageview tracking and full TypeScript support.",
+  "description": "Privacy-focused Fathom Analytics for React, Next.js, and React Native with automatic pageview tracking and TypeScript support.",
   "keywords": [
     "fathom",
     "fathom-analytics",
     "analytics",
     "react",
+    "react-native",
     "react-hooks",
     "nextjs",
     "next.js",
     "typescript",
     "pageview",
+    "privacy-first",
+    "mobile",
     "tracking",
     "privacy",
     "tree-shakeable"
@@ -85,6 +88,9 @@
     "*": {
       "next": [
         "./types/next/index.d.ts"
+      ],
+      "native": [
+        "./types/native/index.d.ts"
       ]
     }
   },
@@ -100,6 +106,12 @@
       "import": "./dist/es/next/index.js",
       "require": "./dist/cjs/next/index.cjs",
       "default": "./dist/es/next/index.js"
+    },
+    "./native": {
+      "types": "./types/native/index.d.ts",
+      "import": "./dist/es/native/index.js",
+      "require": "./dist/cjs/native/index.cjs",
+      "default": "./dist/es/native/index.js"
     }
   },
   "scripts": {
@@ -120,10 +132,21 @@
     "fathom-client": ">=3.0.0",
     "next": ">=10.0.0",
     "react": ">=16.8",
-    "react-dom": ">=16.8"
+    "react-dom": ">=16.8",
+    "react-native": ">=0.60.0",
+    "react-native-webview": ">=11.0.0"
   },
   "peerDependenciesMeta": {
     "next": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    },
+    "react-native-webview": {
+      "optional": true
+    },
+    "fathom-client": {
       "optional": true
     }
   },

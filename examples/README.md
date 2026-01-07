@@ -1,67 +1,77 @@
 # react-fathom Examples
 
-This directory contains example Next.js applications demonstrating how to integrate `react-fathom` into your projects.
+This directory contains example applications demonstrating how to integrate `react-fathom` for privacy-focused analytics in your React projects.
 
-## Examples
+## Available Examples
 
-### [next-app](./next-app/)
+| Example | Framework | Router | Description |
+|---------|-----------|--------|-------------|
+| [next-app](./next-app/) | Next.js 13+ | App Router | Modern Next.js with React Server Components |
+| [next-pages](./next-pages/) | Next.js | Pages Router | Traditional Next.js routing |
 
-A Next.js application using the **App Router** (Next.js 13+). This example demonstrates:
+## Which Example Should I Use?
 
-- Automatic pageview tracking with `NextFathomTrackViewApp`
-- Manual event and goal tracking with the `useFathom` hook
-- Integration in `app/layout.tsx`
-
-### [next-pages](./next-pages/)
-
-A Next.js application using the **Pages Router** (traditional Next.js). This example demonstrates:
-
-- Automatic pageview tracking with `NextFathomTrackViewPages`
-- Manual event and goal tracking with the `useFathom` hook
-- Integration in `pages/_app.tsx`
+- **Starting a new Next.js project?** Use [next-app](./next-app/) - the App Router is the recommended approach for new Next.js applications
+- **Existing Next.js project with Pages Router?** Use [next-pages](./next-pages/) - works with the traditional `pages/` directory structure
+- **Plain React or other frameworks?** Check the main [README](../README.md) for generic React setup instructions
 
 ## Getting Started
 
-Each example is a complete, runnable Next.js application. To get started:
+### 1. Navigate to an example
 
-1. Navigate to the example directory:
-   ```bash
-   cd examples/next-app  # or next-pages
-   ```
+```bash
+cd examples/next-app  # or next-pages
+```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+### 2. Install dependencies
 
-3. Configure your Fathom Analytics site ID:
-   - Create a `.env.local` file
-   - Add: `NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here`
-   - Get your site ID from [Fathom Analytics](https://app.usefathom.com)
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
 
-4. Run the development server:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+### 3. Configure your Fathom site ID
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+Create a `.env.local` file:
 
-## Using Workspace Dependencies
+```bash
+NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
+```
 
-These examples use `workspace:*` to reference the local `react-fathom` package. This allows you to:
+Get your site ID from [Fathom Analytics](https://app.usefathom.com). New to Fathom? [Sign up here](https://usefathom.com/ref/EKONBS) and get $10 credit.
 
-- Test changes to `react-fathom` in a real Next.js application
-- Verify integration patterns work correctly
-- Debug issues in a realistic environment
+### 4. Start the development server
 
-If you're using npm, you may need to configure workspaces in the root `package.json`. With yarn, workspaces are automatically detected.
+```bash
+npm run dev
+```
+
+### 5. Open your browser
+
+Navigate to [http://localhost:3000](http://localhost:3000) and explore the example.
+
+## What's Demonstrated
+
+Each example demonstrates:
+
+- **Automatic pageview tracking** - Navigate between pages to see tracking in action
+- **Manual event tracking** - Click buttons to track custom events
+- **Goal tracking** - Track conversions and goals
+- **TypeScript integration** - Full type safety
+
+## Development Notes
+
+These examples use `workspace:*` to reference the local `react-fathom` package, making them ideal for:
+
+- Testing changes to the library
+- Debugging integration issues
+- Exploring different configuration options
 
 ## Learn More
 
 - [react-fathom Documentation](../README.md)
+- [Fathom Analytics Documentation](https://usefathom.com/docs)
 - [Next.js Documentation](https://nextjs.org/docs)
-- [Fathom Analytics](https://usefathom.com)

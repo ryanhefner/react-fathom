@@ -65,8 +65,8 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   )
 
   const trackEvent = useCallback(
-    (category: string, options?: EventOptions) => {
-      client.trackEvent(category, {
+    (eventName: string, options?: EventOptions) => {
+      client.trackEvent(eventName, {
         ...defaultEventOptions,
         ...options,
       })

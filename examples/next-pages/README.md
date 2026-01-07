@@ -1,46 +1,48 @@
-# Next.js Pages Router Example
+# Next.js Pages Router + Fathom Analytics Example
 
-This is an example Next.js application using the **Pages Router** with `react-fathom` for analytics tracking.
+A complete example of integrating privacy-focused analytics into a **Next.js Pages Router** application using `react-fathom`.
+
+## Why This Approach?
+
+The Pages Router is the traditional Next.js routing system using the `pages/` directory. This example demonstrates the recommended pattern for adding Fathom Analytics to existing Pages Router applications or new projects that prefer this routing approach.
 
 ## Features Demonstrated
 
-- ✅ Automatic pageview tracking on route changes
-- ✅ Manual event tracking with `useFathom` hook
-- ✅ Goal tracking
-- ✅ TypeScript support
+| Feature | Description |
+|---------|-------------|
+| Automatic Pageview Tracking | Tracks page views on every route change |
+| Manual Event Tracking | Track custom events with `useFathom` hook |
+| Goal Tracking | Track conversions and goals |
+| TypeScript Support | Full type safety throughout |
+| Router Event Integration | Uses Next.js router events for tracking |
 
-## Setup
+## Quick Start
 
-1. **Install dependencies:**
+### 1. Install dependencies
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+```bash
+npm install
+```
 
-2. **Configure Fathom Analytics:**
+### 2. Configure Fathom
 
-   - Create a `.env.local` file in the root directory
-   - Add your Fathom Analytics site ID:
-     ```
-     NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
-     ```
-   - Get your site ID from [Fathom Analytics](https://app.usefathom.com)
+Create `.env.local`:
 
-3. **Run the development server:**
+```
+NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
+```
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+### 3. Run the app
 
-4. **Open [http://localhost:3000](http://localhost:3000)** in your browser
+```bash
+npm run dev
+```
 
-## Integration
+Open [http://localhost:3000](http://localhost:3000) to see it in action.
 
-The integration is set up in `pages/_app.tsx`:
+## How It Works
+
+### App Integration (`pages/_app.tsx`)
 
 ```tsx
 import { FathomProvider } from 'react-fathom'
@@ -56,17 +58,47 @@ export default function App({ Component, pageProps }) {
 }
 ```
 
-That's it! Pageviews are automatically tracked when users navigate between pages.
+This setup:
+- `FathomProvider` - Initializes Fathom and provides context to all pages
+- `NextFathomTrackViewPages` - Listens to Next.js router events and tracks pageviews automatically
 
-## Testing
+### Event Tracking in Pages
 
-- Navigate between pages to see automatic pageview tracking
-- Click the "Track Event" button on the home page to test event tracking
-- Click the "Track Goal" button to test goal tracking
-- Submit the contact form to see event tracking in action
+```tsx
+import { useFathom } from 'react-fathom'
+
+export default function MyPage() {
+  const { trackEvent, trackGoal } = useFathom()
+
+  return (
+    <>
+      <button onClick={() => trackEvent('button-click')}>
+        Track Event
+      </button>
+      <button onClick={() => trackGoal('SIGNUP', 0)}>
+        Track Goal
+      </button>
+    </>
+  )
+}
+```
+
+## File Structure
+
+```
+pages/
+├── _app.tsx        # FathomProvider setup
+├── index.tsx       # Home page with event tracking
+├── about.tsx       # Static page (auto pageview tracking)
+└── contact.tsx     # Form with event tracking
+```
+
+## Migrating to App Router?
+
+If you're planning to migrate to the App Router, check out the [next-app example](../next-app/) for the updated integration pattern using `NextFathomProviderApp`.
 
 ## Learn More
 
 - [react-fathom Documentation](../../README.md)
-- [Next.js Pages Router Documentation](https://nextjs.org/docs/pages)
-- [Fathom Analytics](https://usefathom.com)
+- [Next.js Pages Router Guide](https://nextjs.org/docs/pages)
+- [Fathom Analytics](https://usefathom.com/ref/EKONBS)

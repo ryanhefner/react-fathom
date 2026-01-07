@@ -2,6 +2,9 @@ import type { PropsWithChildren } from 'react'
 
 import type { EventOptions, LoadOptions, PageViewOptions } from 'fathom-client'
 
+// Re-export fathom-client types for convenience
+export type { EventOptions, LoadOptions, PageViewOptions }
+
 export interface FathomClient {
   blockTrackingForMe: () => void
   enableTrackingForMe: () => void
@@ -14,14 +17,14 @@ export interface FathomClient {
 }
 
 export interface FathomContextInterface {
-  blockTrackingForMe?: () => void
-  enableTrackingForMe?: () => void
-  isTrackingEnabled?: () => boolean
-  load?: (siteId: string, options?: LoadOptions) => void
-  setSite?: (siteId: string) => void
-  trackPageview?: (options?: PageViewOptions) => void
-  trackEvent?: (eventName: string, options?: EventOptions) => void
-  trackGoal?: (code: string, cents: number) => void
+  blockTrackingForMe: () => void
+  enableTrackingForMe: () => void
+  isTrackingEnabled: () => boolean
+  load: (siteId: string, options?: LoadOptions) => void
+  setSite: (siteId: string) => void
+  trackPageview: (options?: PageViewOptions) => void
+  trackEvent: (eventName: string, options?: EventOptions) => void
+  trackGoal: (code: string, cents: number) => void
   client?: FathomClient
   defaultPageviewOptions?: PageViewOptions
   defaultEventOptions?: EventOptions

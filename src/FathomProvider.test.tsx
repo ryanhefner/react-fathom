@@ -139,10 +139,10 @@ describe('FathomProvider', () => {
 
     const { result } = renderHook(() => useFathom(), { wrapper })
 
-    result.current.trackEvent?.('test-event', { id: 'test-id' })
+    result.current.trackEvent?.('test-event', { _site_id: 'test-id' })
 
     expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'test-id',
+      _site_id: 'test-id',
     })
   })
 
@@ -161,7 +161,7 @@ describe('FathomProvider', () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FathomProvider
         client={mockClient}
-        defaultEventOptions={{ id: 'default-id' }}
+        defaultEventOptions={{ _site_id: 'default-id' }}
       >
         {children}
       </FathomProvider>
@@ -169,11 +169,11 @@ describe('FathomProvider', () => {
 
     const { result } = renderHook(() => useFathom(), { wrapper })
 
-    result.current.trackEvent?.('test-event', { value: 100 })
+    result.current.trackEvent?.('test-event', { _value: 100 })
 
     expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'default-id',
-      value: 100,
+      _site_id: 'default-id',
+      _value: 100,
     })
   })
 
@@ -192,7 +192,7 @@ describe('FathomProvider', () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FathomProvider
         client={mockClient}
-        defaultEventOptions={{ id: 'default-id' }}
+        defaultEventOptions={{ _site_id: 'default-id' }}
       >
         {children}
       </FathomProvider>
@@ -200,10 +200,10 @@ describe('FathomProvider', () => {
 
     const { result } = renderHook(() => useFathom(), { wrapper })
 
-    result.current.trackEvent?.('test-event', { id: 'override-id' })
+    result.current.trackEvent?.('test-event', { _site_id: 'override-id' })
 
     expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'override-id',
+      _site_id: 'override-id',
     })
   })
 
@@ -479,7 +479,7 @@ describe('FathomProvider', () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FathomProvider
         client={mockClient}
-        defaultEventOptions={{ id: 'parent-id' }}
+        defaultEventOptions={{ _site_id: 'parent-id' }}
       >
         <FathomProvider>{children}</FathomProvider>
       </FathomProvider>
@@ -490,7 +490,7 @@ describe('FathomProvider', () => {
     result.current.trackEvent?.('test-event')
 
     expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'parent-id',
+      _site_id: 'parent-id',
     })
   })
 
@@ -509,9 +509,9 @@ describe('FathomProvider', () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FathomProvider
         client={mockClient}
-        defaultEventOptions={{ id: 'parent-id' }}
+        defaultEventOptions={{ _site_id: 'parent-id' }}
       >
-        <FathomProvider defaultEventOptions={{ id: 'child-id' }}>
+        <FathomProvider defaultEventOptions={{ _site_id: 'child-id' }}>
           {children}
         </FathomProvider>
       </FathomProvider>
@@ -522,7 +522,7 @@ describe('FathomProvider', () => {
     result.current.trackEvent?.('test-event')
 
     expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'child-id',
+      _site_id: 'child-id',
     })
   })
 

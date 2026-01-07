@@ -30,7 +30,7 @@ export interface UseTrackOnClickOptions extends EventOptions {
  * function Button() {
  *   const handleClick = useTrackOnClick({
  *     eventName: 'button-click',
- *     id: 'signup-button',
+ *     _value: 100, // Optional: value in cents
  *     callback: (e) => {
  *       console.log('Button clicked!')
  *       // Your custom logic here

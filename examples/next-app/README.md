@@ -1,45 +1,48 @@
-# Next.js App Router Example
+# Next.js App Router + Fathom Analytics Example
 
-This is an example Next.js application using the **App Router** with `react-fathom` for analytics tracking.
+A complete example of integrating privacy-focused analytics into a **Next.js 13+ App Router** application using `react-fathom`.
+
+## Why This Approach?
+
+The Next.js App Router introduces React Server Components, which require special handling for client-side analytics. This example shows the recommended pattern using `NextFathomProviderApp`, a pre-configured Client Component that works seamlessly in Server Component layouts.
 
 ## Features Demonstrated
 
-- ✅ Automatic pageview tracking on route changes
-- ✅ Manual event tracking with `useFathom` hook
-- ✅ Goal tracking
-- ✅ TypeScript support
+| Feature | Description |
+|---------|-------------|
+| Automatic Pageview Tracking | Tracks page views on every route change |
+| Manual Event Tracking | Track custom events with `useFathom` hook |
+| Goal Tracking | Track conversions and goals |
+| TypeScript Support | Full type safety throughout |
+| Server Component Compatible | Works in `app/layout.tsx` |
 
-## Setup
+## Quick Start
 
-1. **Install dependencies:**
+### 1. Install dependencies
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+```bash
+npm install
+```
 
-2. **Configure Fathom Analytics:**
-   - Copy `.env.local.example` to `.env.local`
-   - Add your Fathom Analytics site ID:
-     ```
-     NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
-     ```
-   - Get your site ID from [Fathom Analytics](https://app.usefathom.com)
+### 2. Configure Fathom
 
-3. **Run the development server:**
+Create `.env.local`:
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+```
+NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
+```
 
-4. **Open [http://localhost:3000](http://localhost:3000)** in your browser
+### 3. Run the app
 
-## Integration
+```bash
+npm run dev
+```
 
-The integration is set up in `app/layout.tsx` using `NextFathomProviderApp`, which is a client component wrapper that combines `FathomProvider` and `NextFathomTrackViewApp`:
+Open [http://localhost:3000](http://localhost:3000) to see it in action.
+
+## How It Works
+
+### Layout Integration (`app/layout.tsx`)
 
 ```tsx
 import { NextFathomProviderApp } from 'react-fathom/next'
@@ -57,19 +60,48 @@ export default function RootLayout({ children }) {
 }
 ```
 
-That's it! Pageviews are automatically tracked when users navigate between pages.
+`NextFathomProviderApp` automatically:
+- Loads the Fathom script
+- Tracks pageviews on route changes
+- Provides the `useFathom` hook to all child components
 
-> **Note:** `NextFathomProviderApp` is marked with `'use client'` and can be used directly in Server Components like the root layout. This makes it the recommended approach for App Router integrations.
+### Event Tracking in Components
 
-## Testing
+```tsx
+'use client'
 
-- Navigate between pages to see automatic pageview tracking
-- Click the "Track Event" button on the home page to test event tracking
-- Click the "Track Goal" button to test goal tracking
-- Submit the contact form to see event tracking in action
+import { useFathom } from 'react-fathom'
+
+export default function MyComponent() {
+  const { trackEvent, trackGoal } = useFathom()
+
+  return (
+    <>
+      <button onClick={() => trackEvent('button-click')}>
+        Track Event
+      </button>
+      <button onClick={() => trackGoal('SIGNUP', 0)}>
+        Track Goal
+      </button>
+    </>
+  )
+}
+```
+
+## File Structure
+
+```
+app/
+├── layout.tsx      # FathomProvider setup
+├── page.tsx        # Home page with event tracking
+├── about/
+│   └── page.tsx    # Static page (auto pageview tracking)
+└── contact/
+    └── page.tsx    # Form with event tracking
+```
 
 ## Learn More
 
 - [react-fathom Documentation](../../README.md)
-- [Next.js App Router Documentation](https://nextjs.org/docs/app)
-- [Fathom Analytics](https://usefathom.com)
+- [Next.js App Router Guide](https://nextjs.org/docs/app)
+- [Fathom Analytics](https://usefathom.com/ref/EKONBS)

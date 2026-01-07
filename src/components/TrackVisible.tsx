@@ -35,7 +35,7 @@ export interface TrackVisibleProps extends EventOptions {
  *
  * @example
  * ```tsx
- * <TrackVisible eventName="section-viewed" section="hero">
+ * <TrackVisible eventName="section-viewed" _value={1}>
  *   <HeroSection />
  * </TrackVisible>
  * ```

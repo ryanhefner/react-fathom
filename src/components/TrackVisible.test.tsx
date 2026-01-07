@@ -99,7 +99,7 @@ describe('TrackVisible', () => {
 
   it('should track event with options', async () => {
     render(
-      <TrackVisible eventName="test-event" id="test-id" value={100}>
+      <TrackVisible eventName="test-event" _site_id="test-site" _value={100}>
         <div>Content</div>
       </TrackVisible>,
       { wrapper },
@@ -120,8 +120,8 @@ describe('TrackVisible', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith('test-event', {
-        id: 'test-id',
-        value: 100,
+        _site_id: 'test-site',
+        _value: 100,
       })
     })
   })
@@ -275,14 +275,14 @@ describe('TrackVisible', () => {
     const customWrapper = ({ children }: { children: React.ReactNode }) => (
       <FathomProvider
         client={mockClient}
-        defaultEventOptions={{ id: 'default-id' }}
+        defaultEventOptions={{ _site_id: 'default-site' }}
       >
         {children}
       </FathomProvider>
     )
 
     render(
-      <TrackVisible eventName="test-event" value={100}>
+      <TrackVisible eventName="test-event" _value={100}>
         <div>Content</div>
       </TrackVisible>,
       { wrapper: customWrapper },
@@ -303,8 +303,8 @@ describe('TrackVisible', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith('test-event', {
-        id: 'default-id',
-        value: 100,
+        _site_id: 'default-site',
+        _value: 100,
       })
     })
   })

@@ -55,7 +55,7 @@ describe('TrackClick', () => {
 
   it('should track event with options', () => {
     render(
-      <TrackClick eventName="test-event" id="test-id" value={100}>
+      <TrackClick eventName="test-event" _site_id="test-site" _value={100}>
         <button>Click me</button>
       </TrackClick>,
       { wrapper },
@@ -64,8 +64,8 @@ describe('TrackClick', () => {
     fireEvent.click(screen.getByText('Click me'))
 
     expect(mockTrackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'test-id',
-      value: 100,
+      _site_id: 'test-site',
+      _value: 100,
     })
   })
 
@@ -168,14 +168,14 @@ describe('TrackClick', () => {
     const customWrapper = ({ children }: { children: React.ReactNode }) => (
       <FathomProvider
         client={mockClient}
-        defaultEventOptions={{ id: 'default-id' }}
+        defaultEventOptions={{ _site_id: 'default-site' }}
       >
         {children}
       </FathomProvider>
     )
 
     render(
-      <TrackClick eventName="test-event" value={100}>
+      <TrackClick eventName="test-event" _value={100}>
         <button>Click me</button>
       </TrackClick>,
       { wrapper: customWrapper },
@@ -184,8 +184,8 @@ describe('TrackClick', () => {
     fireEvent.click(screen.getByText('Click me'))
 
     expect(mockTrackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'default-id',
-      value: 100,
+      _site_id: 'default-site',
+      _value: 100,
     })
   })
 })

@@ -6,12 +6,12 @@ export default function Home() {
   const { trackEvent, trackGoal } = useFathom()
 
   const handleButtonClick = () => {
-    trackEvent?.('button-click')
+    trackEvent('button-click')
     alert('Button click tracked! Check your Fathom Analytics dashboard.')
   }
 
   const handleGoalClick = () => {
-    trackGoal?.('demo-signup', 0)
+    trackGoal('demo-signup', 0)
     alert('Goal tracked! Check your Fathom Analytics dashboard.')
   }
 
