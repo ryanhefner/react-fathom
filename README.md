@@ -231,6 +231,203 @@ function MyApp({ Component, pageProps }) {
 export default MyApp
 ```
 
+## Default Options Merging
+
+The `FathomProvider` supports setting default options that automatically merge with any options passed to tracking calls. This is useful for setting app-wide defaults like custom event IDs or referrer information.
+
+### How Merging Works
+
+Default options are spread first, then any options you pass to individual tracking calls are spread second. This means:
+
+- **Default options** provide base values for all tracking calls
+- **Provided options** override defaults when specified
+- You can set defaults once and forget about them
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultEventOptions={{ id: 'my-app' }}
+>
+  {/* All trackEvent calls will include id: 'my-app' unless overridden */}
+</FathomProvider>
+```
+
+```tsx
+// Inside your component
+const { trackEvent } = useFathom()
+
+// Uses default: { id: 'my-app' }
+trackEvent?.('button-click')
+
+// Merges with default: { id: 'my-app', value: 100 }
+trackEvent?.('purchase', { value: 100 })
+
+// Overrides default: { id: 'custom-id', value: 50 }
+trackEvent?.('special-event', { id: 'custom-id', value: 50 })
+```
+
+### Nested Providers
+
+When nesting `FathomProvider` components, child providers inherit defaults from their parent but can override them:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultEventOptions={{ id: 'global' }}
+>
+  {/* Events here use id: 'global' */}
+
+  <FathomProvider defaultEventOptions={{ id: 'dashboard' }}>
+    {/* Events here use id: 'dashboard' */}
+  </FathomProvider>
+</FathomProvider>
+```
+
+## Custom Client Implementation
+
+The `FathomProvider` accepts an optional `client` prop that allows you to provide a custom Fathom client implementation. This is useful for:
+
+- **React Native apps** that need a custom tracking implementation
+- **Testing** with mock clients
+- **Server-side rendering** scenarios
+- **Custom analytics pipelines** that wrap Fathom
+
+### FathomClient Interface
+
+Your custom client must implement the `FathomClient` interface:
+
+```tsx
+import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from 'react-fathom'
+
+const myCustomClient: FathomClient = {
+  load: (siteId: string, options?: LoadOptions) => {
+    // Initialize your tracking
+  },
+  trackPageview: (opts?: PageViewOptions) => {
+    // Track pageview
+  },
+  trackEvent: (eventName: string, opts?: EventOptions) => {
+    // Track custom event
+  },
+  trackGoal: (code: string, cents: number) => {
+    // Track goal conversion
+  },
+  setSite: (id: string) => {
+    // Change site ID
+  },
+  blockTrackingForMe: () => {
+    // Block tracking
+  },
+  enableTrackingForMe: () => {
+    // Enable tracking
+  },
+  isTrackingEnabled: () => {
+    // Return tracking status
+    return true
+  },
+}
+```
+
+### Using with React Native
+
+Since `fathom-client` is designed for web browsers, you'll need a custom client for React Native. Here's an example implementation:
+
+```tsx
+import { FathomProvider, type FathomClient } from 'react-fathom'
+
+// Custom React Native client that sends events to Fathom's API
+const reactNativeClient: FathomClient = {
+  load: (siteId, options) => {
+    // Store siteId for later use
+    globalThis.__fathomSiteId = siteId
+  },
+
+  trackPageview: async (opts) => {
+    await fetch('https://cdn.usefathom.com/script.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        site: globalThis.__fathomSiteId,
+        url: opts?.url,
+        referrer: opts?.referrer,
+      }),
+    })
+  },
+
+  trackEvent: async (eventName, opts) => {
+    await fetch('https://cdn.usefathom.com/script.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        site: globalThis.__fathomSiteId,
+        event: eventName,
+        ...opts,
+      }),
+    })
+  },
+
+  trackGoal: async (code, cents) => {
+    // Implement goal tracking
+  },
+
+  setSite: (id) => {
+    globalThis.__fathomSiteId = id
+  },
+
+  blockTrackingForMe: () => {
+    globalThis.__fathomBlocked = true
+  },
+
+  enableTrackingForMe: () => {
+    globalThis.__fathomBlocked = false
+  },
+
+  isTrackingEnabled: () => !globalThis.__fathomBlocked,
+}
+
+// Use in your React Native app
+function App() {
+  return (
+    <FathomProvider client={reactNativeClient} siteId="YOUR_SITE_ID">
+      {/* Your app */}
+    </FathomProvider>
+  )
+}
+```
+
+> **Note:** The example above is simplified. For production React Native apps, consider implementing proper error handling, request queuing, and offline support.
+
+### Future: @react-fathom/native
+
+If there's sufficient demand, a companion `@react-fathom/native` package with a pre-built React Native client could reduce boilerplate for mobile developers. If you're interested in this, please [open an issue](https://github.com/ryanhefner/react-fathom/issues) or contribute!
+
+### Mock Client for Testing
+
+```tsx
+import { FathomProvider, type FathomClient } from 'react-fathom'
+
+const mockClient: FathomClient = {
+  load: jest.fn(),
+  trackPageview: jest.fn(),
+  trackEvent: jest.fn(),
+  trackGoal: jest.fn(),
+  setSite: jest.fn(),
+  blockTrackingForMe: jest.fn(),
+  enableTrackingForMe: jest.fn(),
+  isTrackingEnabled: jest.fn(() => true),
+}
+
+// In your tests
+render(
+  <FathomProvider client={mockClient}>
+    <ComponentUnderTest />
+  </FathomProvider>
+)
+
+// Assert tracking calls
+expect(mockClient.trackEvent).toHaveBeenCalledWith('button-click', { id: 'test' })
+```
+
 ## API
 
 ### `FathomProvider`
@@ -423,6 +620,28 @@ Bundlers will automatically exclude unused code, keeping your bundle size minima
 ## TypeScript
 
 Full TypeScript support is included. Types are automatically generated and exported.
+
+### Exported Types
+
+For convenience, `react-fathom` re-exports the core types from `fathom-client` so you don't need to import from multiple packages:
+
+```tsx
+import type {
+  // From react-fathom
+  FathomClient,
+  FathomContextInterface,
+  FathomProviderProps,
+  // Re-exported from fathom-client
+  EventOptions,
+  LoadOptions,
+  PageViewOptions,
+} from 'react-fathom'
+
+// No need for this anymore:
+// import type { EventOptions } from 'fathom-client'
+```
+
+This simplifies your imports when building custom clients or working with typed event options.
 
 ## License
 

@@ -2,6 +2,9 @@ import type { PropsWithChildren } from 'react'
 
 import type { EventOptions, LoadOptions, PageViewOptions } from 'fathom-client'
 
+// Re-export fathom-client types for convenience
+export type { EventOptions, LoadOptions, PageViewOptions }
+
 export interface FathomClient {
   blockTrackingForMe: () => void
   enableTrackingForMe: () => void
