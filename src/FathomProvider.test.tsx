@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -6,6 +6,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 
 import { FathomProvider } from './FathomProvider'
 import { useFathom } from './hooks/useFathom'
+import type { FathomClient } from './types'
 
 // Mock fathom-client
 vi.mock('fathom-client', () => {
@@ -528,5 +529,104 @@ describe('FathomProvider', () => {
 
   it('should have displayName', () => {
     expect(FathomProvider.displayName).toBe('FathomProvider')
+  })
+
+  describe('clientRef', () => {
+    it('should populate clientRef with the resolved client', () => {
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      let clientRefValue: FathomClient | null = null
+
+      const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+        const clientRef = useRef<FathomClient>(null)
+        // Capture the ref value after render
+        React.useEffect(() => {
+          clientRefValue = clientRef.current
+        })
+        return (
+          <FathomProvider client={mockClient} clientRef={clientRef}>
+            {children}
+          </FathomProvider>
+        )
+      }
+
+      renderHook(() => useFathom(), { wrapper: TestWrapper })
+
+      expect(clientRefValue).toBe(mockClient)
+    })
+
+    it('should allow parent to call client methods via clientRef', () => {
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const clientRef = React.createRef<FathomClient>() as React.MutableRefObject<FathomClient | null>
+      clientRef.current = null
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} clientRef={clientRef}>
+          {children}
+        </FathomProvider>
+      )
+
+      renderHook(() => useFathom(), { wrapper })
+
+      // Parent can now use the client directly
+      clientRef.current?.trackEvent('parent-event', { _value: 50 })
+
+      expect(mockClient.trackEvent).toHaveBeenCalledWith('parent-event', {
+        _value: 50,
+      })
+    })
+
+    it('should populate clientRef with inherited parent client', () => {
+      const parentClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      let clientRefValue: FathomClient | null = null
+
+      const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+        const clientRef = useRef<FathomClient>(null)
+        React.useEffect(() => {
+          clientRefValue = clientRef.current
+        })
+        return (
+          <FathomProvider client={parentClient}>
+            <FathomProvider clientRef={clientRef}>
+              {children}
+            </FathomProvider>
+          </FathomProvider>
+        )
+      }
+
+      renderHook(() => useFathom(), { wrapper: TestWrapper })
+
+      // Should inherit the parent client
+      expect(clientRefValue).toBe(parentClient)
+    })
   })
 })

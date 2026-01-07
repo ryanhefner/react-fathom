@@ -559,6 +559,7 @@ Main provider component for React apps. Supports composable nesting - nested pro
 
 - `siteId` (string, optional): Your Fathom Analytics site ID
 - `client` (FathomClient, optional): Custom Fathom client instance
+- `clientRef` (MutableRefObject<FathomClient | null>, optional): Ref that will be populated with the resolved client instance, allowing the parent component to access the client directly
 - `clientOptions` (LoadOptions, optional): Options passed to `fathom-client`
 - `defaultPageviewOptions` (PageViewOptions, optional): Default options merged into all `trackPageview` calls
 - `defaultEventOptions` (EventOptions, optional): Default options merged into all `trackEvent` calls
@@ -573,6 +574,28 @@ Main provider component for React apps. Supports composable nesting - nested pro
 >
   {/* Your app */}
 </FathomProvider>
+```
+
+**Using clientRef for parent access:**
+
+```tsx
+import { useRef } from 'react'
+import { FathomProvider, FathomClient } from 'react-fathom'
+
+function App() {
+  const clientRef = useRef<FathomClient>(null)
+
+  const handleDeepLink = (url: string) => {
+    // Parent can track events directly via the ref
+    clientRef.current?.trackEvent('deep_link', { _url: url })
+  }
+
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID" clientRef={clientRef}>
+      <YourApp onDeepLink={handleDeepLink} />
+    </FathomProvider>
+  )
+}
 ```
 
 ### `NextFathomProviderApp`
@@ -747,6 +770,7 @@ Convenience provider for React Native apps that manages a hidden WebView with Fa
 - `debug` (boolean, optional): Enable debug logging (defaults to false)
 - `onReady` (() => void, optional): Called when the Fathom script has loaded
 - `onError` ((error: string) => void, optional): Called when an error occurs loading the script
+- `clientRef` (MutableRefObject<WebViewFathomClient | null>, optional): Ref that will be populated with the WebView-based client instance, allowing the parent component to access the client directly (includes queue management methods)
 - `children` (ReactNode, required): Child components to render
 
 **Example:**
@@ -761,6 +785,31 @@ Convenience provider for React Native apps that manages a hidden WebView with Fa
 >
   <App />
 </NativeFathomProvider>
+```
+
+**Using clientRef for parent access:**
+
+```tsx
+import { useRef } from 'react'
+import { NativeFathomProvider, WebViewFathomClient } from 'react-fathom/native'
+
+function App() {
+  const clientRef = useRef<WebViewFathomClient>(null)
+
+  const handleDeepLink = (url: string) => {
+    // Parent can track events directly via the ref
+    clientRef.current?.trackEvent('deep_link', { _url: url })
+
+    // Can also check queue status (React Native specific)
+    console.log('Queued events:', clientRef.current?.getQueueLength())
+  }
+
+  return (
+    <NativeFathomProvider siteId="YOUR_SITE_ID" clientRef={clientRef}>
+      <YourApp onDeepLink={handleDeepLink} />
+    </NativeFathomProvider>
+  )
+}
 ```
 
 ### `FathomWebView`

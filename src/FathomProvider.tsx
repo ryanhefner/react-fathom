@@ -11,6 +11,7 @@ import type { FathomProviderProps } from './types'
 const FathomProvider: React.FC<FathomProviderProps> = ({
   children,
   client: providedClient,
+  clientRef,
   clientOptions,
   siteId,
   defaultPageviewOptions: providedDefaultPageviewOptions,
@@ -96,6 +97,13 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       load(siteId, clientOptions)
     }
   }, [clientOptions, load, siteId])
+
+  // Populate the clientRef so the parent component can access the client
+  useEffect(() => {
+    if (clientRef) {
+      clientRef.current = client
+    }
+  }, [client, clientRef])
 
   return (
     <FathomContext.Provider

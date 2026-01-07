@@ -1,4 +1,6 @@
+import type { MutableRefObject } from 'react'
 import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from '../types'
+import type { WebViewFathomClient } from './createWebViewClient'
 
 /**
  * Options for the NativeFathomProvider component
@@ -52,6 +54,36 @@ export interface NativeFathomProviderProps {
    * Called when an error occurs loading the script
    */
   onError?: (error: string) => void
+
+  /**
+   * A ref that will be populated with the WebView-based Fathom client instance.
+   * This allows the parent component that composes the provider to access
+   * the client directly, since it cannot use useFathom() (context only flows
+   * downward to children).
+   *
+   * The client is a WebViewFathomClient which extends FathomClient with
+   * additional methods for queue management.
+   *
+   * @example
+   * ```tsx
+   * import { NativeFathomProvider, WebViewFathomClient } from 'react-fathom/native'
+   *
+   * function App() {
+   *   const clientRef = useRef<WebViewFathomClient>(null);
+   *
+   *   const handleDeepLink = (url: string) => {
+   *     clientRef.current?.trackEvent('deep_link', { _url: url });
+   *   };
+   *
+   *   return (
+   *     <NativeFathomProvider siteId="..." clientRef={clientRef}>
+   *       <YourApp />
+   *     </NativeFathomProvider>
+   *   );
+   * }
+   * ```
+   */
+  clientRef?: MutableRefObject<WebViewFathomClient | null>
 
   /**
    * Children to render
