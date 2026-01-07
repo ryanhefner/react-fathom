@@ -35,7 +35,7 @@ export interface TrackClickProps extends EventOptions {
  *
  * @example
  * ```tsx
- * <TrackClick eventName="cta-clicked" id="hero-cta">
+ * <TrackClick eventName="cta-clicked" _value={100}>
  *   <button>Get Started</button>
  * </TrackClick>
  * ```

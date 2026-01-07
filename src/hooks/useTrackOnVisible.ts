@@ -34,7 +34,7 @@ export interface UseTrackOnVisibleOptions extends EventOptions {
  * function Section() {
  *   const ref = useTrackOnVisible({
  *     eventName: 'section-viewed',
- *     section: 'hero',
+ *     _value: 1, // Optional: value in cents
  *     callback: (entry) => {
  *       console.log('Section is visible!', entry.isIntersecting)
  *       // Your custom logic here

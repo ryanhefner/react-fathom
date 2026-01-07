@@ -110,8 +110,8 @@ describe('useTrackOnVisible', () => {
     const TestComponent = () => {
       const ref = useTrackOnVisible({
         eventName: 'test-event',
-        id: 'test-id',
-        value: 100,
+        _site_id: 'test-site',
+        _value: 100,
       })
       return <div ref={ref}>Test</div>
     }
@@ -137,8 +137,8 @@ describe('useTrackOnVisible', () => {
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith('test-event', {
-        id: 'test-id',
-        value: 100,
+        _site_id: 'test-site',
+        _value: 100,
       })
     })
   })

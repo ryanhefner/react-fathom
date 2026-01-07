@@ -94,7 +94,7 @@ describe('NativeFathomProvider', () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <NativeFathomProvider
         siteId="TEST_SITE"
-        defaultEventOptions={{ id: 'default-id' }}
+        defaultEventOptions={{ _site_id: 'default-site' }}
       >
         {children}
       </NativeFathomProvider>
@@ -102,7 +102,7 @@ describe('NativeFathomProvider', () => {
 
     const { result } = renderHook(() => useFathom(), { wrapper })
 
-    result.current.trackEvent?.('test-event', { value: 100 })
+    result.current.trackEvent?.('test-event', { _value: 100 })
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
@@ -111,15 +111,15 @@ describe('NativeFathomProvider', () => {
     const call = mockFetch.mock.calls[0]
     const body = JSON.parse(call[1].body)
 
-    expect(body.id).toBe('default-id')
-    expect(body.value).toBe(100)
+    expect(body._site_id).toBe('default-site')
+    expect(body._value).toBe(100)
   })
 
   it('should override defaultEventOptions with provided options', async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <NativeFathomProvider
         siteId="TEST_SITE"
-        defaultEventOptions={{ id: 'default-id' }}
+        defaultEventOptions={{ _site_id: 'default-site' }}
       >
         {children}
       </NativeFathomProvider>
@@ -127,7 +127,7 @@ describe('NativeFathomProvider', () => {
 
     const { result } = renderHook(() => useFathom(), { wrapper })
 
-    result.current.trackEvent?.('test-event', { id: 'override-id' })
+    result.current.trackEvent?.('test-event', { _site_id: 'override-site' })
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
@@ -136,7 +136,7 @@ describe('NativeFathomProvider', () => {
     const call = mockFetch.mock.calls[0]
     const body = JSON.parse(call[1].body)
 
-    expect(body.id).toBe('override-id')
+    expect(body._site_id).toBe('override-site')
   })
 
   it('should merge defaultPageviewOptions in trackPageview', async () => {

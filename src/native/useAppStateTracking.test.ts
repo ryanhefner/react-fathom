@@ -132,7 +132,7 @@ describe('useAppStateTracking', () => {
   })
 
   it('should include eventOptions in tracked events', () => {
-    const eventOptions = { id: 'app-state-tracking' }
+    const eventOptions = { _site_id: 'app-state-tracking' }
 
     renderHook(
       () =>
@@ -219,7 +219,7 @@ describe('useAppStateTracking', () => {
 
   it('should work with all options combined', () => {
     const onStateChange = vi.fn()
-    const eventOptions = { category: 'lifecycle' }
+    const eventOptions = { _value: 1 }
 
     renderHook(
       () =>

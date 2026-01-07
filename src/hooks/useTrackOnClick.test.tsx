@@ -54,8 +54,8 @@ describe('useTrackOnClick', () => {
       () =>
         useTrackOnClick({
           eventName: 'test-event',
-          id: 'test-id',
-          value: 100,
+          _site_id: 'test-site',
+          _value: 100,
         }),
       { wrapper },
     )
@@ -63,8 +63,8 @@ describe('useTrackOnClick', () => {
     result.current()
 
     expect(mockTrackEvent).toHaveBeenCalledWith('test-event', {
-      id: 'test-id',
-      value: 100,
+      _site_id: 'test-site',
+      _value: 100,
     })
   })
 

@@ -98,14 +98,14 @@ describe('createNativeClient', () => {
     it('should send event request with event name', async () => {
       const client = createNativeClient({ siteId: 'TEST_SITE' })
 
-      client.trackEvent('button-click', { id: 'signup' })
+      client.trackEvent('button-click', { _value: 100 })
 
       const call = mockFetch.mock.calls[0]
       const body = JSON.parse(call[1].body)
 
       expect(body.site_id).toBe('TEST_SITE')
       expect(body.name).toBe('button-click')
-      expect(body.id).toBe('signup')
+      expect(body._value).toBe(100)
     })
 
     it('should not send request when tracking is blocked', () => {

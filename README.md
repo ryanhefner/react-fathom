@@ -81,11 +81,11 @@ function MyComponent() {
   const { trackPageview, trackEvent, trackGoal, load } = useFathom()
 
   const handleClick = () => {
-    trackEvent?.('button-click', { id: 'signup-button' })
+    trackEvent('button-click', { _value: 100 }) // Optional: value in cents
   }
 
   const handlePurchase = () => {
-    trackGoal?.('purchase', 2999) // $29.99 in cents
+    trackGoal('purchase', 2999) // $29.99 in cents
   }
 
   return (
@@ -115,7 +115,7 @@ function MyComponent() {
   // Track event on click
   const handleClick = useTrackOnClick({
     eventName: 'button-click',
-    id: 'signup-button',
+    _value: 100, // Optional: value in cents
     callback: (e) => {
       console.log('Tracked click!', e)
     },
@@ -124,7 +124,7 @@ function MyComponent() {
   // Track event when element becomes visible
   const ref = useTrackOnVisible({
     eventName: 'section-viewed',
-    section: 'hero',
+    _value: 1, // Optional: value in cents
     callback: (entry) => {
       console.log('Element is visible!', entry)
     },
@@ -155,12 +155,12 @@ function MyPage() {
       </TrackPageview>
 
       {/* Track click events */}
-      <TrackClick eventName="button-click" id="signup-button">
+      <TrackClick eventName="button-click" _value={100}>
         <button>Sign Up</button>
       </TrackClick>
 
       {/* Track when element becomes visible */}
-      <TrackVisible eventName="section-viewed" section="hero">
+      <TrackVisible eventName="section-viewed" _value={1}>
         <div>Hero section</div>
       </TrackVisible>
     </>
@@ -248,9 +248,9 @@ Default options are spread first, then any options you pass to individual tracki
 ```tsx
 <FathomProvider
   siteId="YOUR_SITE_ID"
-  defaultEventOptions={{ id: 'my-app' }}
+  defaultEventOptions={{ _site_id: 'my-app' }}
 >
-  {/* All trackEvent calls will include id: 'my-app' unless overridden */}
+  {/* All trackEvent calls will include _site_id: 'my-app' unless overridden */}
 </FathomProvider>
 ```
 
@@ -258,14 +258,14 @@ Default options are spread first, then any options you pass to individual tracki
 // Inside your component
 const { trackEvent } = useFathom()
 
-// Uses default: { id: 'my-app' }
-trackEvent?.('button-click')
+// Uses default: { _site_id: 'my-app' }
+trackEvent('button-click')
 
-// Merges with default: { id: 'my-app', value: 100 }
-trackEvent?.('purchase', { value: 100 })
+// Merges with default: { _site_id: 'my-app', _value: 100 }
+trackEvent('purchase', { _value: 100 })
 
-// Overrides default: { id: 'custom-id', value: 50 }
-trackEvent?.('special-event', { id: 'custom-id', value: 50 })
+// Overrides default: { _site_id: 'custom-site', _value: 50 }
+trackEvent('special-event', { _site_id: 'custom-site', _value: 50 })
 ```
 
 ### Nested Providers
@@ -275,12 +275,12 @@ When nesting `FathomProvider` components, child providers inherit defaults from 
 ```tsx
 <FathomProvider
   siteId="YOUR_SITE_ID"
-  defaultEventOptions={{ id: 'global' }}
+  defaultEventOptions={{ _site_id: 'global' }}
 >
-  {/* Events here use id: 'global' */}
+  {/* Events here use _site_id: 'global' */}
 
-  <FathomProvider defaultEventOptions={{ id: 'dashboard' }}>
-    {/* Events here use id: 'dashboard' */}
+  <FathomProvider defaultEventOptions={{ _site_id: 'dashboard' }}>
+    {/* Events here use _site_id: 'dashboard' */}
   </FathomProvider>
 </FathomProvider>
 ```
@@ -445,7 +445,7 @@ render(
 )
 
 // Assert tracking calls
-expect(mockClient.trackEvent).toHaveBeenCalledWith('button-click', { id: 'test' })
+expect(mockClient.trackEvent).toHaveBeenCalledWith('button-click', { _value: 100 })
 ```
 
 ## API
@@ -468,7 +468,7 @@ Main provider component for React apps. Supports composable nesting - nested pro
 <FathomProvider
   siteId="YOUR_SITE_ID"
   defaultPageviewOptions={{ referrer: 'https://example.com' }}
-  defaultEventOptions={{ id: 'global-id' }}
+  defaultEventOptions={{ _site_id: 'global-site' }}
 >
   {/* Your app */}
 </FathomProvider>
