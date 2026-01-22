@@ -1,11 +1,14 @@
 'use client'
 
-import { Box, Container, Flex, Link, Text } from '@chakra-ui/react'
+import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { Navbar } from './Navbar'
 import { Sidebar } from './Sidebar'
 import { TableOfContents } from './TableOfContents'
 import type { NavItem, TOCItem, Frontmatter, AdjacentPages } from '@/lib/docs'
+
+const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
+const DOCS_PATH = 'docs/content'
 
 interface DocsLayoutProps {
   children: React.ReactNode
@@ -13,6 +16,12 @@ interface DocsLayoutProps {
   toc: TOCItem[]
   frontmatter: Frontmatter
   adjacentPages?: AdjacentPages
+  slug?: string[]
+}
+
+function getEditUrl(slug: string[]): string {
+  const filePath = slug.length === 0 ? 'index' : slug.join('/')
+  return `${GITHUB_REPO}/edit/main/${DOCS_PATH}/${filePath}.mdx`
 }
 
 export function DocsLayout({
@@ -21,7 +30,10 @@ export function DocsLayout({
   toc,
   frontmatter,
   adjacentPages,
+  slug = [],
 }: DocsLayoutProps) {
+  const editUrl = getEditUrl(slug)
+
   return (
     <Box minH="100vh">
       <Navbar nav={nav} />
@@ -46,30 +58,55 @@ export function DocsLayout({
                   {frontmatter.description}
                 </Text>
               )}
-              <Box className="mdx-content">
+              <Box className="mdx-content" data-pagefind-body>
                 {children}
               </Box>
+              <HStack mt={8} pt={4} borderTopWidth="1px" justify="flex-end">
+                <Link
+                  href={editUrl}
+                  fontSize="sm"
+                  color="fg.muted"
+                  _hover={{ color: 'fg' }}
+                >
+                  Edit this page on GitHub →
+                </Link>
+              </HStack>
               {adjacentPages && (
                 <Flex
-                  mt={12}
+                  mt={8}
                   pt={6}
                   borderTopWidth="1px"
                   justify="space-between"
                   gap={4}
                 >
                   {adjacentPages.prev ? (
-                    <Link asChild flex={1}>
+                    <Link asChild flex={1} _hover={{ textDecoration: 'none' }}>
                       <NextLink href={adjacentPages.prev.href}>
-                        <Text fontSize="sm" color="fg.muted">Previous</Text>
-                        <Text fontWeight="medium">{adjacentPages.prev.title}</Text>
+                        <Box
+                          p={4}
+                          borderWidth="1px"
+                          borderRadius="lg"
+                          _hover={{ borderColor: 'blue.500' }}
+                        >
+                          <Text fontSize="sm" color="fg.muted">← Previous</Text>
+                          <Text fontWeight="medium">{adjacentPages.prev.title}</Text>
+                        </Box>
                       </NextLink>
                     </Link>
                   ) : <Box flex={1} />}
                   {adjacentPages.next ? (
-                    <Link asChild flex={1} textAlign="right">
+                    <Link asChild flex={1} _hover={{ textDecoration: 'none' }}>
                       <NextLink href={adjacentPages.next.href}>
-                        <Text fontSize="sm" color="fg.muted">Next</Text>
-                        <Text fontWeight="medium">{adjacentPages.next.title}</Text>
+                        <Box
+                          p={4}
+                          borderWidth="1px"
+                          borderRadius="lg"
+                          textAlign="right"
+                          _hover={{ borderColor: 'blue.500' }}
+                        >
+                          <Text fontSize="sm" color="fg.muted">Next →</Text>
+                          <Text fontWeight="medium">{adjacentPages.next.title}</Text>
+                        </Box>
                       </NextLink>
                     </Link>
                   ) : <Box flex={1} />}

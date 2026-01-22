@@ -5,13 +5,12 @@ import {
   Container,
   Flex,
   HStack,
-  IconButton,
   Link,
-  Text,
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { ColorModeButton } from './ColorModeButton'
 import { MobileNav } from './MobileNav'
+import { Search } from './Search'
 import type { NavItem } from '@/lib/docs'
 
 interface NavbarProps {
@@ -52,6 +51,7 @@ export function Navbar({ nav }: NavbarProps) {
             </HStack>
           </HStack>
           <HStack gap={2}>
+            <Search />
             <ColorModeButton />
             <MobileNav nav={nav} />
           </HStack>

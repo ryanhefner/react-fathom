@@ -14,7 +14,7 @@ import {
 import NextLink from 'next/link'
 import type { MDXComponents as MDXComponentsType } from 'mdx/types'
 import { Callout } from './Callout'
-import { Pre } from './CodeBlock'
+import { Pre, Figure, Figcaption } from './CodeBlock'
 import { Steps } from './Steps'
 import { Tabs, Tab } from './Tabs'
 import { Cards, Card } from './Cards'
@@ -130,6 +130,10 @@ export const MDXComponents: MDXComponentsType = {
     <ListItem {...props} />
   ),
   code: ({ children, className, ...props }) => {
+    // If it has data-theme, it's from rehype-pretty-code - pass through
+    if ('data-theme' in props || 'data-language' in props) {
+      return <code className={className} {...props}>{children}</code>
+    }
     // If it's inline code (no className), render as inline
     if (!className) {
       return (
@@ -144,10 +148,12 @@ export const MDXComponents: MDXComponentsType = {
         </Code>
       )
     }
-    // Block code is handled by pre
+    // Block code without highlighting
     return <code className={className} {...props}>{children}</code>
   },
   pre: Pre,
+  figure: Figure,
+  figcaption: Figcaption,
   table: (props) => (
     <Box my={4} overflowX="auto">
       <Table.Root size="sm" {...props} />

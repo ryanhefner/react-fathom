@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import rehypePrettyCode from 'rehype-pretty-code'
 import { DocsLayout, MDXComponents } from '@/components/docs'
 import {
   getDocBySlug,
@@ -32,6 +33,15 @@ export async function generateMetadata({
   }
 }
 
+const rehypePrettyCodeOptions = {
+  theme: {
+    dark: 'github-dark',
+    light: 'github-light',
+  },
+  keepBackground: false,
+  defaultLang: 'plaintext',
+}
+
 export default async function DocPage({
   params,
 }: {
@@ -54,8 +64,17 @@ export default async function DocPage({
       toc={toc}
       frontmatter={doc.frontmatter}
       adjacentPages={adjacentPages}
+      slug={slug}
     >
-      <MDXRemote source={doc.content} components={MDXComponents} />
+      <MDXRemote
+        source={doc.content}
+        components={MDXComponents}
+        options={{
+          mdxOptions: {
+            rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
+          },
+        }}
+      />
     </DocsLayout>
   )
 }
