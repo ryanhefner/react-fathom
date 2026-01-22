@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useFathom } from 'react-fathom'
 
 interface SearchResult {
   url: string
@@ -34,6 +35,7 @@ export function Search() {
   const [isLoading, setIsLoading] = useState(false)
   const pagefindRef = useRef<PagefindUI | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const { trackEvent } = useFathom()
 
   // Load Pagefind on first open
   useEffect(() => {
@@ -65,13 +67,17 @@ export function Search() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
+        trackEvent?.('search-open')
         setIsOpen(true)
       }
       if (e.key === 'Escape') {
         setIsOpen(false)
       }
     }
-    const handleOpenSearch = () => setIsOpen(true)
+    const handleOpenSearch = () => {
+      trackEvent?.('search-open')
+      setIsOpen(true)
+    }
 
     document.addEventListener('keydown', handleKeyDown)
     window.addEventListener('open-search', handleOpenSearch)
@@ -79,7 +85,7 @@ export function Search() {
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('open-search', handleOpenSearch)
     }
-  }, [])
+  }, [trackEvent])
 
   // Search handler
   const handleSearch = useCallback(async (searchQuery: string) => {
@@ -112,10 +118,16 @@ export function Search() {
     }
   }, [])
 
-  const handleResultClick = () => {
+  const handleResultClick = (result: SearchResult) => {
+    trackEvent?.('search-result-click')
     setIsOpen(false)
     setQuery('')
     setResults([])
+  }
+
+  const handleOpen = () => {
+    trackEvent?.('search-open')
+    setIsOpen(true)
   }
 
   return (
@@ -132,7 +144,7 @@ export function Search() {
         color="fg.muted"
         fontSize="sm"
         _hover={{ borderColor: 'fg.muted' }}
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpen}
       >
         <Text>🔍</Text>
         <Text display={{ base: 'none', md: 'block' }}>Search...</Text>
@@ -221,7 +233,7 @@ export function Search() {
                         key={i}
                         asChild
                         _hover={{ textDecoration: 'none' }}
-                        onClick={handleResultClick}
+                        onClick={() => handleResultClick(result)}
                       >
                         <NextLink href={result.url}>
                           <Box

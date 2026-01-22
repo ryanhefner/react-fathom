@@ -2,16 +2,19 @@
 
 import { Box, IconButton } from '@chakra-ui/react'
 import { useState, useRef, type ReactNode, type ComponentProps } from 'react'
+import { useFathom } from 'react-fathom'
 
 // Pre component for rehype-pretty-code
 export function Pre({ children, ...props }: ComponentProps<'pre'>) {
   const [copied, setCopied] = useState(false)
   const preRef = useRef<HTMLPreElement>(null)
+  const { trackEvent } = useFathom()
 
   const handleCopy = async () => {
     const text = preRef.current?.textContent || ''
     await navigator.clipboard.writeText(text)
     setCopied(true)
+    trackEvent?.('code-copy')
     setTimeout(() => setCopied(false), 2000)
   }
 
