@@ -36,10 +36,10 @@ export function Navbar({ nav }: NavbarProps) {
             </Link>
             <HStack as="nav" gap={6} display={{ base: 'none', md: 'flex' }}>
               <Link asChild color="fg.muted" _hover={{ color: 'fg' }}>
-                <NextLink href="/getting-started">Docs</NextLink>
+                <NextLink href="/docs/getting-started">Docs</NextLink>
               </Link>
               <Link asChild color="fg.muted" _hover={{ color: 'fg' }}>
-                <NextLink href="/api/providers">API</NextLink>
+                <NextLink href="/docs/api">API</NextLink>
               </Link>
               <Link
                 href="https://github.com/ryanhefner/react-fathom"

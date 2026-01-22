@@ -43,6 +43,7 @@ type MetaValue = string | { title: string; [key: string]: unknown }
 type MetaFile = Record<string, MetaValue>
 
 const CONTENT_DIR = path.join(process.cwd(), 'content')
+const DOCS_BASE_PATH = '/docs'
 
 function loadMeta(dir: string): MetaFile | null {
   const metaPath = path.join(dir, '_meta.ts')
@@ -185,11 +186,11 @@ export function getDocsNav(): NavItem[] {
 
   if (fs.existsSync(indexPath)) {
     const title = getTitleFromFrontmatter(indexPath) || 'Introduction'
-    rootItems.push({ title, href: '/' })
+    rootItems.push({ title, href: DOCS_BASE_PATH })
   }
 
   // Build from directory structure
-  const dirItems = buildNavFromDir(CONTENT_DIR, '')
+  const dirItems = buildNavFromDir(CONTENT_DIR, DOCS_BASE_PATH)
 
   // Combine - put index first, then dir items
   return [...rootItems, ...dirItems]
@@ -283,7 +284,7 @@ export function getAdjacentPages(slug: string[]): AdjacentPages {
 
   flatten(nav)
 
-  const currentHref = slug.length === 0 ? '/' : '/' + slug.join('/')
+  const currentHref = slug.length === 0 ? DOCS_BASE_PATH : `${DOCS_BASE_PATH}/${slug.join('/')}`
   const currentIndex = flatNav.findIndex((item) => item.href === currentHref)
 
   return {
@@ -322,11 +323,11 @@ export function getLastUpdated(slug: string[]): string | null {
 
 export function getBreadcrumbs(slug: string[]): BreadcrumbItem[] {
   if (slug.length === 0) {
-    return [{ title: 'Docs', href: '/' }]
+    return [{ title: 'Docs', href: DOCS_BASE_PATH }]
   }
 
   const nav = getDocsNav()
-  const breadcrumbs: BreadcrumbItem[] = [{ title: 'Docs', href: '/' }]
+  const breadcrumbs: BreadcrumbItem[] = [{ title: 'Docs', href: DOCS_BASE_PATH }]
 
   // Find the path through the navigation
   function findPath(items: NavItem[], targetPath: string, currentPath: BreadcrumbItem[] = []): BreadcrumbItem[] | null {
@@ -342,15 +343,15 @@ export function getBreadcrumbs(slug: string[]): BreadcrumbItem[] {
     return null
   }
 
-  const targetHref = '/' + slug.join('/')
-  const path = findPath(nav, targetHref)
+  const targetHref = `${DOCS_BASE_PATH}/${slug.join('/')}`
+  const foundPath = findPath(nav, targetHref)
 
-  if (path) {
-    return [...breadcrumbs, ...path]
+  if (foundPath) {
+    return [...breadcrumbs, ...foundPath]
   }
 
   // Fallback: build breadcrumbs from slug segments
-  let href = ''
+  let href = DOCS_BASE_PATH
   for (const segment of slug) {
     href += `/${segment}`
     breadcrumbs.push({

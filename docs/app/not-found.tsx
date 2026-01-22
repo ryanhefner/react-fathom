@@ -1,21 +1,49 @@
 'use client'
 
-import { Box, Container, Heading, Text, VStack, Link, Flex } from '@chakra-ui/react'
+import { Box, Container, Heading, Text, VStack, Link, Flex, HStack } from '@chakra-ui/react'
 import NextLink from 'next/link'
-import { Navbar } from '@/components/docs/Navbar'
 import { Search } from '@/components/docs/Search'
+import { ColorModeButton } from '@/components/docs/ColorModeButton'
 
 const popularPages = [
-  { title: 'Getting Started', href: '/getting-started' },
-  { title: 'React', href: '/react' },
-  { title: 'Next.js', href: '/nextjs' },
-  { title: 'API Reference', href: '/api' },
+  { title: 'Getting Started', href: '/docs/getting-started' },
+  { title: 'React', href: '/docs/react' },
+  { title: 'Next.js', href: '/docs/nextjs' },
+  { title: 'API Reference', href: '/docs/api' },
 ]
+
+function SimpleNavbar() {
+  return (
+    <Box
+      as="header"
+      position="sticky"
+      top={0}
+      zIndex={50}
+      borderBottomWidth="1px"
+      bg="bg"
+      backdropFilter="blur(10px)"
+    >
+      <Container maxW="container.xl" py={3}>
+        <Flex justify="space-between" align="center">
+          <Link asChild fontWeight="bold" fontSize="lg" _hover={{ textDecoration: 'none' }}>
+            <NextLink href="/">react-fathom</NextLink>
+          </Link>
+          <HStack gap={4}>
+            <Link asChild color="fg.muted" _hover={{ color: 'fg' }}>
+              <NextLink href="/docs">Docs</NextLink>
+            </Link>
+            <ColorModeButton />
+          </HStack>
+        </Flex>
+      </Container>
+    </Box>
+  )
+}
 
 export default function NotFound() {
   return (
     <>
-      <Navbar />
+      <SimpleNavbar />
       <Container maxW="container.md" py={20}>
         <VStack gap={8} textAlign="center">
           <Box>
