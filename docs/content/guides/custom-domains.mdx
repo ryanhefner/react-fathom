@@ -1,0 +1,133 @@
+# Custom Domains
+
+Use Fathom's custom domains feature to bypass ad blockers and improve tracking accuracy.
+
+## What Are Custom Domains?
+
+[Fathom's custom domains](https://usefathom.com/docs/script/custom-domains) let you serve the tracking script from your own domain (e.g., `stats.yourdomain.com`). This helps avoid ad blockers that target `cdn.usefathom.com`.
+
+## Setup in Fathom
+
+1. Go to your [Fathom dashboard](https://app.usefathom.com)
+2. Navigate to **Settings → Custom Domains**
+3. Add your custom domain (e.g., `stats.yourdomain.com`)
+4. Configure DNS as instructed
+5. Wait for SSL certificate provisioning
+
+## Using Custom Domains
+
+### React / Next.js
+
+Pass the custom domain in `clientOptions`:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{
+    src: 'https://stats.yourdomain.com/script.js',
+  }}
+>
+```
+
+### React Native
+
+Use the `scriptDomain` prop:
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  scriptDomain="stats.yourdomain.com"
+>
+  <App />
+</NativeFathomProvider>
+```
+
+Or with manual WebView setup:
+
+```tsx
+<FathomWebView
+  ref={webViewRef}
+  siteId="YOUR_SITE_ID"
+  scriptDomain="stats.yourdomain.com"
+  onReady={handleReady}
+/>
+```
+
+## Verifying Setup
+
+### Check Script Loading
+
+Open your browser's Network tab and verify the Fathom script loads from your custom domain:
+
+```
+https://stats.yourdomain.com/script.js
+```
+
+### Check Tracking Requests
+
+Tracking requests should also go to your custom domain:
+
+```
+https://stats.yourdomain.com/...
+```
+
+## Troubleshooting
+
+### Script Not Loading
+
+1. Verify DNS is configured correctly
+2. Check SSL certificate is active in Fathom dashboard
+3. Ensure the domain matches exactly (no trailing slash)
+
+### CORS Errors
+
+Custom domains handle CORS automatically. If you see CORS errors:
+
+1. Verify the custom domain is fully provisioned
+2. Check you're using HTTPS
+3. Clear browser cache
+
+### React Native Not Working
+
+Ensure the WebView can access your custom domain:
+
+1. Check network connectivity
+2. Verify no firewall blocking the domain
+3. Use `debug={true}` to see detailed logs
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  scriptDomain="stats.yourdomain.com"
+  debug={true}
+  onError={(err) => console.error('Load error:', err)}
+>
+```
+
+## Multiple Environments
+
+Use environment variables to switch domains:
+
+```tsx
+// React / Next.js
+<FathomProvider
+  siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}
+  clientOptions={{
+    src: process.env.NEXT_PUBLIC_FATHOM_SCRIPT_URL,
+  }}
+>
+```
+
+```bash
+# .env.local
+NEXT_PUBLIC_FATHOM_SITE_ID=ABCD1234
+NEXT_PUBLIC_FATHOM_SCRIPT_URL=https://stats.yourdomain.com/script.js
+```
+
+```tsx
+// React Native
+<NativeFathomProvider
+  siteId={Config.FATHOM_SITE_ID}
+  scriptDomain={Config.FATHOM_CUSTOM_DOMAIN}
+>
+```

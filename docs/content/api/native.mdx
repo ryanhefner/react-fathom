@@ -1,0 +1,180 @@
+# Native API
+
+React Native-specific exports from `react-fathom/native`.
+
+## FathomWebView
+
+Hidden WebView component that loads the Fathom Analytics script.
+
+```tsx
+import { FathomWebView, type FathomWebViewRef } from 'react-fathom/native'
+
+const webViewRef = useRef<FathomWebViewRef>(null)
+
+<FathomWebView
+  ref={webViewRef}
+  siteId="YOUR_SITE_ID"
+  onReady={() => console.log('Ready!')}
+  onError={(err) => console.error(err)}
+  debug={__DEV__}
+/>
+```
+
+### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `siteId` | `string` | Yes | Your Fathom site ID |
+| `loadOptions` | `LoadOptions` | No | Options passed to `fathom.load()` |
+| `scriptDomain` | `string` | No | Custom domain (default: `cdn.usefathom.com`) |
+| `onReady` | `() => void` | No | Called when script loads |
+| `onError` | `(error: string) => void` | No | Called on error |
+| `debug` | `boolean` | No | Enable debug logging |
+
+### Ref Methods (FathomWebViewRef)
+
+| Method | Description |
+|--------|-------------|
+| `trackPageview(opts?)` | Track a pageview |
+| `trackEvent(eventName, opts?)` | Track a custom event |
+| `trackGoal(code, cents)` | Track a goal conversion |
+| `blockTrackingForMe()` | Block tracking for user |
+| `enableTrackingForMe()` | Enable tracking for user |
+| `isReady()` | Check if WebView is ready |
+
+---
+
+## createWebViewClient
+
+Factory function to create a client that communicates with a FathomWebView.
+
+```tsx
+import { createWebViewClient } from 'react-fathom/native'
+
+const client = createWebViewClient(
+  () => webViewRef.current,
+  { debug: true }
+)
+```
+
+### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `getWebViewRef` | `() => FathomWebViewRef \| null` | Function returning the WebView ref |
+| `options` | `WebViewClientOptions` | Configuration options |
+
+### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `debug` | `boolean` | `false` | Enable debug logging |
+| `enableQueue` | `boolean` | `true` | Queue commands before WebView ready |
+| `maxQueueSize` | `number` | `100` | Maximum queued commands |
+
+### Return Value (WebViewFathomClient)
+
+Standard `FathomClient` methods plus:
+
+| Method | Description |
+|--------|-------------|
+| `processQueue()` | Manually process queued commands (returns count) |
+| `getQueueLength()` | Get current queue length |
+| `setWebViewReady()` | Signal WebView is ready (flushes queue) |
+
+---
+
+## useNavigationTracking
+
+Hook to track React Navigation screen changes as pageviews.
+
+```tsx
+import { useNavigationTracking } from 'react-fathom/native'
+
+useNavigationTracking({
+  navigationRef,
+  transformRouteName: (name) => `/screens/${name}`,
+})
+```
+
+### Options
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `navigationRef` | `RefObject` | Yes | React Navigation container ref |
+| `transformRouteName` | `(name: string) => string` | No | Transform route names |
+| `shouldTrackRoute` | `(name: string, params?: object) => boolean` | No | Filter routes to track |
+| `includeParams` | `boolean` | No | Include params in URL (default: `false`) |
+
+See [Navigation Tracking](/react-native/navigation) for detailed usage.
+
+---
+
+## useAppStateTracking
+
+Hook to track app foreground/background state changes.
+
+```tsx
+import { useAppStateTracking } from 'react-fathom/native'
+
+useAppStateTracking({
+  foregroundEventName: 'app-resumed',
+  backgroundEventName: 'app-paused',
+})
+```
+
+### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `foregroundEventName` | `string` | `'app-foreground'` | Event for foreground |
+| `backgroundEventName` | `string` | `'app-background'` | Event for background |
+| `eventOptions` | `EventOptions` | - | Additional event options |
+| `onStateChange` | `(state) => void` | - | Callback on state change |
+
+See [App State Tracking](/react-native/app-state) for detailed usage.
+
+---
+
+## Types
+
+### FathomClient
+
+Interface for Fathom client implementations:
+
+```tsx
+interface FathomClient {
+  load: (siteId: string, options?: LoadOptions) => void
+  trackPageview: (opts?: PageViewOptions) => void
+  trackEvent: (eventName: string, opts?: EventOptions) => void
+  trackGoal: (code: string, cents: number) => void
+  setSite: (id: string) => void
+  blockTrackingForMe: () => void
+  enableTrackingForMe: () => void
+  isTrackingEnabled: () => boolean
+}
+```
+
+### WebViewFathomClient
+
+Extends `FathomClient` with queue management:
+
+```tsx
+interface WebViewFathomClient extends FathomClient {
+  processQueue: () => number
+  getQueueLength: () => number
+  setWebViewReady: () => void
+}
+```
+
+### Re-exported Types
+
+These types are re-exported from `fathom-client` for convenience:
+
+```tsx
+import type {
+  EventOptions,
+  LoadOptions,
+  PageViewOptions,
+} from 'react-fathom/native'
+```

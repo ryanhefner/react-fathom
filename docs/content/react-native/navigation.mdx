@@ -1,0 +1,161 @@
+# Navigation Tracking
+
+Track React Navigation screen changes as pageviews.
+
+## Setup
+
+```tsx
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native'
+import { NativeFathomProvider, useNavigationTracking } from 'react-fathom/native'
+
+function App() {
+  const navigationRef = useNavigationContainerRef()
+
+  return (
+    <NativeFathomProvider siteId="YOUR_SITE_ID">
+      <NavigationContainer ref={navigationRef}>
+        <NavigationTracker navigationRef={navigationRef} />
+        <RootNavigator />
+      </NavigationContainer>
+    </NativeFathomProvider>
+  )
+}
+
+function NavigationTracker({ navigationRef }) {
+  useNavigationTracking({
+    navigationRef,
+  })
+  return null
+}
+```
+
+## Options
+
+```tsx
+useNavigationTracking({
+  navigationRef,
+
+  // Transform route names before tracking
+  transformRouteName: (name) => `/screens/${name.toLowerCase()}`,
+
+  // Filter which routes to track
+  shouldTrackRoute: (name, params) => !name.startsWith('Modal'),
+
+  // Include route params in tracked URL
+  includeParams: true,
+})
+```
+
+### Option Reference
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `navigationRef` | `RefObject` | React Navigation container ref (required) |
+| `transformRouteName` | `(name: string) => string` | Transform route names before tracking |
+| `shouldTrackRoute` | `(name: string, params?: object) => boolean` | Filter which routes to track |
+| `includeParams` | `boolean` | Include route params in URL (default: `false`) |
+
+## Transform Examples
+
+### Prefix with app name
+
+```tsx
+transformRouteName: (name) => `/myapp/${name}`
+
+// "Home" → "/myapp/Home"
+// "Settings" → "/myapp/Settings"
+```
+
+### Convert to kebab-case URLs
+
+```tsx
+transformRouteName: (name) => {
+  return '/' + name
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .toLowerCase()
+}
+
+// "UserProfile" → "/user-profile"
+// "SettingsScreen" → "/settings-screen"
+```
+
+### Add hierarchy from nested navigators
+
+```tsx
+transformRouteName: (name, params) => {
+  const tab = params?.tab || 'main'
+  return `/${tab}/${name.toLowerCase()}`
+}
+
+// With params { tab: 'profile' }
+// "EditProfile" → "/profile/editprofile"
+```
+
+## Filtering Routes
+
+### Skip modal screens
+
+```tsx
+shouldTrackRoute: (name) => !name.includes('Modal')
+```
+
+### Only track specific screens
+
+```tsx
+const trackedScreens = ['Home', 'Profile', 'Settings', 'Product']
+
+shouldTrackRoute: (name) => trackedScreens.includes(name)
+```
+
+### Skip screens with certain params
+
+```tsx
+shouldTrackRoute: (name, params) => {
+  // Don't track preview mode
+  if (params?.preview) return false
+  return true
+}
+```
+
+## Full Example
+
+```tsx
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { NativeFathomProvider, useNavigationTracking } from 'react-fathom/native'
+
+const Stack = createNativeStackNavigator()
+
+function NavigationTracker({ navigationRef }) {
+  useNavigationTracking({
+    navigationRef,
+    transformRouteName: (name) => `/app/${name.toLowerCase()}`,
+    shouldTrackRoute: (name) => {
+      // Skip auth screens and modals
+      const skipScreens = ['Login', 'Register', 'ForgotPassword']
+      return !skipScreens.includes(name) && !name.includes('Modal')
+    },
+  })
+  return null
+}
+
+export default function App() {
+  const navigationRef = useNavigationContainerRef()
+
+  return (
+    <NativeFathomProvider
+      siteId="YOUR_SITE_ID"
+      debug={__DEV__}
+    >
+      <NavigationContainer ref={navigationRef}>
+        <NavigationTracker navigationRef={navigationRef} />
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NativeFathomProvider>
+  )
+}
+```

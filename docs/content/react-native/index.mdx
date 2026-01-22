@@ -1,0 +1,95 @@
+# React Native
+
+react-fathom provides full React Native support with a hidden WebView that loads Fathom's official tracking script, ensuring compatibility with Fathom Analytics.
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+  React Native support uses a WebView-based approach. Events are queued until the WebView is ready, then sent automatically.
+</Callout>
+
+## Installation
+
+Install react-fathom and the required WebView dependency:
+
+```bash
+npm install react-fathom react-native-webview
+```
+
+For iOS, install CocoaPods dependencies:
+
+```bash
+cd ios && pod install
+```
+
+## Basic Setup
+
+```tsx
+import { NativeFathomProvider } from 'react-fathom/native'
+
+function App() {
+  return (
+    <NativeFathomProvider
+      siteId="YOUR_SITE_ID"
+      debug={__DEV__}
+      onReady={() => console.log('Fathom ready!')}
+      onError={(err) => console.error('Fathom error:', err)}
+    >
+      <YourApp />
+    </NativeFathomProvider>
+  )
+}
+```
+
+## How It Works
+
+The `NativeFathomProvider`:
+
+1. Renders a hidden WebView (0x0 pixels) that loads the Fathom script
+2. Queues all tracking calls until the WebView is ready
+3. Automatically flushes the queue when the script loads
+4. Provides the same `useFathom` hook API as web
+
+## Tracking Events
+
+Use the same hooks as web:
+
+```tsx
+import { useFathom } from 'react-fathom/native'
+
+function PurchaseButton({ price }) {
+  const { trackEvent, trackGoal } = useFathom()
+
+  const handlePurchase = () => {
+    trackEvent('purchase-tap', { _value: price })
+    trackGoal('PURCHASE', price)
+  }
+
+  return (
+    <TouchableOpacity onPress={handlePurchase}>
+      <Text>Buy Now</Text>
+    </TouchableOpacity>
+  )
+}
+```
+
+## Provider Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `siteId` | `string` | Your Fathom site ID (required) |
+| `debug` | `boolean` | Enable debug logging |
+| `trackAppState` | `boolean` | Auto-track app foreground/background |
+| `loadOptions` | `LoadOptions` | Options passed to `fathom.load()` |
+| `scriptDomain` | `string` | Custom domain (default: `cdn.usefathom.com`) |
+| `defaultPageviewOptions` | `PageViewOptions` | Default pageview options |
+| `defaultEventOptions` | `EventOptions` | Default event options |
+| `onReady` | `() => void` | Called when Fathom script loads |
+| `onError` | `(error: string) => void` | Called on script load error |
+| `clientRef` | `MutableRefObject` | Ref for direct client access |
+
+## Next Steps
+
+- [Navigation Tracking](/react-native/navigation) — Track React Navigation screen changes
+- [App State Tracking](/react-native/app-state) — Track foreground/background
+- [Advanced Setup](/react-native/advanced) — Custom WebView configuration

@@ -1,0 +1,217 @@
+# React
+
+This guide covers using react-fathom in standard React applications. For Next.js or React Native, see the dedicated guides.
+
+## Setup
+
+```tsx
+import { FathomProvider } from 'react-fathom'
+
+function App() {
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <YourApp />
+    </FathomProvider>
+  )
+}
+```
+
+## Using the Hook
+
+The `useFathom` hook provides access to all tracking methods:
+
+```tsx
+import { useFathom } from 'react-fathom'
+
+function MyComponent() {
+  const { trackPageview, trackEvent, trackGoal } = useFathom()
+
+  const handleSignUp = () => {
+    trackEvent('signup-click', { _value: 100 }) // Optional: value in cents
+  }
+
+  const handlePurchase = () => {
+    trackGoal('GOALCODE', 2999) // $29.99 in cents
+  }
+
+  return (
+    <>
+      <button onClick={handleSignUp}>Sign Up</button>
+      <button onClick={handlePurchase}>Buy Now</button>
+    </>
+  )
+}
+```
+
+### Available Methods
+
+| Method | Description |
+|--------|-------------|
+| `trackPageview(options?)` | Track a pageview |
+| `trackEvent(eventName, options?)` | Track a custom event |
+| `trackGoal(code, cents)` | Track a goal conversion |
+| `load(siteId, options?)` | Load Fathom with a site ID |
+| `setSite(siteId)` | Change the site ID |
+| `blockTrackingForMe()` | Block tracking for current user |
+| `enableTrackingForMe()` | Enable tracking for current user |
+| `isTrackingEnabled()` | Check if tracking is enabled |
+
+## Convenience Hooks
+
+### useTrackOnMount
+
+Track a pageview when a component mounts:
+
+```tsx
+import { useTrackOnMount } from 'react-fathom'
+
+function LandingPage() {
+  useTrackOnMount({ url: '/landing' })
+
+  return <div>Welcome!</div>
+}
+```
+
+### useTrackOnClick
+
+Returns a click handler that tracks an event:
+
+```tsx
+import { useTrackOnClick } from 'react-fathom'
+
+function CTAButton() {
+  const handleClick = useTrackOnClick({
+    eventName: 'cta-click',
+    _value: 100, // Optional: value in cents
+    callback: (e) => {
+      console.log('Tracked!', e)
+    },
+  })
+
+  return <button onClick={handleClick}>Get Started</button>
+}
+```
+
+### useTrackOnVisible
+
+Returns a ref that tracks an event when the element becomes visible:
+
+```tsx
+import { useTrackOnVisible } from 'react-fathom'
+
+function HeroSection() {
+  const ref = useTrackOnVisible({
+    eventName: 'hero-viewed',
+    threshold: 0.5, // 50% visible
+    callback: (entry) => {
+      console.log('Hero section visible!', entry)
+    },
+  })
+
+  return (
+    <section ref={ref}>
+      <h1>Welcome to Our App</h1>
+    </section>
+  )
+}
+```
+
+## Declarative Components
+
+For a more declarative approach, use tracking components:
+
+### TrackPageview
+
+Track a pageview when the component mounts:
+
+```tsx
+import { TrackPageview } from 'react-fathom'
+
+function Dashboard() {
+  return (
+    <TrackPageview url="/dashboard">
+      <div>Dashboard content</div>
+    </TrackPageview>
+  )
+}
+```
+
+### TrackClick
+
+Wrap any clickable element to track clicks:
+
+```tsx
+import { TrackClick } from 'react-fathom'
+
+function SignUpSection() {
+  return (
+    <TrackClick eventName="signup-click" _value={100}>
+      <button>Sign Up Free</button>
+    </TrackClick>
+  )
+}
+```
+
+### TrackVisible
+
+Track when an element becomes visible (using IntersectionObserver):
+
+```tsx
+import { TrackVisible } from 'react-fathom'
+
+function PricingSection() {
+  return (
+    <TrackVisible eventName="pricing-viewed" threshold={0.25}>
+      <section>
+        <h2>Pricing</h2>
+        {/* pricing content */}
+      </section>
+    </TrackVisible>
+  )
+}
+```
+
+You can customize the wrapper element:
+
+```tsx
+<TrackVisible eventName="footer-viewed" as="footer">
+  <p>Footer content</p>
+</TrackVisible>
+```
+
+## Combining Approaches
+
+Mix hooks and components based on your needs:
+
+```tsx
+import { useFathom, TrackVisible } from 'react-fathom'
+
+function ProductPage({ product }) {
+  const { trackEvent } = useFathom()
+
+  const handleAddToCart = () => {
+    trackEvent('add-to-cart', { _value: product.price })
+    // ... add to cart logic
+  }
+
+  return (
+    <div>
+      <TrackVisible eventName="product-viewed">
+        <h1>{product.name}</h1>
+        <p>{product.description}</p>
+      </TrackVisible>
+
+      <button onClick={handleAddToCart}>
+        Add to Cart
+      </button>
+    </div>
+  )
+}
+```
+
+## Next Steps
+
+- [API Reference: Hooks](/api/hooks) — Full hook options
+- [API Reference: Components](/api/components) — Full component props
+- [Default Options Guide](/guides/default-options) — Set app-wide defaults
+- [Testing Guide](/guides/testing) — Mock clients for testing

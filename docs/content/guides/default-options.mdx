@@ -1,0 +1,137 @@
+# Default Options
+
+Set app-wide defaults that automatically merge into all tracking calls.
+
+## How It Works
+
+Default options are spread first, then any options you pass to individual tracking calls override them:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultEventOptions={{ _site_id: 'my-app' }}
+>
+  {/* All trackEvent calls include _site_id: 'my-app' unless overridden */}
+</FathomProvider>
+```
+
+```tsx
+const { trackEvent } = useFathom()
+
+// Uses default: { _site_id: 'my-app' }
+trackEvent('button-click')
+
+// Merges with default: { _site_id: 'my-app', _value: 100 }
+trackEvent('purchase', { _value: 100 })
+
+// Overrides default: { _site_id: 'custom-site', _value: 50 }
+trackEvent('special-event', { _site_id: 'custom-site', _value: 50 })
+```
+
+## Default Pageview Options
+
+Set defaults for all `trackPageview` calls:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultPageviewOptions={{
+    referrer: 'https://example.com',
+  }}
+>
+```
+
+## Default Event Options
+
+Set defaults for all `trackEvent` calls:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultEventOptions={{
+    _site_id: 'my-app',
+    _value: 1,
+  }}
+>
+```
+
+## Nested Providers
+
+When nesting providers, child providers inherit defaults from parents but can override them:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultEventOptions={{ _site_id: 'global' }}
+>
+  {/* Events here use _site_id: 'global' */}
+  <GlobalSection />
+
+  <FathomProvider defaultEventOptions={{ _site_id: 'dashboard' }}>
+    {/* Events here use _site_id: 'dashboard' */}
+    <DashboardSection />
+  </FathomProvider>
+
+  <FathomProvider defaultEventOptions={{ _site_id: 'settings' }}>
+    {/* Events here use _site_id: 'settings' */}
+    <SettingsSection />
+  </FathomProvider>
+</FathomProvider>
+```
+
+## Use Cases
+
+### Multi-tenant Apps
+
+Track which tenant generated each event:
+
+```tsx
+function TenantProvider({ tenantId, children }) {
+  return (
+    <FathomProvider
+      defaultEventOptions={{ _site_id: tenantId }}
+    >
+      {children}
+    </FathomProvider>
+  )
+}
+```
+
+### A/B Testing
+
+Include experiment variant in all events:
+
+```tsx
+function ExperimentProvider({ variant, children }) {
+  return (
+    <FathomProvider
+      defaultEventOptions={{ _variant: variant }}
+    >
+      {children}
+    </FathomProvider>
+  )
+}
+```
+
+### Consistent Referrer
+
+Set a consistent referrer for all pageviews:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultPageviewOptions={{
+    referrer: typeof document !== 'undefined' ? document.referrer : undefined,
+  }}
+>
+```
+
+## Accessing Current Defaults
+
+The current defaults are available from `useFathom`:
+
+```tsx
+const { defaultPageviewOptions, defaultEventOptions } = useFathom()
+
+console.log('Current event defaults:', defaultEventOptions)
+```

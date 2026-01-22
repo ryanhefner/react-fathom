@@ -1,0 +1,182 @@
+# Custom Client
+
+Provide a custom Fathom client implementation for testing, SSR, or custom analytics pipelines.
+
+## FathomClient Interface
+
+Your custom client must implement the `FathomClient` interface:
+
+```tsx
+import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from 'react-fathom'
+
+const myCustomClient: FathomClient = {
+  load: (siteId: string, options?: LoadOptions) => {
+    // Initialize your tracking
+  },
+  trackPageview: (opts?: PageViewOptions) => {
+    // Track pageview
+  },
+  trackEvent: (eventName: string, opts?: EventOptions) => {
+    // Track custom event
+  },
+  trackGoal: (code: string, cents: number) => {
+    // Track goal conversion
+  },
+  setSite: (id: string) => {
+    // Change site ID
+  },
+  blockTrackingForMe: () => {
+    // Block tracking
+  },
+  enableTrackingForMe: () => {
+    // Enable tracking
+  },
+  isTrackingEnabled: () => {
+    // Return tracking status
+    return true
+  },
+}
+```
+
+## Using a Custom Client
+
+Pass your client to `FathomProvider`:
+
+```tsx
+<FathomProvider client={myCustomClient}>
+  <App />
+</FathomProvider>
+```
+
+When using a custom client, you don't need to provide `siteId` (unless your client needs it).
+
+## Use Cases
+
+### Console Logger (Development)
+
+Log all tracking calls to the console:
+
+```tsx
+const consoleClient: FathomClient = {
+  load: (id, opts) => console.log('[Fathom] load:', id, opts),
+  trackPageview: (opts) => console.log('[Fathom] pageview:', opts),
+  trackEvent: (name, opts) => console.log('[Fathom] event:', name, opts),
+  trackGoal: (code, cents) => console.log('[Fathom] goal:', code, cents),
+  setSite: (id) => console.log('[Fathom] setSite:', id),
+  blockTrackingForMe: () => console.log('[Fathom] blocked'),
+  enableTrackingForMe: () => console.log('[Fathom] enabled'),
+  isTrackingEnabled: () => true,
+}
+
+// Use in development
+<FathomProvider client={__DEV__ ? consoleClient : undefined} siteId="YOUR_SITE_ID">
+```
+
+### No-op Client (SSR)
+
+Prevent errors during server-side rendering:
+
+```tsx
+const noopClient: FathomClient = {
+  load: () => {},
+  trackPageview: () => {},
+  trackEvent: () => {},
+  trackGoal: () => {},
+  setSite: () => {},
+  blockTrackingForMe: () => {},
+  enableTrackingForMe: () => {},
+  isTrackingEnabled: () => false,
+}
+
+// Use on server
+const client = typeof window === 'undefined' ? noopClient : undefined
+
+<FathomProvider client={client} siteId="YOUR_SITE_ID">
+```
+
+### Analytics Aggregator
+
+Forward events to multiple analytics services:
+
+```tsx
+import * as fathom from 'fathom-client'
+import mixpanel from 'mixpanel-browser'
+
+const aggregatorClient: FathomClient = {
+  load: (siteId, options) => {
+    fathom.load(siteId, options)
+    mixpanel.init('YOUR_MIXPANEL_TOKEN')
+  },
+  trackPageview: (opts) => {
+    fathom.trackPageview(opts)
+    mixpanel.track('Page View', { url: opts?.url })
+  },
+  trackEvent: (name, opts) => {
+    fathom.trackEvent(name, opts)
+    mixpanel.track(name, opts)
+  },
+  trackGoal: (code, cents) => {
+    fathom.trackGoal(code, cents)
+    mixpanel.track('Goal', { code, value: cents / 100 })
+  },
+  setSite: fathom.setSite,
+  blockTrackingForMe: fathom.blockTrackingForMe,
+  enableTrackingForMe: fathom.enableTrackingForMe,
+  isTrackingEnabled: fathom.isTrackingEnabled,
+}
+```
+
+### Event Transformer
+
+Transform events before sending:
+
+```tsx
+import * as fathom from 'fathom-client'
+
+const transformerClient: FathomClient = {
+  load: fathom.load,
+  trackPageview: fathom.trackPageview,
+  trackEvent: (name, opts) => {
+    // Prefix all event names
+    const prefixedName = `app_${name}`
+
+    // Add timestamp to all events
+    const enrichedOpts = {
+      ...opts,
+      _timestamp: Date.now(),
+    }
+
+    fathom.trackEvent(prefixedName, enrichedOpts)
+  },
+  trackGoal: fathom.trackGoal,
+  setSite: fathom.setSite,
+  blockTrackingForMe: fathom.blockTrackingForMe,
+  enableTrackingForMe: fathom.enableTrackingForMe,
+  isTrackingEnabled: fathom.isTrackingEnabled,
+}
+```
+
+## Accessing the Client
+
+Use `clientRef` to access the resolved client from a parent component:
+
+```tsx
+import { useRef } from 'react'
+import { FathomProvider, FathomClient } from 'react-fathom'
+
+function App() {
+  const clientRef = useRef<FathomClient>(null)
+
+  const handleExternalEvent = () => {
+    // Access client directly without hooks
+    clientRef.current?.trackEvent('external-event')
+  }
+
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID" clientRef={clientRef}>
+      <button onClick={handleExternalEvent}>Track</button>
+      <YourApp />
+    </FathomProvider>
+  )
+}
+```

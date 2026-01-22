@@ -1,0 +1,180 @@
+# Contributing
+
+Contributions are welcome! Whether it's bug fixes, new features, documentation improvements, or examples.
+
+## Ways to Contribute
+
+| Type | Description |
+|------|-------------|
+| **Bug Reports** | Found a bug? [Open an issue](https://github.com/ryanhefner/react-fathom/issues/new) with reproduction steps |
+| **Feature Requests** | Have an idea? Discuss it in an issue first |
+| **Bug Fixes** | PRs for documented issues are always welcome |
+| **Documentation** | Help improve docs, add examples, fix typos |
+| **Tests** | Increase test coverage or add edge case tests |
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+
+### 1. Clone and Install
+
+```bash
+git clone https://github.com/ryanhefner/react-fathom.git
+cd react-fathom
+npm install
+```
+
+### 2. Development Workflow
+
+```bash
+# Run tests in watch mode during development
+npm run test:watch
+
+# Run the full test suite
+npm test
+
+# Build the package
+npm run build
+
+# Type check without emitting
+npm run typecheck
+```
+
+## Project Structure
+
+```
+react-fathom/
+├── src/
+│   ├── index.ts              # Main entry point
+│   ├── FathomProvider.tsx    # Core provider component
+│   ├── FathomContext.tsx     # React context
+│   ├── types.ts              # TypeScript definitions
+│   ├── hooks/                # React hooks
+│   │   ├── useFathom.ts
+│   │   ├── useTrackOnClick.ts
+│   │   ├── useTrackOnMount.ts
+│   │   └── useTrackOnVisible.ts
+│   ├── components/           # Declarative tracking components
+│   │   ├── TrackClick.tsx
+│   │   ├── TrackPageview.tsx
+│   │   └── TrackVisible.tsx
+│   ├── next/                 # Next.js-specific exports
+│   │   └── index.ts
+│   └── native/               # React Native exports
+│       ├── index.ts
+│       ├── FathomWebView.tsx
+│       ├── createWebViewClient.ts
+│       ├── NativeFathomProvider.tsx
+│       ├── useNavigationTracking.ts
+│       └── useAppStateTracking.ts
+├── docs/                     # Documentation site (Nextra)
+└── dist/                     # Built output (generated)
+```
+
+## Testing Guidelines
+
+We use [Vitest](https://vitest.dev/) for testing. All new features should include tests.
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+### Writing Tests
+
+```tsx
+// src/hooks/useMyHook.test.tsx
+import { renderHook } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { useMyHook } from './useMyHook'
+import { FathomProvider } from '../FathomProvider'
+
+describe('useMyHook', () => {
+  it('should track events correctly', () => {
+    const mockClient = {
+      load: vi.fn(),
+      trackPageview: vi.fn(),
+      trackEvent: vi.fn(),
+      trackGoal: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const wrapper = ({ children }) => (
+      <FathomProvider client={mockClient}>{children}</FathomProvider>
+    )
+
+    const { result } = renderHook(() => useMyHook(), { wrapper })
+
+    result.current.doSomething()
+
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('expected-event', {})
+  })
+})
+```
+
+## Code Style
+
+- **TypeScript**: All code should be fully typed
+- **Formatting**: We use Prettier (run `npm run format` before committing)
+- **Linting**: ESLint catches common issues (run `npm run lint`)
+- **Naming**:
+  - Components: PascalCase (`TrackClick.tsx`)
+  - Hooks: camelCase with `use` prefix (`useFathom.ts`)
+  - Types: PascalCase (`FathomClient`)
+
+## Submitting a Pull Request
+
+1. **Fork** the repository
+2. **Create a branch** from `main`:
+   ```bash
+   git checkout -b fix/my-bug-fix
+   # or
+   git checkout -b feature/my-new-feature
+   ```
+3. **Make your changes** with clear, focused commits
+4. **Add or update tests** for your changes
+5. **Ensure CI passes**:
+   ```bash
+   npm run lint
+   npm test
+   npm run build
+   ```
+6. **Submit a PR** with a clear description of what and why
+
+## Commit Messages
+
+Use clear, descriptive commit messages:
+
+```
+feat: add useTrackOnScroll hook for scroll tracking
+fix: resolve duplicate pageview tracking in Next.js
+docs: add troubleshooting section for ad blockers
+test: add tests for native offline queue
+refactor: simplify FathomContext default values
+```
+
+Prefixes: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`
+
+## Documentation
+
+The docs site uses [Nextra](https://nextra.site) and lives in the `/docs` directory.
+
+```bash
+cd docs
+npm install
+npm run dev
+```
+
+When adding new features, please also update the relevant documentation pages.

@@ -1,0 +1,227 @@
+# Testing
+
+Use mock clients to test tracking behavior without sending real analytics.
+
+## Mock Client Setup
+
+Create a mock client with Jest or Vitest:
+
+```tsx
+import { FathomProvider, type FathomClient } from 'react-fathom'
+
+const mockClient: FathomClient = {
+  load: vi.fn(),
+  trackPageview: vi.fn(),
+  trackEvent: vi.fn(),
+  trackGoal: vi.fn(),
+  setSite: vi.fn(),
+  blockTrackingForMe: vi.fn(),
+  enableTrackingForMe: vi.fn(),
+  isTrackingEnabled: vi.fn(() => true),
+}
+```
+
+## Testing Components
+
+### Testing Event Tracking
+
+```tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { FathomProvider, type FathomClient } from 'react-fathom'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { SignUpButton } from './SignUpButton'
+
+describe('SignUpButton', () => {
+  let mockClient: FathomClient
+
+  beforeEach(() => {
+    mockClient = {
+      load: vi.fn(),
+      trackPageview: vi.fn(),
+      trackEvent: vi.fn(),
+      trackGoal: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+  })
+
+  it('tracks click event', () => {
+    render(
+      <FathomProvider client={mockClient}>
+        <SignUpButton />
+      </FathomProvider>
+    )
+
+    fireEvent.click(screen.getByRole('button'))
+
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('signup-click', {})
+  })
+
+  it('tracks event with value', () => {
+    render(
+      <FathomProvider client={mockClient}>
+        <PurchaseButton price={2999} />
+      </FathomProvider>
+    )
+
+    fireEvent.click(screen.getByRole('button'))
+
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('purchase', { _value: 2999 })
+  })
+})
+```
+
+### Testing Pageview Tracking
+
+```tsx
+import { render } from '@testing-library/react'
+import { FathomProvider } from 'react-fathom'
+import { describe, it, expect, vi } from 'vitest'
+import { Dashboard } from './Dashboard'
+
+describe('Dashboard', () => {
+  it('tracks pageview on mount', () => {
+    const mockClient = {
+      load: vi.fn(),
+      trackPageview: vi.fn(),
+      trackEvent: vi.fn(),
+      trackGoal: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    render(
+      <FathomProvider client={mockClient}>
+        <Dashboard />
+      </FathomProvider>
+    )
+
+    expect(mockClient.trackPageview).toHaveBeenCalledWith({ url: '/dashboard' })
+  })
+})
+```
+
+## Test Utilities
+
+### Create a Reusable Wrapper
+
+```tsx
+// test-utils.tsx
+import { ReactNode } from 'react'
+import { FathomProvider, type FathomClient } from 'react-fathom'
+import { vi } from 'vitest'
+
+export function createMockClient(): FathomClient {
+  return {
+    load: vi.fn(),
+    trackPageview: vi.fn(),
+    trackEvent: vi.fn(),
+    trackGoal: vi.fn(),
+    setSite: vi.fn(),
+    blockTrackingForMe: vi.fn(),
+    enableTrackingForMe: vi.fn(),
+    isTrackingEnabled: vi.fn(() => true),
+  }
+}
+
+export function createWrapper(client: FathomClient) {
+  return function Wrapper({ children }: { children: ReactNode }) {
+    return (
+      <FathomProvider client={client}>
+        {children}
+      </FathomProvider>
+    )
+  }
+}
+```
+
+### Usage with renderHook
+
+```tsx
+import { renderHook } from '@testing-library/react'
+import { useFathom } from 'react-fathom'
+import { createMockClient, createWrapper } from './test-utils'
+
+describe('useFathom', () => {
+  it('provides tracking methods', () => {
+    const mockClient = createMockClient()
+
+    const { result } = renderHook(() => useFathom(), {
+      wrapper: createWrapper(mockClient),
+    })
+
+    result.current.trackEvent('test-event')
+
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {})
+  })
+})
+```
+
+## Testing Default Options
+
+```tsx
+it('merges default options with provided options', () => {
+  const mockClient = createMockClient()
+
+  render(
+    <FathomProvider
+      client={mockClient}
+      defaultEventOptions={{ _site_id: 'test-app' }}
+    >
+      <TestComponent />
+    </FathomProvider>
+  )
+
+  fireEvent.click(screen.getByRole('button'))
+
+  expect(mockClient.trackEvent).toHaveBeenCalledWith('click', {
+    _site_id: 'test-app',
+    _value: 100,
+  })
+})
+```
+
+## Testing TrackVisible
+
+For components that track on visibility, you'll need to mock IntersectionObserver:
+
+```tsx
+import { vi } from 'vitest'
+
+// Mock IntersectionObserver
+const mockIntersectionObserver = vi.fn()
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+})
+window.IntersectionObserver = mockIntersectionObserver
+
+describe('TrackVisible', () => {
+  it('observes the element', () => {
+    const mockClient = createMockClient()
+
+    render(
+      <FathomProvider client={mockClient}>
+        <TrackVisible eventName="section-viewed">
+          <div>Content</div>
+        </TrackVisible>
+      </FathomProvider>
+    )
+
+    expect(mockIntersectionObserver).toHaveBeenCalled()
+  })
+})
+```
+
+## Snapshot Testing
+
+Don't snapshot test analytics calls—they're implementation details. Instead, test that:
+
+1. The correct events are fired
+2. Events include the expected data
+3. Events fire at the right times (mount, click, visibility)
