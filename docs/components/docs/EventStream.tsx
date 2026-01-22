@@ -109,6 +109,18 @@ export function EventStream() {
     }
   }, [])
 
+  // Keyboard shortcut (Cmd/Ctrl + .) to toggle
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === '.') {
+        e.preventDefault()
+        setIsVisible((prev) => !prev)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   // Save visibility state to localStorage
   useEffect(() => {
     if (isHydrated) {
@@ -224,7 +236,11 @@ export function EventStream() {
             _dark={{ bg: 'gray.800', borderTopColor: 'gray.700' }}
           >
             <Text fontSize="xs" color="gray.500" textAlign="center">
-              Debug mode enabled • {events.length} event{events.length !== 1 ? 's' : ''}
+              {events.length} event{events.length !== 1 ? 's' : ''} • Press{' '}
+              <Text as="span" fontFamily="mono" bg="gray.200" _dark={{ bg: 'gray.700' }} px={1} borderRadius="sm">
+                ⌘.
+              </Text>{' '}
+              to toggle
             </Text>
           </Box>
         </Box>
