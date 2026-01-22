@@ -102,8 +102,10 @@ export function Search() {
       const searchResults = await Promise.all(
         search.results.slice(0, 8).map(async (result) => {
           const data = await result.data()
+          // Strip .html extension from URLs since Next.js routes don't have them
+          const url = data.url.replace(/\.html$/, '')
           return {
-            url: data.url,
+            url,
             title: data.meta?.title || 'Untitled',
             excerpt: data.excerpt,
           }
