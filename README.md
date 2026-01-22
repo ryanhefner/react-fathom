@@ -63,6 +63,7 @@ The official `fathom-client` works, but:
 - 🛤️ React Router v6+ and Remix support
 - 🏠 Gatsby support with @reach/router integration
 - 🧭 TanStack Router support with type-safe routing
+- 🐛 Debug mode for development with event subscription hooks
 - 🌳 Tree-shakeable, fully typed (TypeScript)
 
 ## Usage
@@ -243,6 +244,35 @@ function App() {
 
 📖 [Full React Native guide](https://react-fathom.com/react-native)
 
+### Debug Mode
+
+Enable debug mode to log tracking calls and subscribe to events for custom UI:
+
+```tsx
+// Console logging during development
+<FathomProvider siteId="YOUR_SITE_ID" debug={{ enabled: true }}>
+
+// Subscribe to events programmatically
+import { useDebugSubscription } from 'react-fathom'
+
+function DebugPanel() {
+  const { events, debugEnabled, clearEvents } = useDebugSubscription({
+    maxEvents: 20,
+    onEvent: (event) => console.log('Tracked:', event)
+  })
+
+  if (!debugEnabled) return null
+
+  return (
+    <div>
+      {events.map(e => <div key={e.id}>{e.type}: {e.eventName || e.url}</div>)}
+    </div>
+  )
+}
+```
+
+Debug mode does not block actual tracking—events are still sent to Fathom.
+
 ## API Overview
 
 ### Providers
@@ -265,6 +295,7 @@ function App() {
 | `useTrackOnMount(opts?)` | Track pageview when component mounts |
 | `useTrackOnClick(opts)` | Returns click handler that tracks event |
 | `useTrackOnVisible(opts)` | Returns ref; tracks when element becomes visible |
+| `useDebugSubscription(opts?)` | Subscribe to debug events for custom UI |
 
 ### Components
 
