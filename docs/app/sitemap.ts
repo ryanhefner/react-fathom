@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
 import { getAllDocSlugs } from '@/lib/docs'
 
+export const dynamic = 'force-static'
+
 const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
 
 export default function sitemap(): MetadataRoute.Sitemap {
