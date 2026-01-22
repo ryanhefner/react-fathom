@@ -8,4 +8,5 @@ export default {
   guides: 'Guides',
   troubleshooting: 'Troubleshooting',
   contributing: 'Contributing',
+  changelog: 'Changelog',
 }
