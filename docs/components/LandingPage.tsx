@@ -22,24 +22,36 @@ const frameworks = [
     icon: '⚛️',
     description: 'Drop-in provider and hooks for any React app',
     href: '/docs/react',
-    demos: [{ label: 'Live Demo', url: 'https://react.react-fathom.com' }],
   },
   {
     name: 'Next.js',
     icon: '▲',
     description: 'App Router and Pages Router support with SSR handling',
     href: '/docs/nextjs',
-    demos: [
-      { label: 'App Router', url: 'https://next-app.react-fathom.com' },
-      { label: 'Pages Router', url: 'https://next-pages.react-fathom.com' },
-    ],
+  },
+  {
+    name: 'React Router',
+    icon: '🛤️',
+    description: 'Automatic pageview tracking for React Router v6+ and Remix',
+    href: '/docs/react-router',
+  },
+  {
+    name: 'Gatsby',
+    icon: '🏠',
+    description: 'Integration with @reach/router for Gatsby sites',
+    href: '/docs/gatsby',
+  },
+  {
+    name: 'TanStack Router',
+    icon: '🧭',
+    description: 'Type-safe routing with automatic pageview tracking',
+    href: '/docs/tanstack-router',
   },
   {
     name: 'React Native',
     icon: '📱',
     description: 'Navigation tracking and app state handling for mobile',
     href: '/docs/react-native',
-    demos: [{ label: 'Live Demo', url: 'https://native.react-fathom.com' }],
   },
 ]
 
@@ -52,7 +64,7 @@ const features = [
   {
     icon: '⚡',
     title: 'Lightweight',
-    description: 'Tiny bundle size with zero dependencies.',
+    description: 'Tree-shakeable with tiny bundle size.',
   },
   {
     icon: '📘',
@@ -63,6 +75,16 @@ const features = [
     icon: '🎯',
     title: 'Simple API',
     description: 'Intuitive hooks and components that just work.',
+  },
+  {
+    icon: '🐛',
+    title: 'Debug Mode',
+    description: 'Built-in event stream for development and testing.',
+  },
+  {
+    icon: '🌳',
+    title: 'Tree-Shakeable',
+    description: 'Import only what you need for minimal bundle impact.',
   },
 ]
 
@@ -215,55 +237,40 @@ export function LandingPage() {
             </VStack>
 
             <Grid
-              templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }}
+              templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
               gap={6}
               width="100%"
             >
               {frameworks.map((framework) => (
-                <Box
+                <Link
                   key={framework.name}
-                  p={6}
-                  bg="bg"
-                  borderRadius="xl"
-                  borderWidth="1px"
-                  _hover={{
-                    borderColor: 'blue.500',
-                  }}
-                  transition="all 0.2s"
-                  height="100%"
+                  asChild
+                  _hover={{ textDecoration: 'none' }}
                 >
-                  <Text fontSize="3xl" mb={3}>
-                    {framework.icon}
-                  </Text>
-                  <Heading as="h3" size="md" mb={2}>
-                    {framework.name}
-                  </Heading>
-                  <Text color="fg.muted" fontSize="sm" mb={4}>
-                    {framework.description}
-                  </Text>
-                  <HStack gap={4} flexWrap="wrap">
-                    <Link
-                      asChild
-                      fontSize="sm"
-                      color="blue.500"
-                      fontWeight="medium"
-                      _hover={{ textDecoration: 'underline' }}
+                  <NextLink href={framework.href}>
+                    <Box
+                      p={6}
+                      bg="bg"
+                      borderRadius="xl"
+                      borderWidth="1px"
+                      _hover={{
+                        borderColor: 'blue.500',
+                      }}
+                      transition="all 0.2s"
+                      height="100%"
                     >
-                      <NextLink href={framework.href}>Documentation</NextLink>
-                    </Link>
-                    {framework.demos.map((demo, idx) => (
-                      <Link
-                        key={idx}
-                        href={demo.url}
-                        fontSize="sm"
-                        color="fg.muted"
-                        _hover={{ color: 'fg' }}
-                      >
-                        {demo.label} →
-                      </Link>
-                    ))}
-                  </HStack>
-                </Box>
+                      <Text fontSize="3xl" mb={3}>
+                        {framework.icon}
+                      </Text>
+                      <Heading as="h3" size="md" mb={2}>
+                        {framework.name}
+                      </Heading>
+                      <Text color="fg.muted" fontSize="sm">
+                        {framework.description}
+                      </Text>
+                    </Box>
+                  </NextLink>
+                </Link>
               ))}
             </Grid>
           </VStack>
@@ -283,7 +290,7 @@ export function LandingPage() {
           </VStack>
 
           <Grid
-            templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)' }}
+            templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
             gap={8}
             width="100%"
           >
