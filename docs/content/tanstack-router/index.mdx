@@ -1,0 +1,266 @@
+---
+title: "TanStack Router"
+description: "Integrate react-fathom with TanStack Router for automatic pageview tracking."
+---
+
+# TanStack Router Integration
+
+This guide covers integrating `react-fathom` with TanStack Router applications for automatic pageview tracking.
+
+## Installation
+
+Install the required packages:
+
+```bash npm2yarn
+npm install react-fathom fathom-client @tanstack/react-router
+```
+
+## Setup
+
+Add `TanStackRouterFathomTrackView` inside your `FathomProvider`, typically in your root route component.
+
+### Root Route Setup
+
+```tsx
+// src/routes/__root.tsx
+import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { FathomProvider } from 'react-fathom'
+import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
+
+export const Route = createRootRoute({
+  component: () => (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <TanStackRouterFathomTrackView />
+      <Outlet />
+    </FathomProvider>
+  ),
+})
+```
+
+### Alternative: App-Level Setup
+
+If you prefer to keep analytics configuration separate from routes:
+
+```tsx
+// src/App.tsx
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { FathomProvider } from 'react-fathom'
+import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
+import { routeTree } from './routeTree.gen'
+
+const router = createRouter({ routeTree })
+
+function InnerApp() {
+  return (
+    <>
+      <TanStackRouterFathomTrackView />
+      {/* Your app content */}
+    </>
+  )
+}
+
+export function App() {
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <RouterProvider router={router} />
+    </FathomProvider>
+  )
+}
+```
+
+> Note: When using this approach, ensure `TanStackRouterFathomTrackView` is rendered within the router context (inside a route component).
+
+## TanStackRouterFathomTrackView Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `disableAutoTrack` | `boolean` | `false` | Disable automatic pageview tracking |
+| `includeSearchParams` | `boolean` | `true` | Include query parameters in tracked URLs |
+| `includeHash` | `boolean` | `false` | Include URL hash in tracked URLs |
+| `transformUrl` | `(url: string) => string \| null` | — | Transform URL before tracking; return `null` to skip |
+
+## Tracking Custom Events
+
+Use the `useFathom` hook in any component:
+
+```tsx
+import { useFathom } from 'react-fathom'
+
+function CheckoutButton() {
+  const { trackEvent } = useFathom()
+
+  const handleClick = () => {
+    trackEvent('checkout-started')
+    // Navigate to checkout...
+  }
+
+  return <button onClick={handleClick}>Checkout</button>
+}
+```
+
+## URL Transformation
+
+### Sanitizing Dynamic Routes
+
+Remove dynamic segments from URLs for cleaner analytics:
+
+```tsx
+<TanStackRouterFathomTrackView
+  transformUrl={(url) => {
+    // /users/123 → /users/$userId
+    return url.replace(/\/users\/\d+/, '/users/$userId')
+  }}
+/>
+```
+
+### Excluding Routes
+
+Skip tracking for specific routes:
+
+```tsx
+<TanStackRouterFathomTrackView
+  transformUrl={(url) => {
+    // Don't track admin pages
+    if (url.includes('/admin')) {
+      return null
+    }
+    return url
+  }}
+/>
+```
+
+### Stripping Sensitive Parameters
+
+Remove sensitive data from tracked URLs:
+
+```tsx
+<TanStackRouterFathomTrackView
+  transformUrl={(url) => {
+    const urlObj = new URL(url)
+    urlObj.searchParams.delete('token')
+    urlObj.searchParams.delete('session')
+    return urlObj.toString()
+  }}
+/>
+```
+
+## Environment Variables
+
+Store your site ID in environment variables:
+
+```bash
+# .env
+VITE_FATHOM_SITE_ID=YOUR_SITE_ID
+```
+
+```tsx
+<FathomProvider siteId={import.meta.env.VITE_FATHOM_SITE_ID}>
+```
+
+## Local Development
+
+Enable tracking on localhost:
+
+```tsx
+<FathomProvider
+  siteId={import.meta.env.VITE_FATHOM_SITE_ID}
+  clientOptions={{
+    includedDomains: ['localhost', 'yourdomain.com']
+  }}
+>
+```
+
+## TypeScript Support
+
+All TanStack Router exports are fully typed. Import types as needed:
+
+```tsx
+import type { TanStackRouterFathomTrackViewProps } from 'react-fathom/tanstack-router'
+```
+
+## How It Works
+
+TanStack Router provides location state through the `useRouterState` hook. The `TanStackRouterFathomTrackView` component:
+
+1. Uses `useRouterState` to watch for location changes
+2. On mount, tracks the initial pageview
+3. When `pathname`, `searchStr`, or `hash` change, tracks a new pageview
+4. Constructs the full URL from `window.location.origin` and the route path
+
+## File-Based Routing Example
+
+If you're using TanStack Router's file-based routing:
+
+```tsx
+// src/routes/__root.tsx
+import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { FathomProvider } from 'react-fathom'
+import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
+
+export const Route = createRootRoute({
+  component: RootComponent,
+})
+
+function RootComponent() {
+  return (
+    <FathomProvider
+      siteId={import.meta.env.VITE_FATHOM_SITE_ID}
+      clientOptions={{
+        includedDomains: ['localhost', 'yourdomain.com'],
+      }}
+    >
+      <TanStackRouterFathomTrackView
+        transformUrl={(url) => {
+          // Normalize user profile URLs
+          return url.replace(/\/users\/[^/]+$/, '/users/$userId')
+        }}
+      />
+      <header>...</header>
+      <main>
+        <Outlet />
+      </main>
+      <footer>...</footer>
+    </FathomProvider>
+  )
+}
+```
+
+```tsx
+// src/routes/index.tsx
+import { createFileRoute } from '@tanstack/react-router'
+import { useFathom } from 'react-fathom'
+
+export const Route = createFileRoute('/')({
+  component: HomePage,
+})
+
+function HomePage() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <div>
+      <h1>Welcome</h1>
+      <button onClick={() => trackEvent('cta-click')}>
+        Get Started
+      </button>
+    </div>
+  )
+}
+```
+
+## Troubleshooting
+
+### Events not appearing in Fathom?
+
+1. Verify your site ID matches your [Fathom dashboard](https://app.usefathom.com)
+2. Check for ad blockers (test in incognito mode)
+3. Add `localhost` to `includedDomains` for local testing
+4. Ensure `TanStackRouterFathomTrackView` is within both `FathomProvider` and router context
+
+### Route changes not tracking?
+
+Ensure `TanStackRouterFathomTrackView` is rendered inside `FathomProvider` and within the TanStack Router context. The component must be inside a route component to access the router state.
+
+### Search params not being tracked?
+
+TanStack Router uses `searchStr` for the serialized search string. This is handled automatically by the component. If you have custom search param serialization, make sure it's producing the expected format.

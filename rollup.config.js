@@ -140,12 +140,14 @@ const nextExternal = [
 const nativeExternal = ['react', 'react-native']
 const reactRouterExternal = ['fathom-client', 'react', 'react-router-dom']
 const gatsbyExternal = ['fathom-client', 'react', '@reach/router']
+const tanstackRouterExternal = ['fathom-client', 'react', '@tanstack/react-router']
 
 const input = 'src/index.ts'
 const nextInput = 'src/next/index.ts'
 const nativeInput = 'src/native/index.ts'
 const reactRouterInput = 'src/react-router/index.ts'
 const gatsbyInput = 'src/gatsby/index.ts'
+const tanstackRouterInput = 'src/tanstack-router/index.ts'
 
 export default [
   // UMD - Minified
@@ -288,6 +290,30 @@ export default [
       entryFileNames: '[name].cjs',
     },
     external: makeExternal(gatsbyExternal),
+    plugins: defaultPlugins,
+  },
+  // ES - tanstack-router
+  {
+    input: tanstackRouterInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/es/tanstack-router',
+      format: 'esm',
+      entryFileNames: '[name].js',
+    },
+    external: makeExternal(tanstackRouterExternal),
+    plugins: defaultPlugins,
+  },
+  // CJS - tanstack-router
+  {
+    input: tanstackRouterInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/cjs/tanstack-router',
+      format: 'cjs',
+      entryFileNames: '[name].cjs',
+    },
+    external: makeExternal(tanstackRouterExternal),
     plugins: defaultPlugins,
   },
 ]

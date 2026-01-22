@@ -1717,6 +1717,49 @@
   dependencies:
     tslib "^2.8.0"
 
+"@tanstack/history@1.154.7":
+  version "1.154.7"
+  resolved "https://registry.yarnpkg.com/@tanstack/history/-/history-1.154.7.tgz#2e3c45ba5619078af0a288af0abf7cc096685dc4"
+  integrity sha512-YBgwS9qG4rs1ZY/ZrhQtjOH8BG9Qa2wf2AsxT/SnZ4HZJ1DcCEqkoiHH0yH6CYvdDit31X5HokOqQrRSsZEwGA==
+
+"@tanstack/react-router@^1.120.5":
+  version "1.154.8"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-router/-/react-router-1.154.8.tgz#48c28ae298d35fae412c24e2d7a9ab1a4f6fe878"
+  integrity sha512-FD7VjAaO1kjg2v8jL2jXMgSLga2fD6kBkBN+50voeJ5jHLasHcZpRcPZl7hkdy0gXiR/d6JepgnoeHQYiC2vRA==
+  dependencies:
+    "@tanstack/history" "1.154.7"
+    "@tanstack/react-store" "^0.8.0"
+    "@tanstack/router-core" "1.154.8"
+    isbot "^5.1.22"
+    tiny-invariant "^1.3.3"
+    tiny-warning "^1.0.3"
+
+"@tanstack/react-store@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-store/-/react-store-0.8.0.tgz#af2e73f1a466e08897349829bae1073f6172e7da"
+  integrity sha512-1vG9beLIuB7q69skxK9r5xiLN3ztzIPfSQSs0GfeqWGO2tGIyInZx0x1COhpx97RKaONSoAb8C3dxacWksm1ow==
+  dependencies:
+    "@tanstack/store" "0.8.0"
+    use-sync-external-store "^1.6.0"
+
+"@tanstack/router-core@1.154.8":
+  version "1.154.8"
+  resolved "https://registry.yarnpkg.com/@tanstack/router-core/-/router-core-1.154.8.tgz#46f781ec01c380067d800ef40a90e57550b800a7"
+  integrity sha512-bJvc4scMXktX2ZrO6xE8R3SC6SM9kCLu34KMlS5pFbK6C/Ry4yGgW4UWDY+Nwznbhc59Ehcw+HeBoE9WDWOzDA==
+  dependencies:
+    "@tanstack/history" "1.154.7"
+    "@tanstack/store" "^0.8.0"
+    cookie-es "^2.0.0"
+    seroval "^1.4.2"
+    seroval-plugins "^1.4.2"
+    tiny-invariant "^1.3.3"
+    tiny-warning "^1.0.3"
+
+"@tanstack/store@0.8.0", "@tanstack/store@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/store/-/store-0.8.0.tgz#f1c533b9cff000fc792ed77edda178000abc9442"
+  integrity sha512-Om+BO0YfMZe//X2z0uLF2j+75nQga6TpTJgLJQBiq85aOyZNIhkCgleNcud2KQg4k4v9Y9l+Uhru3qWMPGTOzQ==
+
 "@testing-library/dom@^10.4.1":
   version "10.4.1"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-10.4.1.tgz#d444f8a889e9a46e9a3b4f3b88e0fcb3efb6cf95"
@@ -2388,6 +2431,11 @@ convert-source-map@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-2.0.0.tgz#4b560f649fc4e918dd0ab75cf4961e8bc882d82a"
   integrity sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==
+
+cookie-es@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cookie-es/-/cookie-es-2.0.0.tgz#ca6163d7ef8686ea6bbdd551f1de575569c1ed69"
+  integrity sha512-RAj4E421UYRgqokKUmotqAwuplYw15qtdXfY+hGzgCJ/MBjCVZcSoHK/kH9kocfjRjcDME7IiDWR/1WX1TM2Pg==
 
 cookie@^1.0.1:
   version "1.1.1"
@@ -3580,6 +3628,11 @@ isarray@^2.0.5:
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-2.0.5.tgz#8af1e4c1221244cc62459faf38940d4e644a5723"
   integrity sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==
 
+isbot@^5.1.22:
+  version "5.1.33"
+  resolved "https://registry.yarnpkg.com/isbot/-/isbot-5.1.33.tgz#99afd99be96390452dcf794d5ff97400339f40d7"
+  integrity sha512-P4Hgb5NqswjkI0J1CM6XKXon/sxKY1SuowE7Qx2hrBhIwICFyXy54mfgB5eMHXsbe/eStzzpbIGNOvGmz+dlKg==
+
 isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
@@ -4544,6 +4597,16 @@ serialize-javascript@^4.0.0:
   dependencies:
     randombytes "^2.1.0"
 
+seroval-plugins@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/seroval-plugins/-/seroval-plugins-1.4.2.tgz#e903e9a9f4f77f82bf80714213fa4bcae3b395cf"
+  integrity sha512-X7p4MEDTi+60o2sXZ4bnDBhgsUYDSkQEvzYZuJyFqWg9jcoPsHts5nrg5O956py2wyt28lUrBxk0M0/wU8URpA==
+
+seroval@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/seroval/-/seroval-1.4.2.tgz#0718ce33f0363407eee7c78272c24bc48ec940c8"
+  integrity sha512-N3HEHRCZYn3cQbsC4B5ldj9j+tHdf4JZoYPlcI4rRYu0Xy4qN8MQf1Z08EibzB0WpgRG5BGK08FTrmM66eSzKQ==
+
 set-cookie-parser@^2.6.0:
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/set-cookie-parser/-/set-cookie-parser-2.7.2.tgz#ccd08673a9ae5d2e44ea2a2de25089e67c7edf68"
@@ -4857,6 +4920,16 @@ terser@^5.0.0:
     commander "^2.20.0"
     source-map-support "~0.5.20"
 
+tiny-invariant@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.3.tgz#46680b7a873a0d5d10005995eb90a70d74d60127"
+  integrity sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==
+
+tiny-warning@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tiny-warning/-/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
+  integrity sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==
+
 tinybench@^2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/tinybench/-/tinybench-2.9.0.tgz#103c9f8ba6d7237a47ab6dd1dcff77251863426b"
@@ -5070,6 +5143,11 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
+
+use-sync-external-store@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.6.0.tgz#b174bfa65cb2b526732d9f2ac0a408027876f32d"
+  integrity sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==
 
 uuid@^3.3.2:
   version "3.4.0"

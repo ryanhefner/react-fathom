@@ -12,6 +12,7 @@
     "react-router",
     "remix",
     "gatsby",
+    "tanstack-router",
     "nextjs",
     "next.js",
     "typescript",
@@ -100,6 +101,9 @@
       ],
       "gatsby": [
         "./types/gatsby/index.d.ts"
+      ],
+      "tanstack-router": [
+        "./types/tanstack-router/index.d.ts"
       ]
     }
   },
@@ -133,6 +137,12 @@
       "import": "./dist/es/gatsby/index.js",
       "require": "./dist/cjs/gatsby/index.cjs",
       "default": "./dist/es/gatsby/index.js"
+    },
+    "./tanstack-router": {
+      "types": "./types/tanstack-router/index.d.ts",
+      "import": "./dist/es/tanstack-router/index.js",
+      "require": "./dist/cjs/tanstack-router/index.cjs",
+      "default": "./dist/es/tanstack-router/index.js"
     }
   },
   "scripts": {
@@ -151,6 +161,7 @@
   },
   "peerDependencies": {
     "@reach/router": ">=1.3.0",
+    "@tanstack/react-router": ">=1.0.0",
     "fathom-client": ">=3.0.0",
     "gatsby": ">=4.0.0",
     "next": ">=10.0.0",
@@ -162,6 +173,9 @@
   },
   "peerDependenciesMeta": {
     "@reach/router": {
+      "optional": true
+    },
+    "@tanstack/react-router": {
       "optional": true
     },
     "gatsby": {
@@ -185,6 +199,7 @@
   },
   "devDependencies": {
     "@reach/router": "^1.3.4",
+    "@tanstack/react-router": "^1.120.5",
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",

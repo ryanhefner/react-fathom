@@ -4,6 +4,7 @@ export default {
   react: 'React',
   'react-router': 'React Router',
   gatsby: 'Gatsby',
+  'tanstack-router': 'TanStack Router',
   nextjs: 'Next.js',
   'react-native': 'React Native',
   api: 'API Reference',

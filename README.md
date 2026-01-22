@@ -62,6 +62,7 @@ The official `fathom-client` works, but:
 - ⚡ Next.js App Router and Pages Router support
 - 🛤️ React Router v6+ and Remix support
 - 🏠 Gatsby support with @reach/router integration
+- 🧭 TanStack Router support with type-safe routing
 - 🌳 Tree-shakeable, fully typed (TypeScript)
 
 ## Usage
@@ -144,6 +145,26 @@ export const wrapRootElement = ({ element }) => (
 ```
 
 📖 [Full Gatsby guide](https://react-fathom.com/gatsby)
+
+### TanStack Router
+
+```tsx
+// src/routes/__root.tsx
+import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { FathomProvider } from 'react-fathom'
+import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
+
+export const Route = createRootRoute({
+  component: () => (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <TanStackRouterFathomTrackView />
+      <Outlet />
+    </FathomProvider>
+  ),
+})
+```
+
+📖 [Full TanStack Router guide](https://react-fathom.com/tanstack-router)
 
 ### Hooks
 
@@ -233,6 +254,7 @@ function App() {
 | `NextFathomTrackViewPages` | Next.js Pages Router (add inside `FathomProvider`) |
 | `ReactRouterFathomTrackView` | React Router v6+ / Remix (add inside `FathomProvider`) |
 | `GatsbyFathomTrackView` | Gatsby (add inside `FathomProvider`) |
+| `TanStackRouterFathomTrackView` | TanStack Router (add inside `FathomProvider`) |
 | `NativeFathomProvider` | React Native |
 
 ### Hooks
@@ -275,6 +297,7 @@ function App() {
 - ⚛️ [React Guide](https://react-fathom.com/react)
 - 🛤️ [React Router Guide](https://react-fathom.com/react-router)
 - 🏠 [Gatsby Guide](https://react-fathom.com/gatsby)
+- 🧭 [TanStack Router Guide](https://react-fathom.com/tanstack-router)
 - ⚡ [Next.js Guide](https://react-fathom.com/nextjs)
 - 📱 [React Native Guide](https://react-fathom.com/react-native)
 - 📚 [API Reference](https://react-fathom.com/api/providers)
