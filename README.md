@@ -60,6 +60,7 @@ The official `fathom-client` works, but:
 - ⚛️ Hooks API and declarative tracking components
 - 📱 React Native with offline queuing and navigation tracking
 - ⚡ Next.js App Router and Pages Router support
+- 🛤️ React Router v6+ and Remix support
 - 🌳 Tree-shakeable, fully typed (TypeScript)
 
 ## Usage
@@ -103,6 +104,28 @@ function MyApp({ Component, pageProps }) {
 ```
 
 📖 [Full Next.js guide](https://react-fathom.com/nextjs)
+
+### React Router / Remix
+
+```tsx
+// App.tsx or root.tsx
+import { BrowserRouter } from 'react-router-dom'
+import { FathomProvider } from 'react-fathom'
+import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <FathomProvider siteId="YOUR_SITE_ID">
+        <ReactRouterFathomTrackView />
+        <Routes>...</Routes>
+      </FathomProvider>
+    </BrowserRouter>
+  )
+}
+```
+
+📖 [Full React Router guide](https://react-fathom.com/react-router)
 
 ### Hooks
 
@@ -190,6 +213,7 @@ function App() {
 | `FathomProvider` | Basic React apps |
 | `NextFathomProviderApp` | Next.js App Router |
 | `NextFathomTrackViewPages` | Next.js Pages Router (add inside `FathomProvider`) |
+| `ReactRouterFathomTrackView` | React Router v6+ / Remix (add inside `FathomProvider`) |
 | `NativeFathomProvider` | React Native |
 
 ### Hooks
@@ -230,6 +254,7 @@ function App() {
 
 - 📖 [Getting Started](https://react-fathom.com/getting-started)
 - ⚛️ [React Guide](https://react-fathom.com/react)
+- 🛤️ [React Router Guide](https://react-fathom.com/react-router)
 - ⚡ [Next.js Guide](https://react-fathom.com/nextjs)
 - 📱 [React Native Guide](https://react-fathom.com/react-native)
 - 📚 [API Reference](https://react-fathom.com/api/providers)
