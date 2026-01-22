@@ -1,10 +1,7 @@
-import nextra from 'nextra'
-
-const withNextra = nextra()
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
 }
 
-export default withNextra(nextConfig)
+export default nextConfig

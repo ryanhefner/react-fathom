@@ -1,3 +1,8 @@
+---
+title: Next.js
+description: First-class Next.js support with automatic pageview tracking
+---
+
 # Next.js
 
 react-fathom provides first-class support for Next.js with automatic pageview tracking on route changes.
@@ -5,8 +10,6 @@ react-fathom provides first-class support for Next.js with automatic pageview tr
 ## Which Router Are You Using?
 
 Next.js has two routing systems. Choose the guide that matches your project:
-
-import { Cards, Card } from 'nextra/components'
 
 <Cards>
   <Card title="App Router" href="/nextjs/app-router">
@@ -48,15 +51,13 @@ import { FathomProvider, useFathom, TrackClick } from 'react-fathom'
 
 Store your site ID in an environment variable for production:
 
-```bash filename=".env.local"
+```bash
 NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID
 ```
 
 ```tsx
 <NextFathomProviderApp siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
 ```
-
-import { Callout } from 'nextra/components'
 
 <Callout type="warning">
   Environment variables must be prefixed with `NEXT_PUBLIC_` to be available on the client side.

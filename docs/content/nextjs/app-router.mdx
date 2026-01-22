@@ -1,3 +1,8 @@
+---
+title: App Router
+description: Integrating react-fathom with Next.js App Router
+---
+
 # App Router
 
 This guide covers integrating react-fathom with Next.js 13.4+ using the App Router (`app/` directory).
@@ -80,8 +85,6 @@ export default function RootLayout({ children }) {
   )
 }
 ```
-
-import { Callout } from 'nextra/components'
 
 <Callout type="info">
   Since `FathomProvider` uses React hooks, you may need to wrap it in your own Client Component when using this approach directly in a Server Component layout.

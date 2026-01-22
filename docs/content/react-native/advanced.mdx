@@ -1,3 +1,8 @@
+---
+title: Advanced Setup
+description: Manual WebView configuration and advanced use cases
+---
+
 # Advanced Setup
 
 For advanced use cases, you can manually control the WebView and client.
@@ -164,8 +169,6 @@ The queue:
 - Has a max size (default: 100 events)
 - Is processed in order when WebView becomes ready
 - Persists only in memory (not across app restarts)
-
-import { Callout } from 'nextra/components'
 
 <Callout type="warning">
   The queue does not persist across app restarts. Events queued when the app is killed will be lost.

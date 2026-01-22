@@ -1,10 +1,9 @@
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import { Head } from 'nextra/components'
-import { getPageMap } from 'nextra/page-map'
 import type { ReactNode } from 'react'
-import 'nextra-theme-docs/style.css'
+import type { Metadata } from 'next'
+import { Provider } from './provider'
+import './globals.css'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: 'react-fathom',
     template: '%s – react-fathom',
@@ -12,31 +11,11 @@ export const metadata = {
   description: 'Privacy-focused analytics for React, Next.js, and React Native',
 }
 
-const navbar = (
-  <Navbar
-    logo={<span style={{ fontWeight: 700 }}>react-fathom</span>}
-    projectLink="https://github.com/ryanhefner/react-fathom"
-  />
-)
-
-const footer = <Footer>MIT {new Date().getFullYear()} © Ryan Hefner</Footer>
-
-export default async function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
-      <Head />
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Layout
-          navbar={navbar}
-          footer={footer}
-          pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/ryanhefner/react-fathom/tree/main/docs"
-          editLink="Edit this page on GitHub"
-          sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: true }}
-          toc={{ backToTop: true }}
-        >
-          {children}
-        </Layout>
+        <Provider>{children}</Provider>
       </body>
     </html>
   )
