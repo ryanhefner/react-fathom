@@ -527,6 +527,110 @@ describe('FathomProvider', () => {
     })
   })
 
+  it('should deep merge nested providers - child overrides specific defaultEventOptions while inheriting others', () => {
+    const mockClient = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider
+        client={mockClient}
+        defaultEventOptions={{ _site_id: 'parent-id', _value: 100 }}
+      >
+        <FathomProvider defaultEventOptions={{ _value: 200 }}>
+          {children}
+        </FathomProvider>
+      </FathomProvider>
+    )
+
+    const { result } = renderHook(() => useFathom(), { wrapper })
+
+    result.current.trackEvent?.('test-event')
+
+    // Child overrides _value but inherits _site_id from parent
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {
+      _site_id: 'parent-id',
+      _value: 200,
+    })
+  })
+
+  it('should deep merge nested providers - child overrides specific defaultPageviewOptions while inheriting others', () => {
+    const mockClient = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider
+        client={mockClient}
+        defaultPageviewOptions={{ url: '/parent', referrer: 'https://parent.com' }}
+      >
+        <FathomProvider defaultPageviewOptions={{ url: '/child' }}>
+          {children}
+        </FathomProvider>
+      </FathomProvider>
+    )
+
+    const { result } = renderHook(() => useFathom(), { wrapper })
+
+    result.current.trackPageview?.()
+
+    // Child overrides url but inherits referrer from parent
+    expect(mockClient.trackPageview).toHaveBeenCalledWith({
+      url: '/child',
+      referrer: 'https://parent.com',
+    })
+  })
+
+  it('should deep merge three levels of nested providers', () => {
+    const mockClient = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider
+        client={mockClient}
+        defaultEventOptions={{ _site_id: 'root-id' }}
+      >
+        <FathomProvider defaultEventOptions={{ _value: 100 }}>
+          <FathomProvider defaultEventOptions={{ _value: 200 }}>
+            {children}
+          </FathomProvider>
+        </FathomProvider>
+      </FathomProvider>
+    )
+
+    const { result } = renderHook(() => useFathom(), { wrapper })
+
+    result.current.trackEvent?.('test-event')
+
+    // Deepest child overrides _value, inherits _site_id from root
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('test-event', {
+      _site_id: 'root-id',
+      _value: 200,
+    })
+  })
+
   it('should have displayName', () => {
     expect(FathomProvider.displayName).toBe('FathomProvider')
   })

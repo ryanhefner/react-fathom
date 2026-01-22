@@ -26,16 +26,21 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
     [providedClient, parentContext.client],
   )
 
-  // Merge defaultPageviewOptions: provided > parent > undefined
+  // Merge defaultPageviewOptions: parent + provided (provided overrides parent)
   const defaultPageviewOptions = useMemo(
-    () =>
-      providedDefaultPageviewOptions ?? parentContext.defaultPageviewOptions,
+    () => ({
+      ...parentContext.defaultPageviewOptions,
+      ...providedDefaultPageviewOptions,
+    }),
     [providedDefaultPageviewOptions, parentContext.defaultPageviewOptions],
   )
 
-  // Merge defaultEventOptions: provided > parent > undefined
+  // Merge defaultEventOptions: parent + provided (provided overrides parent)
   const defaultEventOptions = useMemo(
-    () => providedDefaultEventOptions ?? parentContext.defaultEventOptions,
+    () => ({
+      ...parentContext.defaultEventOptions,
+      ...providedDefaultEventOptions,
+    }),
     [providedDefaultEventOptions, parentContext.defaultEventOptions],
   )
 
