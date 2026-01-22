@@ -21,6 +21,7 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   defaultPageviewOptions: providedDefaultPageviewOptions,
   defaultEventOptions: providedDefaultEventOptions,
   debug: debugProp,
+  onError,
 }) => {
   // Read parent context if it exists
   const parentContext = useContext(FathomContext)
@@ -109,6 +110,22 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
     [providedClient, parentContext.client],
   )
 
+  // Helper to safely call client methods with error handling
+  const safeClientCall = useCallback(
+    <T,>(method: string, fn: () => T, args?: unknown[]): T | undefined => {
+      try {
+        return fn()
+      } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`[react-fathom] ${method}() failed:`, error)
+        }
+        onError?.(error, { method, args })
+        return undefined
+      }
+    },
+    [onError],
+  )
+
   // Merge defaultPageviewOptions: parent + provided (provided overrides parent)
   const defaultPageviewOptions = useMemo(
     () => ({
@@ -141,9 +158,9 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
 
   const load = useCallback(
     (siteId: string, clientOptions?: LoadOptions) => {
-      client.load(siteId, clientOptions)
+      safeClientCall('load', () => client.load(siteId, clientOptions), [siteId, clientOptions])
     },
-    [client],
+    [client, safeClientCall],
   )
 
   const setSite = useCallback(
@@ -170,9 +187,9 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       })
 
       // Track to Fathom
-      client.trackEvent(eventName, mergedOptions)
+      safeClientCall('trackEvent', () => client.trackEvent(eventName, mergedOptions), [eventName, mergedOptions])
     },
-    [client, defaultEventOptions, emitDebugEvent],
+    [client, defaultEventOptions, emitDebugEvent, safeClientCall],
   )
 
   const trackPageview = useCallback(
@@ -192,9 +209,9 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       })
 
       // Track to Fathom
-      client.trackPageview(mergedOptions)
+      safeClientCall('trackPageview', () => client.trackPageview(mergedOptions), [mergedOptions])
     },
-    [client, defaultPageviewOptions, emitDebugEvent],
+    [client, defaultPageviewOptions, emitDebugEvent, safeClientCall],
   )
 
   const trackGoal = useCallback(
@@ -209,9 +226,9 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       })
 
       // Track to Fathom
-      client.trackGoal(code, cents)
+      safeClientCall('trackGoal', () => client.trackGoal(code, cents), [code, cents])
     },
-    [client, emitDebugEvent],
+    [client, emitDebugEvent, safeClientCall],
   )
 
   useEffect(() => {

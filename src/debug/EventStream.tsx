@@ -106,9 +106,13 @@ export function EventStream({
   useEffect(() => {
     setIsHydrated(true)
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored !== null) {
-        setIsVisible(stored === 'true')
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY)
+        if (stored !== null) {
+          setIsVisible(stored === 'true')
+        }
+      } catch {
+        // localStorage may be unavailable (private browsing, security restrictions, etc.)
       }
     }
   }, [])
@@ -126,7 +130,11 @@ export function EventStream({
 
   useEffect(() => {
     if (isHydrated && typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, String(isVisible))
+      try {
+        localStorage.setItem(STORAGE_KEY, String(isVisible))
+      } catch {
+        // localStorage may be unavailable (private browsing, security restrictions, etc.)
+      }
     }
   }, [isVisible, isHydrated])
 

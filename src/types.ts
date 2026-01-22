@@ -138,4 +138,19 @@ export interface FathomProviderProps extends PropsWithChildren {
    * ```
    */
   debug?: DebugOptions | boolean
+  /**
+   * Callback fired when a tracking call fails.
+   * Useful for error monitoring and debugging.
+   *
+   * @example
+   * ```tsx
+   * <FathomProvider
+   *   siteId="..."
+   *   onError={(error, context) => {
+   *     console.error(`Fathom ${context.method} failed:`, error)
+   *   }}
+   * />
+   * ```
+   */
+  onError?: (error: unknown, context: { method: string; args?: unknown[] }) => void
 }
