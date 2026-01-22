@@ -60,7 +60,7 @@ export function Search() {
     }
   }, [isOpen])
 
-  // Keyboard shortcut (Cmd/Ctrl + K)
+  // Keyboard shortcut (Cmd/Ctrl + K) and custom event
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -71,8 +71,14 @@ export function Search() {
         setIsOpen(false)
       }
     }
+    const handleOpenSearch = () => setIsOpen(true)
+
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('open-search', handleOpenSearch)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('open-search', handleOpenSearch)
+    }
   }, [])
 
   // Search handler

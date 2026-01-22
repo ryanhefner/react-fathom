@@ -2,14 +2,24 @@
 
 import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
 import NextLink from 'next/link'
+import { AnnouncementBanner } from './AnnouncementBanner'
 import { Navbar } from './Navbar'
 import { Sidebar } from './Sidebar'
 import { TableOfContents } from './TableOfContents'
 import { Breadcrumbs } from './Breadcrumbs'
+import { KeyboardShortcuts } from './KeyboardShortcuts'
 import type { NavItem, TOCItem, Frontmatter, AdjacentPages, BreadcrumbItem } from '@/lib/docs'
 
 const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
 const DOCS_PATH = 'docs/content'
+
+interface Announcement {
+  id: string
+  message: string
+  linkText?: string
+  linkHref?: string
+  variant?: 'info' | 'warning' | 'success'
+}
 
 interface DocsLayoutProps {
   children: React.ReactNode
@@ -20,6 +30,7 @@ interface DocsLayoutProps {
   slug?: string[]
   breadcrumbs?: BreadcrumbItem[]
   lastUpdated?: string | null
+  announcement?: Announcement
 }
 
 function getEditUrl(slug: string[]): string {
@@ -45,11 +56,25 @@ export function DocsLayout({
   slug = [],
   breadcrumbs,
   lastUpdated,
+  announcement,
 }: DocsLayoutProps) {
   const editUrl = getEditUrl(slug)
 
   return (
     <Box minH="100vh">
+      <KeyboardShortcuts
+        prevHref={adjacentPages?.prev?.href}
+        nextHref={adjacentPages?.next?.href}
+      />
+      {announcement && (
+        <AnnouncementBanner
+          id={announcement.id}
+          message={announcement.message}
+          linkText={announcement.linkText}
+          linkHref={announcement.linkHref}
+          variant={announcement.variant}
+        />
+      )}
       <Navbar nav={nav} />
       <Container maxW="container.xl">
         <Flex>
