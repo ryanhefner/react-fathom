@@ -50,9 +50,11 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
             fontSize="sm"
             fontWeight={manager === m ? 'semibold' : 'normal'}
             color={manager === m ? 'white' : 'gray.400'}
-            _light={{ color: manager === m ? 'gray.900' : 'gray.500' }}
             bg={manager === m ? 'gray.800' : 'transparent'}
-            _light={{ bg: manager === m ? 'gray.100' : 'transparent' }}
+            _light={{
+              color: manager === m ? 'gray.900' : 'gray.500',
+              bg: manager === m ? 'gray.100' : 'transparent',
+            }}
             borderBottomWidth="2px"
             borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
             _hover={{ color: manager === m ? undefined : 'gray.200' }}
@@ -163,9 +165,11 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
             fontSize="sm"
             fontWeight={manager === m ? 'semibold' : 'normal'}
             color={manager === m ? 'white' : 'gray.400'}
-            _light={{ color: manager === m ? 'gray.900' : 'gray.500' }}
             bg={manager === m ? 'gray.800' : 'transparent'}
-            _light={{ bg: manager === m ? 'gray.100' : 'transparent' }}
+            _light={{
+              color: manager === m ? 'gray.900' : 'gray.500',
+              bg: manager === m ? 'gray.100' : 'transparent',
+            }}
             borderBottomWidth="2px"
             borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
             _hover={{ color: manager === m ? undefined : 'gray.200' }}

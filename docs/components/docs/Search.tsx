@@ -5,7 +5,6 @@ import {
   Flex,
   Input,
   Link,
-  Modal,
   Text,
   VStack,
 } from '@chakra-ui/react'
@@ -41,8 +40,9 @@ export function Search() {
     if (isOpen && !pagefindRef.current) {
       const loadPagefind = async () => {
         try {
-          // @ts-expect-error - Pagefind is loaded from static files
-          const pagefind = await import('/pagefind/pagefind.js')
+          // Use dynamic import with webpackIgnore to prevent build-time resolution
+          const pagefindPath = '/pagefind/pagefind.js'
+          const pagefind = await import(/* webpackIgnore: true */ pagefindPath)
           await pagefind.init()
           pagefindRef.current = pagefind
         } catch (e) {
@@ -189,8 +189,10 @@ export function Search() {
                   value={query}
                   onChange={(e) => handleSearch(e.target.value)}
                   placeholder="Search documentation..."
-                  variant="unstyled"
+                  variant="flushed"
+                  border="none"
                   fontSize="lg"
+                  _focus={{ boxShadow: 'none' }}
                 />
                 <Text
                   fontSize="xs"

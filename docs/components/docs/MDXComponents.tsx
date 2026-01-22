@@ -1,15 +1,11 @@
-'use client'
-
 import {
   Box,
   Code,
   Heading,
   Link,
-  ListItem,
-  OrderedList,
+  List,
   Table,
   Text,
-  UnorderedList,
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import type { MDXComponents as MDXComponentsType } from 'mdx/types'
@@ -27,6 +23,10 @@ function slugify(text: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
+}
+
+export function getMDXComponents(): MDXComponentsType {
+  return MDXComponents
 }
 
 export const MDXComponents: MDXComponentsType = {
@@ -124,13 +124,13 @@ export const MDXComponents: MDXComponentsType = {
     )
   },
   ul: (props) => (
-    <UnorderedList my={4} pl={4} spaceY={2} {...props} />
+    <List.Root as="ul" my={4} pl={4} gap={2} {...props} />
   ),
   ol: (props) => (
-    <OrderedList my={4} pl={4} spaceY={2} {...props} />
+    <List.Root as="ol" my={4} pl={4} gap={2} {...props} />
   ),
   li: (props) => (
-    <ListItem {...props} />
+    <List.Item {...props} />
   ),
   code: ({ children, className, ...props }) => {
     // If it has data-theme, it's from rehype-pretty-code - pass through

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import rehypePrettyCode from 'rehype-pretty-code'
-import { DocsLayout, MDXComponents } from '@/components/docs'
+import { DocsLayout } from '@/components/docs'
 import {
   getDocBySlug,
   getAllDocSlugs,
@@ -11,6 +11,7 @@ import {
   getBreadcrumbs,
   getLastUpdated,
 } from '@/lib/docs'
+import { getMDXComponents } from '@/components/docs/MDXComponents'
 
 export async function generateStaticParams() {
   const slugs = getAllDocSlugs()
@@ -74,7 +75,7 @@ export default async function DocPage({
     >
       <MDXRemote
         source={doc.content}
-        components={MDXComponents}
+        components={getMDXComponents()}
         options={{
           mdxOptions: {
             rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
