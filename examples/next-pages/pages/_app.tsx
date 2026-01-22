@@ -19,6 +19,8 @@ export default function App({ Component, pageProps }: AppProps) {
           </Link>
           <div className="nav-links">
             <Link href="/">Home</Link>
+            <Link href="/docs">Docs</Link>
+            <Link href="/events">Events</Link>
             <Link href="/about">About</Link>
             <Link href="/contact">Contact</Link>
           </div>

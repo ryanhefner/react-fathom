@@ -2,6 +2,10 @@
 
 A complete example of integrating privacy-focused analytics into a **Next.js 13+ App Router** application using `react-fathom`.
 
+## Live Demo
+
+Visit [next-app.react-fathom.com](https://next-app.react-fathom.com) to see this example in action.
+
 ## Why This Approach?
 
 The Next.js App Router introduces React Server Components, which require special handling for client-side analytics. This example shows the recommended pattern using `NextFathomProviderApp`, a pre-configured Client Component that works seamlessly in Server Component layouts.
@@ -94,6 +98,10 @@ export default function MyComponent() {
 app/
 ├── layout.tsx      # FathomProvider setup
 ├── page.tsx        # Home page with event tracking
+├── docs/
+│   └── page.tsx    # Self-documenting integration guide
+├── events/
+│   └── page.tsx    # Interactive event tracking demo
 ├── about/
 │   └── page.tsx    # Static page (auto pageview tracking)
 └── contact/
@@ -102,6 +110,6 @@ app/
 
 ## Learn More
 
-- [react-fathom Documentation](../../README.md)
+- [react-fathom Documentation](https://react-fathom.com/docs/nextjs)
 - [Next.js App Router Guide](https://nextjs.org/docs/app)
 - [Fathom Analytics](https://usefathom.com/ref/EKONBS)

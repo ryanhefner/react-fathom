@@ -22,21 +22,24 @@ const frameworks = [
     icon: '⚛️',
     description: 'Drop-in provider and hooks for any React app',
     href: '/docs/react',
-    demo: 'https://react.react-fathom.com',
+    demos: [{ label: 'Live Demo', url: 'https://react.react-fathom.com' }],
   },
   {
     name: 'Next.js',
     icon: '▲',
     description: 'App Router and Pages Router support with SSR handling',
     href: '/docs/nextjs',
-    demo: 'https://next-app.react-fathom.com',
+    demos: [
+      { label: 'App Router', url: 'https://next-app.react-fathom.com' },
+      { label: 'Pages Router', url: 'https://next-pages.react-fathom.com' },
+    ],
   },
   {
     name: 'React Native',
     icon: '📱',
     description: 'Navigation tracking and app state handling for mobile',
     href: '/docs/react-native',
-    demo: 'https://native.react-fathom.com',
+    demos: [{ label: 'Live Demo', url: 'https://native.react-fathom.com' }],
   },
 ]
 
@@ -238,7 +241,7 @@ export function LandingPage() {
                   <Text color="fg.muted" fontSize="sm" mb={4}>
                     {framework.description}
                   </Text>
-                  <HStack gap={4}>
+                  <HStack gap={4} flexWrap="wrap">
                     <Link
                       asChild
                       fontSize="sm"
@@ -248,14 +251,17 @@ export function LandingPage() {
                     >
                       <NextLink href={framework.href}>Documentation</NextLink>
                     </Link>
-                    <Link
-                      href={framework.demo}
-                      fontSize="sm"
-                      color="fg.muted"
-                      _hover={{ color: 'fg' }}
-                    >
-                      Live Demo →
-                    </Link>
+                    {framework.demos.map((demo, idx) => (
+                      <Link
+                        key={idx}
+                        href={demo.url}
+                        fontSize="sm"
+                        color="fg.muted"
+                        _hover={{ color: 'fg' }}
+                      >
+                        {demo.label} →
+                      </Link>
+                    ))}
                   </HStack>
                 </Box>
               ))}
