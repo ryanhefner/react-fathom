@@ -28,6 +28,8 @@ const defaultContextValue: FathomContextInterface = {
   trackPageview: () => warnMissingProvider('trackPageview'),
   trackEvent: () => warnMissingProvider('trackEvent'),
   trackGoal: () => warnMissingProvider('trackGoal'),
+  subscribeToDebug: undefined,
+  debugEnabled: false,
 }
 
 export const FathomContext =

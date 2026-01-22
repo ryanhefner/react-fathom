@@ -5,6 +5,54 @@ import type { EventOptions, LoadOptions, PageViewOptions } from 'fathom-client'
 // Re-export fathom-client types for convenience
 export type { EventOptions, LoadOptions, PageViewOptions }
 
+/**
+ * Represents a debug event emitted by FathomProvider when debug mode is enabled.
+ */
+export interface DebugEvent {
+  /** Unique identifier for this event */
+  id: string
+  /** Timestamp when the event occurred */
+  timestamp: number
+  /** Type of tracking call */
+  type: 'pageview' | 'event' | 'goal'
+  /** Event name (for 'event' type) */
+  eventName?: string
+  /** Goal code (for 'goal' type) */
+  goalCode?: string
+  /** Goal value in cents (for 'goal' type) */
+  goalCents?: number
+  /** URL being tracked (for 'pageview' type) */
+  url?: string
+  /** Additional options passed to the tracking call */
+  options?: PageViewOptions | EventOptions
+}
+
+/**
+ * Callback function for debug events.
+ */
+export type DebugEventCallback = (event: DebugEvent) => void
+
+/**
+ * Options for debug mode in FathomProvider.
+ */
+export interface DebugOptions {
+  /**
+   * Enable debug mode.
+   * @default false
+   */
+  enabled?: boolean
+  /**
+   * Log tracking calls to the console.
+   * @default true when debug is enabled
+   */
+  console?: boolean
+  /**
+   * Callback fired when any tracking call is made.
+   * Use this to integrate with custom UI (e.g., toast notifications).
+   */
+  onTrack?: DebugEventCallback
+}
+
 export interface FathomClient {
   blockTrackingForMe: () => void
   enableTrackingForMe: () => void
@@ -28,6 +76,15 @@ export interface FathomContextInterface {
   client?: FathomClient
   defaultPageviewOptions?: PageViewOptions
   defaultEventOptions?: EventOptions
+  /**
+   * Subscribe to debug events. Returns an unsubscribe function.
+   * Only available when debug mode is enabled.
+   */
+  subscribeToDebug?: (callback: DebugEventCallback) => () => void
+  /**
+   * Whether debug mode is enabled.
+   */
+  debugEnabled?: boolean
 }
 
 export interface FathomProviderProps extends PropsWithChildren {
@@ -60,4 +117,25 @@ export interface FathomProviderProps extends PropsWithChildren {
   siteId?: string
   defaultPageviewOptions?: PageViewOptions
   defaultEventOptions?: EventOptions
+  /**
+   * Enable debug mode to log and/or receive callbacks for all tracking calls.
+   * Useful for development, demos, and debugging.
+   * Does not block actual Fathom tracking.
+   *
+   * @example
+   * ```tsx
+   * // Simple console logging
+   * <FathomProvider debug={{ enabled: true }} />
+   *
+   * // Custom callback for toast notifications
+   * <FathomProvider
+   *   debug={{
+   *     enabled: true,
+   *     console: false,
+   *     onTrack: (event) => showToast(event)
+   *   }}
+   * />
+   * ```
+   */
+  debug?: DebugOptions | boolean
 }
