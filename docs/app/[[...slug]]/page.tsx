@@ -8,6 +8,8 @@ import {
   getDocsNav,
   extractTOC,
   getAdjacentPages,
+  getBreadcrumbs,
+  getLastUpdated,
 } from '@/lib/docs'
 
 export async function generateStaticParams() {
@@ -57,6 +59,8 @@ export default async function DocPage({
   const nav = getDocsNav()
   const toc = extractTOC(doc.content)
   const adjacentPages = getAdjacentPages(slug)
+  const breadcrumbs = getBreadcrumbs(slug)
+  const lastUpdated = getLastUpdated(slug)
 
   return (
     <DocsLayout
@@ -65,6 +69,8 @@ export default async function DocPage({
       frontmatter={doc.frontmatter}
       adjacentPages={adjacentPages}
       slug={slug}
+      breadcrumbs={breadcrumbs}
+      lastUpdated={lastUpdated}
     >
       <MDXRemote
         source={doc.content}

@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { execSync } from 'child_process'
 import matter from 'gray-matter'
 
 export interface NavItem {
@@ -24,6 +25,11 @@ export interface Frontmatter {
 export interface AdjacentPages {
   prev?: { title: string; href: string }
   next?: { title: string; href: string }
+}
+
+export interface BreadcrumbItem {
+  title: string
+  href?: string
 }
 
 export interface DocPage {
@@ -284,4 +290,74 @@ export function getAdjacentPages(slug: string[]): AdjacentPages {
     prev: currentIndex > 0 ? flatNav[currentIndex - 1] : undefined,
     next: currentIndex < flatNav.length - 1 ? flatNav[currentIndex + 1] : undefined,
   }
+}
+
+export function getLastUpdated(slug: string[]): string | null {
+  const slugPath = slug.length === 0 ? 'index' : slug.join('/')
+  let filePath = path.join(CONTENT_DIR, `${slugPath}.mdx`)
+
+  // Try direct file first
+  if (!fs.existsSync(filePath)) {
+    // Try as directory with index.mdx
+    filePath = path.join(CONTENT_DIR, slugPath, 'index.mdx')
+    if (!fs.existsSync(filePath)) {
+      return null
+    }
+  }
+
+  try {
+    // Get the last commit date for this file
+    const result = execSync(
+      `git log -1 --format=%cI -- "${filePath}"`,
+      { encoding: 'utf-8', cwd: process.cwd() }
+    ).trim()
+
+    if (!result) return null
+
+    return result
+  } catch {
+    return null
+  }
+}
+
+export function getBreadcrumbs(slug: string[]): BreadcrumbItem[] {
+  if (slug.length === 0) {
+    return [{ title: 'Docs', href: '/' }]
+  }
+
+  const nav = getDocsNav()
+  const breadcrumbs: BreadcrumbItem[] = [{ title: 'Docs', href: '/' }]
+
+  // Find the path through the navigation
+  function findPath(items: NavItem[], targetPath: string, currentPath: BreadcrumbItem[] = []): BreadcrumbItem[] | null {
+    for (const item of items) {
+      if (item.href === targetPath) {
+        return [...currentPath, { title: item.title, href: item.href }]
+      }
+      if (item.children) {
+        const result = findPath(item.children, targetPath, [...currentPath, { title: item.title, href: item.href }])
+        if (result) return result
+      }
+    }
+    return null
+  }
+
+  const targetHref = '/' + slug.join('/')
+  const path = findPath(nav, targetHref)
+
+  if (path) {
+    return [...breadcrumbs, ...path]
+  }
+
+  // Fallback: build breadcrumbs from slug segments
+  let href = ''
+  for (const segment of slug) {
+    href += `/${segment}`
+    breadcrumbs.push({
+      title: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+      href: href,
+    })
+  }
+
+  return breadcrumbs
 }

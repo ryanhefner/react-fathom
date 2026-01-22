@@ -18,6 +18,7 @@ import { Pre, Figure, Figcaption } from './CodeBlock'
 import { Steps } from './Steps'
 import { Tabs, Tab } from './Tabs'
 import { Cards, Card } from './Cards'
+import { PackageInstall, NpmToYarn } from './PackageInstall'
 
 function slugify(text: string): string {
   return text
@@ -190,4 +191,6 @@ export const MDXComponents: MDXComponentsType = {
   Tab,
   Cards,
   Card,
+  PackageInstall,
+  NpmToYarn,
 }

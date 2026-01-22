@@ -5,7 +5,8 @@ import NextLink from 'next/link'
 import { Navbar } from './Navbar'
 import { Sidebar } from './Sidebar'
 import { TableOfContents } from './TableOfContents'
-import type { NavItem, TOCItem, Frontmatter, AdjacentPages } from '@/lib/docs'
+import { Breadcrumbs } from './Breadcrumbs'
+import type { NavItem, TOCItem, Frontmatter, AdjacentPages, BreadcrumbItem } from '@/lib/docs'
 
 const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
 const DOCS_PATH = 'docs/content'
@@ -17,11 +18,22 @@ interface DocsLayoutProps {
   frontmatter: Frontmatter
   adjacentPages?: AdjacentPages
   slug?: string[]
+  breadcrumbs?: BreadcrumbItem[]
+  lastUpdated?: string | null
 }
 
 function getEditUrl(slug: string[]): string {
   const filePath = slug.length === 0 ? 'index' : slug.join('/')
   return `${GITHUB_REPO}/edit/main/${DOCS_PATH}/${filePath}.mdx`
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 }
 
 export function DocsLayout({
@@ -31,6 +43,8 @@ export function DocsLayout({
   frontmatter,
   adjacentPages,
   slug = [],
+  breadcrumbs,
+  lastUpdated,
 }: DocsLayoutProps) {
   const editUrl = getEditUrl(slug)
 
@@ -48,6 +62,9 @@ export function DocsLayout({
             px={{ base: 4, lg: 8 }}
           >
             <Box maxW="container.md">
+              {breadcrumbs && breadcrumbs.length > 1 && (
+                <Breadcrumbs items={breadcrumbs} />
+              )}
               {frontmatter.title && (
                 <Text as="h1" fontSize="4xl" fontWeight="bold" mb={2}>
                   {frontmatter.title}
@@ -61,16 +78,22 @@ export function DocsLayout({
               <Box className="mdx-content" data-pagefind-body>
                 {children}
               </Box>
-              <HStack mt={8} pt={4} borderTopWidth="1px" justify="flex-end">
+              <Flex mt={8} pt={4} borderTopWidth="1px" justify="space-between" align="center" flexWrap="wrap" gap={2}>
+                {lastUpdated && (
+                  <Text fontSize="sm" color="fg.muted">
+                    Last updated: {formatDate(lastUpdated)}
+                  </Text>
+                )}
                 <Link
                   href={editUrl}
                   fontSize="sm"
                   color="fg.muted"
                   _hover={{ color: 'fg' }}
+                  ml="auto"
                 >
                   Edit this page on GitHub →
                 </Link>
-              </HStack>
+              </Flex>
               {adjacentPages && (
                 <Flex
                   mt={8}
