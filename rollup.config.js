@@ -138,10 +138,12 @@ const nextExternal = [
   'next/navigation',
 ]
 const nativeExternal = ['react', 'react-native']
+const reactRouterExternal = ['fathom-client', 'react', 'react-router-dom']
 
 const input = 'src/index.ts'
 const nextInput = 'src/next/index.ts'
 const nativeInput = 'src/native/index.ts'
+const reactRouterInput = 'src/react-router/index.ts'
 
 export default [
   // UMD - Minified
@@ -236,6 +238,30 @@ export default [
       entryFileNames: '[name].cjs',
     },
     external: makeExternal(nativeExternal),
+    plugins: defaultPlugins,
+  },
+  // ES - react-router
+  {
+    input: reactRouterInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/es/react-router',
+      format: 'esm',
+      entryFileNames: '[name].js',
+    },
+    external: makeExternal(reactRouterExternal),
+    plugins: defaultPlugins,
+  },
+  // CJS - react-router
+  {
+    input: reactRouterInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/cjs/react-router',
+      format: 'cjs',
+      entryFileNames: '[name].cjs',
+    },
+    external: makeExternal(reactRouterExternal),
     plugins: defaultPlugins,
   },
 ]

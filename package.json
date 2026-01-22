@@ -9,6 +9,8 @@
     "react",
     "react-native",
     "react-hooks",
+    "react-router",
+    "remix",
     "nextjs",
     "next.js",
     "typescript",
@@ -91,6 +93,9 @@
       ],
       "native": [
         "./types/native/index.d.ts"
+      ],
+      "react-router": [
+        "./types/react-router/index.d.ts"
       ]
     }
   },
@@ -112,6 +117,12 @@
       "import": "./dist/es/native/index.js",
       "require": "./dist/cjs/native/index.cjs",
       "default": "./dist/es/native/index.js"
+    },
+    "./react-router": {
+      "types": "./types/react-router/index.d.ts",
+      "import": "./dist/es/react-router/index.js",
+      "require": "./dist/cjs/react-router/index.cjs",
+      "default": "./dist/es/react-router/index.js"
     }
   },
   "scripts": {
@@ -134,7 +145,8 @@
     "react": ">=16.8",
     "react-dom": ">=16.8",
     "react-native": ">=0.60.0",
-    "react-native-webview": ">=11.0.0"
+    "react-native-webview": ">=11.0.0",
+    "react-router-dom": ">=6.0.0"
   },
   "peerDependenciesMeta": {
     "next": {
@@ -144,6 +156,9 @@
       "optional": true
     },
     "react-native-webview": {
+      "optional": true
+    },
+    "react-router-dom": {
       "optional": true
     },
     "fathom-client": {
@@ -186,6 +201,7 @@
     "prettier": "^3.0.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-router-dom": "^7.0.0",
     "regenerator-runtime": "^0.14.0",
     "rimraf": "^6.1.2",
     "rollup": "^4.6.0",
