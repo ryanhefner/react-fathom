@@ -139,11 +139,13 @@ const nextExternal = [
 ]
 const nativeExternal = ['react', 'react-native']
 const reactRouterExternal = ['fathom-client', 'react', 'react-router-dom']
+const gatsbyExternal = ['fathom-client', 'react', '@reach/router']
 
 const input = 'src/index.ts'
 const nextInput = 'src/next/index.ts'
 const nativeInput = 'src/native/index.ts'
 const reactRouterInput = 'src/react-router/index.ts'
+const gatsbyInput = 'src/gatsby/index.ts'
 
 export default [
   // UMD - Minified
@@ -262,6 +264,30 @@ export default [
       entryFileNames: '[name].cjs',
     },
     external: makeExternal(reactRouterExternal),
+    plugins: defaultPlugins,
+  },
+  // ES - gatsby
+  {
+    input: gatsbyInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/es/gatsby',
+      format: 'esm',
+      entryFileNames: '[name].js',
+    },
+    external: makeExternal(gatsbyExternal),
+    plugins: defaultPlugins,
+  },
+  // CJS - gatsby
+  {
+    input: gatsbyInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/cjs/gatsby',
+      format: 'cjs',
+      entryFileNames: '[name].cjs',
+    },
+    external: makeExternal(gatsbyExternal),
     plugins: defaultPlugins,
   },
 ]

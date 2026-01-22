@@ -11,6 +11,7 @@
     "react-hooks",
     "react-router",
     "remix",
+    "gatsby",
     "nextjs",
     "next.js",
     "typescript",
@@ -96,6 +97,9 @@
       ],
       "react-router": [
         "./types/react-router/index.d.ts"
+      ],
+      "gatsby": [
+        "./types/gatsby/index.d.ts"
       ]
     }
   },
@@ -123,6 +127,12 @@
       "import": "./dist/es/react-router/index.js",
       "require": "./dist/cjs/react-router/index.cjs",
       "default": "./dist/es/react-router/index.js"
+    },
+    "./gatsby": {
+      "types": "./types/gatsby/index.d.ts",
+      "import": "./dist/es/gatsby/index.js",
+      "require": "./dist/cjs/gatsby/index.cjs",
+      "default": "./dist/es/gatsby/index.js"
     }
   },
   "scripts": {
@@ -140,7 +150,9 @@
     "test:ci": "vitest run --coverage"
   },
   "peerDependencies": {
+    "@reach/router": ">=1.3.0",
     "fathom-client": ">=3.0.0",
+    "gatsby": ">=4.0.0",
     "next": ">=10.0.0",
     "react": ">=16.8",
     "react-dom": ">=16.8",
@@ -149,6 +161,12 @@
     "react-router-dom": ">=6.0.0"
   },
   "peerDependenciesMeta": {
+    "@reach/router": {
+      "optional": true
+    },
+    "gatsby": {
+      "optional": true
+    },
     "next": {
       "optional": true
     },
@@ -166,6 +184,7 @@
     }
   },
   "devDependencies": {
+    "@reach/router": "^1.3.4",
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
@@ -182,6 +201,7 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
+    "@types/reach__router": "^1.3.15",
     "@types/react": "^19.2.7",
     "@typescript-eslint/eslint-plugin": "^8.50.0",
     "@vitest/coverage-v8": "^4.0.16",

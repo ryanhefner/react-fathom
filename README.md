@@ -61,6 +61,7 @@ The official `fathom-client` works, but:
 - 📱 React Native with offline queuing and navigation tracking
 - ⚡ Next.js App Router and Pages Router support
 - 🛤️ React Router v6+ and Remix support
+- 🏠 Gatsby support with @reach/router integration
 - 🌳 Tree-shakeable, fully typed (TypeScript)
 
 ## Usage
@@ -126,6 +127,23 @@ function App() {
 ```
 
 📖 [Full React Router guide](https://react-fathom.com/react-router)
+
+### Gatsby
+
+```tsx
+// gatsby-browser.js or Layout component
+import { FathomProvider } from 'react-fathom'
+import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
+
+export const wrapRootElement = ({ element }) => (
+  <FathomProvider siteId="YOUR_SITE_ID">
+    <GatsbyFathomTrackView />
+    {element}
+  </FathomProvider>
+)
+```
+
+📖 [Full Gatsby guide](https://react-fathom.com/gatsby)
 
 ### Hooks
 
@@ -214,6 +232,7 @@ function App() {
 | `NextFathomProviderApp` | Next.js App Router |
 | `NextFathomTrackViewPages` | Next.js Pages Router (add inside `FathomProvider`) |
 | `ReactRouterFathomTrackView` | React Router v6+ / Remix (add inside `FathomProvider`) |
+| `GatsbyFathomTrackView` | Gatsby (add inside `FathomProvider`) |
 | `NativeFathomProvider` | React Native |
 
 ### Hooks
@@ -255,6 +274,7 @@ function App() {
 - 📖 [Getting Started](https://react-fathom.com/getting-started)
 - ⚛️ [React Guide](https://react-fathom.com/react)
 - 🛤️ [React Router Guide](https://react-fathom.com/react-router)
+- 🏠 [Gatsby Guide](https://react-fathom.com/gatsby)
 - ⚡ [Next.js Guide](https://react-fathom.com/nextjs)
 - 📱 [React Native Guide](https://react-fathom.com/react-native)
 - 📚 [API Reference](https://react-fathom.com/api/providers)

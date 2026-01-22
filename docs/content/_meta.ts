@@ -3,6 +3,7 @@ export default {
   'getting-started': 'Getting Started',
   react: 'React',
   'react-router': 'React Router',
+  gatsby: 'Gatsby',
   nextjs: 'Next.js',
   'react-native': 'React Native',
   api: 'API Reference',
