@@ -67,7 +67,7 @@ export function Search() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
-        trackEvent?.('search-open')
+        trackEvent('search-open')
         setIsOpen(true)
       }
       if (e.key === 'Escape') {
@@ -119,7 +119,7 @@ export function Search() {
   }, [])
 
   const handleResultClick = (result: SearchResult) => {
-    trackEvent?.('search-result-click')
+    trackEvent('search-result-click')
     setIsOpen(false)
     setQuery('')
     setResults([])

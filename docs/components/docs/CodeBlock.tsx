@@ -14,7 +14,7 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
     const text = preRef.current?.textContent || ''
     await navigator.clipboard.writeText(text)
     setCopied(true)
-    trackEvent?.('code-copy')
+    trackEvent('code-copy')
     setTimeout(() => setCopied(false), 2000)
   }
 
