@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { FathomProvider } from 'react-fathom'
 import { NextFathomTrackViewPages } from 'react-fathom/next'
+import { EventStream } from 'react-fathom/debug'
 
 import '../styles/globals.css'
 
@@ -10,7 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const siteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID || 'DEMO'
 
   return (
-    <FathomProvider siteId={siteId}>
+    <FathomProvider siteId={siteId} debug={{ enabled: true }}>
       <NextFathomTrackViewPages />
       <nav className="nav">
         <div className="nav-container">
@@ -41,6 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </a>
         </p>
       </footer>
+      <EventStream />
     </FathomProvider>
   )
 }

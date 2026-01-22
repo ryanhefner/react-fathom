@@ -90,6 +90,9 @@
   "sideEffects": false,
   "typesVersions": {
     "*": {
+      "debug": [
+        "./types/debug/index.d.ts"
+      ],
       "next": [
         "./types/next/index.d.ts"
       ],
@@ -113,6 +116,12 @@
       "import": "./dist/es/index.js",
       "require": "./dist/cjs/index.cjs",
       "default": "./dist/es/index.js"
+    },
+    "./debug": {
+      "types": "./types/debug/index.d.ts",
+      "import": "./dist/es/debug/index.js",
+      "require": "./dist/cjs/debug/index.cjs",
+      "default": "./dist/es/debug/index.js"
     },
     "./next": {
       "types": "./types/next/index.d.ts",

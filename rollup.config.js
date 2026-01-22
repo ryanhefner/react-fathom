@@ -143,6 +143,7 @@ const gatsbyExternal = ['fathom-client', 'react', '@reach/router']
 const tanstackRouterExternal = ['fathom-client', 'react', '@tanstack/react-router']
 
 const input = 'src/index.ts'
+const debugInput = 'src/debug/index.ts'
 const nextInput = 'src/next/index.ts'
 const nativeInput = 'src/native/index.ts'
 const reactRouterInput = 'src/react-router/index.ts'
@@ -190,6 +191,30 @@ export default [
     output: {
       ...defaultOutputOptions,
       dir: 'dist/cjs',
+      format: 'cjs',
+      entryFileNames: '[name].cjs',
+    },
+    external: makeExternal(external),
+    plugins: defaultPlugins,
+  },
+  // ES - debug
+  {
+    input: debugInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/es/debug',
+      format: 'esm',
+      entryFileNames: '[name].js',
+    },
+    external: makeExternal(external),
+    plugins: defaultPlugins,
+  },
+  // CJS - debug
+  {
+    input: debugInput,
+    output: {
+      ...defaultOutputOptions,
+      dir: 'dist/cjs/debug',
       format: 'cjs',
       entryFileNames: '[name].cjs',
     },

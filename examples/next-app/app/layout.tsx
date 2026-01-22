@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { NextFathomProviderApp } from 'react-fathom/next'
+import { EventStream } from 'react-fathom/debug'
 
 import './globals.css'
 
@@ -19,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NextFathomProviderApp siteId={siteId}>
+        <NextFathomProviderApp siteId={siteId} debug={{ enabled: true }}>
           <nav className="nav">
             <div className="nav-container">
               <Link href="/" className="nav-logo">
@@ -47,6 +48,7 @@ export default function RootLayout({
               </a>
             </p>
           </footer>
+          <EventStream />
         </NextFathomProviderApp>
       </body>
     </html>
