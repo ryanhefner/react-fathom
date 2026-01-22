@@ -22,18 +22,21 @@ const frameworks = [
     icon: '⚛️',
     description: 'Drop-in provider and hooks for any React app',
     href: '/docs/react',
+    demo: 'https://react.react-fathom.com',
   },
   {
     name: 'Next.js',
     icon: '▲',
     description: 'App Router and Pages Router support with SSR handling',
     href: '/docs/nextjs',
+    demo: 'https://next-app.react-fathom.com',
   },
   {
     name: 'React Native',
     icon: '📱',
     description: 'Navigation tracking and app state handling for mobile',
     href: '/docs/react-native',
+    demo: 'https://native.react-fathom.com',
   },
 ]
 
@@ -214,36 +217,47 @@ export function LandingPage() {
               width="100%"
             >
               {frameworks.map((framework) => (
-                <Link
+                <Box
                   key={framework.name}
-                  asChild
-                  _hover={{ textDecoration: 'none' }}
+                  p={6}
+                  bg="bg"
+                  borderRadius="xl"
+                  borderWidth="1px"
+                  _hover={{
+                    borderColor: 'blue.500',
+                  }}
+                  transition="all 0.2s"
+                  height="100%"
                 >
-                  <NextLink href={framework.href}>
-                    <Box
-                      p={6}
-                      bg="bg"
-                      borderRadius="xl"
-                      borderWidth="1px"
-                      _hover={{
-                        borderColor: 'blue.500',
-                        transform: 'translateY(-2px)',
-                      }}
-                      transition="all 0.2s"
-                      height="100%"
+                  <Text fontSize="3xl" mb={3}>
+                    {framework.icon}
+                  </Text>
+                  <Heading as="h3" size="md" mb={2}>
+                    {framework.name}
+                  </Heading>
+                  <Text color="fg.muted" fontSize="sm" mb={4}>
+                    {framework.description}
+                  </Text>
+                  <HStack gap={4}>
+                    <Link
+                      asChild
+                      fontSize="sm"
+                      color="blue.500"
+                      fontWeight="medium"
+                      _hover={{ textDecoration: 'underline' }}
                     >
-                      <Text fontSize="3xl" mb={3}>
-                        {framework.icon}
-                      </Text>
-                      <Heading as="h3" size="md" mb={2}>
-                        {framework.name}
-                      </Heading>
-                      <Text color="fg.muted" fontSize="sm">
-                        {framework.description}
-                      </Text>
-                    </Box>
-                  </NextLink>
-                </Link>
+                      <NextLink href={framework.href}>Documentation</NextLink>
+                    </Link>
+                    <Link
+                      href={framework.demo}
+                      fontSize="sm"
+                      color="fg.muted"
+                      _hover={{ color: 'fg' }}
+                    >
+                      Live Demo →
+                    </Link>
+                  </HStack>
+                </Box>
               ))}
             </Grid>
           </VStack>
