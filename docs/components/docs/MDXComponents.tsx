@@ -13,8 +13,10 @@ import {
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import type { MDXComponents as MDXComponentsType } from 'mdx/types'
+import { Accordion, AccordionItem, Collapsible } from './Accordion'
 import { Callout } from './Callout'
 import { Pre, Figure, Figcaption } from './CodeBlock'
+import { FileTree, Folder, File } from './FileTree'
 import { Steps } from './Steps'
 import { Tabs, Tab } from './Tabs'
 import { Cards, Card } from './Cards'
@@ -185,7 +187,13 @@ export const MDXComponents: MDXComponentsType = {
   ),
   hr: () => <Box as="hr" my={8} borderTopWidth="1px" />,
   // Custom components
+  Accordion,
+  AccordionItem,
   Callout,
+  Collapsible,
+  FileTree,
+  Folder,
+  File,
   Steps,
   Tabs,
   Tab,
