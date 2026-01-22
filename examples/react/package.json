@@ -14,7 +14,7 @@
     "fathom-client": "^3.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-fathom": "^0.2.0",
+    "react-fathom": "file:../..",
     "react-router-dom": "^7.0.0"
   },
   "devDependencies": {
