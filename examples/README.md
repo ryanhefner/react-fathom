@@ -11,6 +11,8 @@ Each example is hosted as a subdomain of react-fathom.com:
 | React | [react.react-fathom.com](https://react.react-fathom.com) | Standard React with Vite and React Router |
 | Next.js App Router | [next-app.react-fathom.com](https://next-app.react-fathom.com) | Modern Next.js with Server Components |
 | Next.js Pages Router | [next-pages.react-fathom.com](https://next-pages.react-fathom.com) | Traditional Next.js routing |
+| TanStack Router | [tanstack.react-fathom.com](https://tanstack.react-fathom.com) | TanStack Router with file-based routing |
+| Gatsby | [gatsby.react-fathom.com](https://gatsby.react-fathom.com) | Gatsby static site generator |
 
 ## Available Examples
 
@@ -19,12 +21,16 @@ Each example is hosted as a subdomain of react-fathom.com:
 | [react](./react/) | React + Vite | React Router | Standard React SPA |
 | [next-app](./next-app/) | Next.js 13+ | App Router | Modern Next.js with React Server Components |
 | [next-pages](./next-pages/) | Next.js | Pages Router | Traditional Next.js routing |
+| [tanstack-router](./tanstack-router/) | React + Vite | TanStack Router | Type-safe file-based routing |
+| [gatsby](./gatsby/) | Gatsby | @reach/router | Static site generation |
 
 ## Which Example Should I Use?
 
 - **Standard React application?** Use [react](./react/) - Vite + React Router setup
 - **Starting a new Next.js project?** Use [next-app](./next-app/) - the App Router is the recommended approach
 - **Existing Next.js with Pages Router?** Use [next-pages](./next-pages/) - works with the traditional `pages/` directory
+- **Using TanStack Router?** Use [tanstack-router](./tanstack-router/) - type-safe file-based routing
+- **Building with Gatsby?** Use [gatsby](./gatsby/) - static site generation with @reach/router
 
 ## Getting Started
 
@@ -45,11 +51,14 @@ npm install
 Create a `.env` or `.env.local` file:
 
 ```bash
-# For React (Vite)
+# For React / TanStack Router (Vite)
 VITE_FATHOM_SITE_ID=your-site-id-here
 
 # For Next.js
 NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
+
+# For Gatsby
+GATSBY_FATHOM_SITE_ID=your-site-id-here
 ```
 
 Get your site ID from [Fathom Analytics](https://app.usefathom.com). New to Fathom? [Sign up here](https://usefathom.com/ref/EKONBS) and get $10 credit.
