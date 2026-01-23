@@ -6,7 +6,7 @@ import { ColorModeProvider } from './color-mode'
 import { EventStream } from '../components/docs/EventStream'
 
 export function Provider({ children }: { children: React.ReactNode }) {
-  const siteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID
+  const siteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID || 'DEMO'
 
   return (
     <ChakraProvider value={defaultSystem}>

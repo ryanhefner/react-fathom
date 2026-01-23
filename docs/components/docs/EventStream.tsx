@@ -103,9 +103,13 @@ export function EventStream() {
   // Load visibility state from localStorage on mount
   useEffect(() => {
     setIsHydrated(true)
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored !== null) {
-      setIsVisible(stored === 'true')
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored !== null) {
+        setIsVisible(stored === 'true')
+      }
+    } catch {
+      // localStorage not available (private browsing, etc.)
     }
   }, [])
 
@@ -124,12 +128,19 @@ export function EventStream() {
   // Save visibility state to localStorage
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem(STORAGE_KEY, String(isVisible))
+      try {
+        localStorage.setItem(STORAGE_KEY, String(isVisible))
+      } catch {
+        // localStorage not available
+      }
     }
   }, [isVisible, isHydrated])
 
   // Don't render if debug mode is not enabled
   if (!debugEnabled) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[EventStream] Debug mode not enabled, hiding panel')
+    }
     return null
   }
 

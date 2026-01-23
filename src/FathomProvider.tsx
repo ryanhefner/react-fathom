@@ -234,6 +234,12 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   useEffect(() => {
     if (siteId !== undefined) {
       load(siteId, clientOptions)
+    } else if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        '[react-fathom] No siteId provided to FathomProvider. ' +
+          'Analytics tracking will not be sent to Fathom until a siteId is configured. ' +
+          'Debug events will still be captured if debug mode is enabled.'
+      )
     }
   }, [clientOptions, load, siteId])
 
