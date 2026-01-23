@@ -47,10 +47,10 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
 
   const debugEnabled = debugOptions.enabled
 
-  // Log debug state in development
+  // Log debug state when enabled
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[react-fathom] Debug mode:', debugEnabled ? 'enabled' : 'disabled')
+    if (debugEnabled) {
+      console.log('[react-fathom] Debug mode: enabled')
     }
   }, [debugEnabled])
 
