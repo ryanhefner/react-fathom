@@ -4,7 +4,6 @@ import Link from 'next/link'
 
 import { FathomProvider } from 'react-fathom'
 import { NextFathomTrackViewPages } from 'react-fathom/next'
-import { EventStream } from 'react-fathom/debug'
 import { ExampleProviderNext, ExampleLayout } from '@react-fathom/example-ui/next'
 
 import '../styles/globals.css'
@@ -46,7 +45,6 @@ export default function App({ Component, pageProps }: AppProps) {
         <ExampleLayout linkComponent={Link} frameworkName="Next.js Pages Router">
           <Component {...pageProps} />
         </ExampleLayout>
-        <EventStream />
       </FathomProvider>
     </ExampleProviderNext>
   )

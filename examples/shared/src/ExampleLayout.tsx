@@ -3,6 +3,7 @@
 import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
 import type { ComponentType, ReactNode } from 'react'
 import { ColorModeButton } from './ColorModeButton'
+import { EventStreamPanel } from './EventStreamPanel'
 
 export interface NavLink {
   href: string
@@ -31,6 +32,11 @@ export interface ExampleLayoutProps {
    */
   showColorModeButton?: boolean
   /**
+   * Show the debug EventStream panel.
+   * @default true
+   */
+  showEventStream?: boolean
+  /**
    * The framework name shown in the footer.
    */
   frameworkName?: string
@@ -53,10 +59,12 @@ export function ExampleLayout({
   navLinks = defaultNavLinks,
   title = 'react-fathom',
   showColorModeButton = true,
+  showEventStream = true,
   frameworkName,
 }: ExampleLayoutProps) {
   return (
-    <Box minH="100vh" display="flex" flexDirection="column">
+    <>
+      <Box minH="100vh" display="flex" flexDirection="column">
       {/* Navbar */}
       <Box
         as="nav"
@@ -151,5 +159,7 @@ export function ExampleLayout({
         </Container>
       </Box>
     </Box>
+    {showEventStream && <EventStreamPanel />}
+  </>
   )
 }

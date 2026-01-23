@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { NextFathomProviderApp } from 'react-fathom/next'
-import { EventStream } from 'react-fathom/debug'
 import { ExampleProviderNext, ExampleLayout } from '@react-fathom/example-ui/next'
 
 import './globals.css'
@@ -43,7 +42,6 @@ export default function RootLayout({
             >
               {children}
             </ExampleLayout>
-            <EventStream />
           </NextFathomProviderApp>
         </ExampleProviderNext>
       </body>
