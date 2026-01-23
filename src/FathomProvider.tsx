@@ -54,6 +54,11 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
     }
   }, [debugEnabled])
 
+  // Log debug prop for diagnostics
+  useEffect(() => {
+    console.log('[react-fathom] FathomProvider mounted, debugProp:', debugProp, 'debugEnabled:', debugEnabled)
+  }, [])
+
   // Store debug subscribers
   const debugSubscribersRef = useRef<Set<DebugEventCallback>>(new Set())
 
@@ -76,6 +81,12 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   // Emit debug event to all subscribers and optionally log to console
   const emitDebugEvent = useCallback(
     (event: DebugEvent) => {
+      // Always emit global custom event when debug is enabled
+      // This helps with linked packages where React context may not be shared
+      if (debugEnabled && typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('react-fathom:debug', { detail: event }))
+      }
+
       if (!debugEnabled) return
 
       // Log to console if enabled
@@ -107,12 +118,6 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
           console.error('[react-fathom] Debug subscriber error:', err)
         }
       })
-
-      // Emit global custom event for cross-context communication
-      // This helps with linked packages where React context may not be shared
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('react-fathom:debug', { detail: event }))
-      }
     },
     [debugEnabled, debugOptions]
   )
