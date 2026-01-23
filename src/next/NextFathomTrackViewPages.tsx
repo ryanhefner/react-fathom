@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { useRouter } from 'next/compat/router.js'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from './utils'
 
 export interface NextFathomTrackViewPagesProps {
   /**
@@ -71,10 +72,7 @@ export const NextFathomTrackViewPages: React.FC<
     }
 
     const handleRouteChangeComplete = (path: string): void => {
-      let url = window.location.origin + path
-      if (transformUrl) {
-        url = transformUrl(url)
-      }
+      const url = buildTrackingUrl(path, transformUrl)
       trackPageview({ url })
     }
 
@@ -101,10 +99,10 @@ export const NextFathomTrackViewPages: React.FC<
     }
 
     hasTrackedInitialPageview.current = true
-    let url = window.location.href
-    if (transformUrl) {
-      url = transformUrl(url)
-    }
+    const url = buildTrackingUrl(
+      window.location.pathname + window.location.search,
+      transformUrl,
+    )
     trackPageview({ url })
   }, [trackPageview, client, disableAutoTrack, router, transformUrl])
 

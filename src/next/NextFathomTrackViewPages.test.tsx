@@ -55,6 +55,8 @@ describe('NextFathomTrackViewPages', () => {
     window.location = {
       href: 'https://example.com/test-page',
       origin: 'https://example.com',
+      pathname: '/test-page',
+      search: '',
     } as Location
   })
 

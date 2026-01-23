@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation.js'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from './utils'
 
 export interface NextFathomTrackViewAppProps {
   /**
@@ -76,19 +77,13 @@ export const NextFathomTrackViewApp: React.FC<NextFathomTrackViewAppProps> = ({
         ? `?${searchString}`
         : '')
 
-    let url = window.location.origin + path
-    if (transformUrl) {
-      url = transformUrl(url)
-    }
+    const url = buildTrackingUrl(path, transformUrl)
 
     // Track initial pageview only once
     if (!hasTrackedInitialPageview.current) {
       hasTrackedInitialPageview.current = true
-      trackPageview({ url })
-    } else {
-      // Track subsequent route changes
-      trackPageview({ url })
     }
+    trackPageview({ url })
   }, [pathname, searchParams, trackPageview, client, disableAutoTrack, transformUrl])
 
   // This component doesn't render anything
