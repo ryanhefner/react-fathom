@@ -7,6 +7,7 @@ import {
   Grid,
   Heading,
   HStack,
+  Image,
   Link,
   Text,
   VStack,
@@ -19,37 +20,38 @@ import { useState } from 'react'
 const frameworks = [
   {
     name: 'React',
-    icon: '⚛️',
+    logo: '/logos/react.svg',
     description: 'Drop-in provider and hooks for any React app',
     href: '/docs/react',
   },
   {
     name: 'Next.js',
-    icon: '▲',
+    logo: '/logos/nextjs.svg',
     description: 'App Router and Pages Router support with SSR handling',
     href: '/docs/nextjs',
+    invertInDark: true,
   },
   {
     name: 'React Router',
-    icon: '🛤️',
+    logo: '/logos/react-router.svg',
     description: 'Automatic pageview tracking for React Router v6+ and Remix',
     href: '/docs/react-router',
   },
   {
     name: 'Gatsby',
-    icon: '🏠',
+    logo: '/logos/gatsby.svg',
     description: 'Integration with @reach/router for Gatsby sites',
     href: '/docs/gatsby',
   },
   {
     name: 'TanStack Router',
-    icon: '🧭',
+    logo: '/logos/tanstack.svg',
     description: 'Type-safe routing with automatic pageview tracking',
     href: '/docs/tanstack-router',
   },
   {
     name: 'React Native',
-    icon: '📱',
+    logo: '/logos/react-native.svg',
     description: 'Navigation tracking and app state handling for mobile',
     href: '/docs/react-native',
   },
@@ -176,6 +178,32 @@ export function LandingPage() {
             Track page views and custom events while respecting user privacy.
           </Text>
 
+          {/* Framework Logo Grid */}
+          <HStack gap={{ base: 4, md: 8 }} mt={6} flexWrap="wrap" justify="center">
+            {frameworks.map((framework) => (
+              <Link
+                key={framework.name}
+                asChild
+                _hover={{ opacity: 0.7 }}
+                title={framework.name}
+              >
+                <NextLink href={framework.href}>
+                  <Image
+                    src={framework.logo}
+                    alt={framework.name}
+                    height={{ base: '32px', md: '40px' }}
+                    width="auto"
+                    opacity={0.7}
+                    _hover={{ opacity: 1 }}
+                    transition="opacity 0.2s"
+                    filter={framework.invertInDark ? 'invert(1)' : undefined}
+                    _light={{ filter: framework.invertInDark ? 'none' : undefined }}
+                  />
+                </NextLink>
+              </Link>
+            ))}
+          </HStack>
+
           {/* Install command */}
           <Flex
             mt={4}
@@ -259,9 +287,15 @@ export function LandingPage() {
                       transition="all 0.2s"
                       height="100%"
                     >
-                      <Text fontSize="3xl" mb={3}>
-                        {framework.icon}
-                      </Text>
+                      <Image
+                        src={framework.logo}
+                        alt={framework.name}
+                        height="40px"
+                        width="40px"
+                        mb={3}
+                        filter={framework.invertInDark ? 'invert(1)' : undefined}
+                        _light={{ filter: framework.invertInDark ? 'none' : undefined }}
+                      />
                       <Heading as="h3" size="md" mb={2}>
                         {framework.name}
                       </Heading>
