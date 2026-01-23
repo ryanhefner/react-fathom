@@ -19,7 +19,15 @@ const nextConfig = {
     // Allow build to succeed even with TypeScript errors
     ignoreBuildErrors: false,
   },
-  // Ensure react-fathom resolves to a single instance
+  // Turbopack configuration (Next.js 16+ default)
+  turbopack: {
+    resolveAlias: {
+      'react-fathom': path.resolve(__dirname, '../dist/es'),
+      'react-fathom/next': path.resolve(__dirname, '../dist/es/next'),
+      'react-fathom/debug': path.resolve(__dirname, '../dist/es/debug'),
+    },
+  },
+  // Webpack fallback for production builds
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
