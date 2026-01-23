@@ -259,6 +259,50 @@ describe('NextFathomTrackViewApp', () => {
     )
   })
 
+  it('should apply transformUrl to tracked URL', async () => {
+    const trackPageviewSpy = vi.fn()
+    const client = {
+      trackEvent: vi.fn(),
+      trackPageview: trackPageviewSpy,
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const nextNavigation = await import('next/navigation')
+    vi.mocked(nextNavigation.usePathname).mockReturnValue('/test-page')
+    vi.mocked(nextNavigation.useSearchParams).mockReturnValue(
+      new URLSearchParams('?token=secret&page=1'),
+    )
+
+    const transformUrl = (url: string) => {
+      const u = new URL(url)
+      u.searchParams.delete('token')
+      return u.toString()
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={client} siteId="TEST_SITE_ID">
+        <NextFathomTrackViewApp transformUrl={transformUrl} />
+        {children}
+      </FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    await waitFor(() => {
+      expect(trackPageviewSpy).toHaveBeenCalled()
+    })
+
+    // URL should have token param stripped
+    expect(trackPageviewSpy).toHaveBeenCalledWith({
+      url: 'https://example.com/test-page?page=1',
+    })
+  })
+
   it('should have displayName', () => {
     expect(NextFathomTrackViewApp.displayName).toBe('NextFathomTrackViewApp')
   })

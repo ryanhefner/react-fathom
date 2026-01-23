@@ -733,4 +733,158 @@ describe('FathomProvider', () => {
       expect(clientRefValue).toBe(parentClient)
     })
   })
+
+  describe('onError callback', () => {
+    it('should call onError when trackEvent throws', () => {
+      const error = new Error('trackEvent failed')
+      const onError = vi.fn()
+      const mockClient = {
+        trackEvent: vi.fn().mockImplementation(() => {
+          throw error
+        }),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} onError={onError}>
+          {children}
+        </FathomProvider>
+      )
+
+      const { result } = renderHook(() => useFathom(), { wrapper })
+
+      result.current.trackEvent?.('test-event')
+
+      expect(onError).toHaveBeenCalledWith(error, {
+        method: 'trackEvent',
+        args: ['test-event', {}],
+      })
+    })
+
+    it('should call onError when trackPageview throws', () => {
+      const error = new Error('trackPageview failed')
+      const onError = vi.fn()
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn().mockImplementation(() => {
+          throw error
+        }),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} onError={onError}>
+          {children}
+        </FathomProvider>
+      )
+
+      const { result } = renderHook(() => useFathom(), { wrapper })
+
+      result.current.trackPageview?.({ url: '/test' })
+
+      expect(onError).toHaveBeenCalledWith(error, {
+        method: 'trackPageview',
+        args: [{ url: '/test' }],
+      })
+    })
+
+    it('should call onError when trackGoal throws', () => {
+      const error = new Error('trackGoal failed')
+      const onError = vi.fn()
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn().mockImplementation(() => {
+          throw error
+        }),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} onError={onError}>
+          {children}
+        </FathomProvider>
+      )
+
+      const { result } = renderHook(() => useFathom(), { wrapper })
+
+      result.current.trackGoal?.('GOAL_CODE', 1000)
+
+      expect(onError).toHaveBeenCalledWith(error, {
+        method: 'trackGoal',
+        args: ['GOAL_CODE', 1000],
+      })
+    })
+
+    it('should call onError when load throws', () => {
+      const error = new Error('load failed')
+      const onError = vi.fn()
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn().mockImplementation(() => {
+          throw error
+        }),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} onError={onError}>
+          {children}
+        </FathomProvider>
+      )
+
+      const { result } = renderHook(() => useFathom(), { wrapper })
+
+      result.current.load?.('SITE_ID')
+
+      expect(onError).toHaveBeenCalledWith(error, {
+        method: 'load',
+        args: ['SITE_ID', undefined],
+      })
+    })
+
+    it('should not throw when onError is not provided', () => {
+      const mockClient = {
+        trackEvent: vi.fn().mockImplementation(() => {
+          throw new Error('trackEvent failed')
+        }),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient}>{children}</FathomProvider>
+      )
+
+      const { result } = renderHook(() => useFathom(), { wrapper })
+
+      // Should not throw
+      expect(() => result.current.trackEvent?.('test-event')).not.toThrow()
+    })
+  })
 })
