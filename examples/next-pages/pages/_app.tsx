@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
 import Link from 'next/link'
 
 import { FathomProvider } from 'react-fathom'
@@ -12,6 +13,33 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <FathomProvider siteId={siteId} debug={{ enabled: true }}>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content="Example Next.js Pages Router application demonstrating react-fathom analytics integration"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="Next.js Pages Router Example - react-fathom"
+        />
+        <meta
+          property="og:description"
+          content="Example Next.js Pages Router application demonstrating react-fathom analytics integration"
+        />
+        <meta property="og:site_name" content="react-fathom examples" />
+        <meta name="twitter:card" content="summary" />
+        <meta
+          name="twitter:title"
+          content="Next.js Pages Router Example - react-fathom"
+        />
+        <meta
+          name="twitter:description"
+          content="Example Next.js Pages Router application demonstrating react-fathom analytics integration"
+        />
+        <title>Next.js Pages Router Example - react-fathom</title>
+      </Head>
       <NextFathomTrackViewPages />
       <nav className="nav">
         <div className="nav-container">

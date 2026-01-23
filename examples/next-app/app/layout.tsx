@@ -7,7 +7,21 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Next.js App Router Example - react-fathom',
-  description: 'Example Next.js App Router application using react-fathom',
+  description:
+    'Example Next.js App Router application demonstrating react-fathom analytics integration',
+  openGraph: {
+    type: 'website',
+    title: 'Next.js App Router Example - react-fathom',
+    description:
+      'Example Next.js App Router application demonstrating react-fathom analytics integration',
+    siteName: 'react-fathom examples',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Next.js App Router Example - react-fathom',
+    description:
+      'Example Next.js App Router application demonstrating react-fathom analytics integration',
+  },
 }
 
 export default function RootLayout({
