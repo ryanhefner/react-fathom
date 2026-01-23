@@ -47,6 +47,13 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
 
   const debugEnabled = debugOptions.enabled
 
+  // Log debug state in development
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[react-fathom] Debug mode:', debugEnabled ? 'enabled' : 'disabled')
+    }
+  }, [debugEnabled])
+
   // Store debug subscribers
   const debugSubscribersRef = useRef<Set<DebugEventCallback>>(new Set())
 
