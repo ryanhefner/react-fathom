@@ -107,6 +107,12 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
           console.error('[react-fathom] Debug subscriber error:', err)
         }
       })
+
+      // Emit global custom event for cross-context communication
+      // This helps with linked packages where React context may not be shared
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('react-fathom:debug', { detail: event }))
+      }
     },
     [debugEnabled, debugOptions]
   )

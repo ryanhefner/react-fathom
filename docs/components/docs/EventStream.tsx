@@ -93,12 +93,18 @@ function EventCard({ event }: { event: DebugEvent }) {
   )
 }
 
-export function EventStream() {
+interface EventStreamProps {
+  /**
+   * Force show the EventStream panel regardless of debug context.
+   * Useful for docs site where context may not be shared properly with linked packages.
+   */
+  forceShow?: boolean
+}
+
+export function EventStream({ forceShow = false }: EventStreamProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
-  const { events, debugEnabled, clearEvents } = useDebugSubscription({
-    maxEvents: 20,
-  })
+  const [events, setEvents] = useState<DebugEvent[]>([])
 
   // Load visibility state from localStorage on mount
   useEffect(() => {
@@ -136,16 +142,24 @@ export function EventStream() {
     }
   }, [isVisible, isHydrated])
 
-  // Don't render if debug mode is not enabled
-  if (!debugEnabled) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[EventStream] Debug mode not enabled, hiding panel')
+  // Subscribe to global debug events via custom event
+  useEffect(() => {
+    const handleDebugEvent = (e: CustomEvent<DebugEvent>) => {
+      setEvents((prev) => [e.detail, ...prev].slice(0, 20))
     }
-    return null
-  }
+    window.addEventListener('react-fathom:debug' as any, handleDebugEvent)
+    return () => window.removeEventListener('react-fathom:debug' as any, handleDebugEvent)
+  }, [])
+
+  const clearEvents = () => setEvents([])
 
   // Don't render until hydrated to avoid SSR mismatch
   if (!isHydrated) {
+    return null
+  }
+
+  // Show if forceShow is true (bypasses context check)
+  if (!forceShow) {
     return null
   }
 

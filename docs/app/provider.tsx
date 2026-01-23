@@ -16,7 +16,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
           debug={{ enabled: true, console: false }}
         >
           {children}
-          <EventStream />
+          <EventStream forceShow />
         </NextFathomProviderApp>
       </ColorModeProvider>
     </ChakraProvider>
