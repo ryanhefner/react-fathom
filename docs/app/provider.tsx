@@ -1,7 +1,7 @@
 'use client'
 
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
-import { NextFathomProviderApp } from 'react-fathom/next'
+import { NextFathomProviderApp } from '@/lib/fathom-next'
 import { ColorModeProvider } from './color-mode'
 import { EventStream } from '../components/docs/EventStream'
 

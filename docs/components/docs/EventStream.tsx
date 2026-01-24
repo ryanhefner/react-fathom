@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Box, Button, Flex, IconButton, Text, VStack } from '@chakra-ui/react'
-import { useDebugSubscription, type DebugEvent } from 'react-fathom'
+import { type DebugEvent } from '@/lib/fathom'
 
 const STORAGE_KEY = 'react-fathom-event-stream-visible'
 

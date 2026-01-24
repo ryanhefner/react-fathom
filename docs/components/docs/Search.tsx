@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useFathom } from 'react-fathom'
+import { useFathom } from '@/lib/fathom'
 
 interface SearchResult {
   url: string

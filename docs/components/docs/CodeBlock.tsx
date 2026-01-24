@@ -2,7 +2,7 @@
 
 import { Box, IconButton } from '@chakra-ui/react'
 import { useState, useRef, type ReactNode, type ComponentProps } from 'react'
-import { useFathom } from 'react-fathom'
+import { useFathom } from '@/lib/fathom'
 
 // Pre component for rehype-pretty-code
 export function Pre({ children, ...props }: ComponentProps<'pre'>) {
