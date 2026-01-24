@@ -1,7 +1,6 @@
 import React from 'react'
-import { Link } from 'gatsby'
 import { Helmet } from 'react-helmet'
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
+import { ChakraProvider, defaultSystem, Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
 import { FathomProvider } from 'react-fathom'
 import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
 
@@ -33,10 +32,58 @@ export function Layout({ children }: LayoutProps) {
           />
         </Helmet>
         <GatsbyFathomTrackView />
-        <Navbar />
-        <main style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
-          {children}
-        </main>
+        <Box minH="100vh" display="flex" flexDirection="column">
+          <Navbar />
+          <Box as="main" flex={1} py={{ base: 8, md: 12 }}>
+            <Container maxW="640px" px={{ base: 5, md: 6 }}>
+              {children}
+            </Container>
+          </Box>
+          <Box borderTopWidth="1px" borderColor="border.muted" py={{ base: 6, md: 8 }}>
+            <Container maxW="640px" px={{ base: 5, md: 6 }}>
+              <Flex
+                justify="space-between"
+                align="center"
+                flexDir={{ base: 'column', md: 'row' }}
+                gap={4}
+              >
+                <Text fontSize="xs" color="fg.muted">
+                  © {new Date().getFullYear()} —{' '}
+                  <Link
+                    href="https://github.com/ryanhefner/react-fathom"
+                    color="fg.muted"
+                    _hover={{ color: 'fg' }}
+                  >
+                    react-fathom
+                  </Link>
+                </Text>
+                <HStack gap={4} fontSize="xs">
+                  <Link
+                    href="https://react-fathom.com/docs"
+                    color="fg.muted"
+                    _hover={{ color: 'fg' }}
+                  >
+                    Docs
+                  </Link>
+                  <Link
+                    href="https://github.com/ryanhefner/react-fathom"
+                    color="fg.muted"
+                    _hover={{ color: 'fg' }}
+                  >
+                    GitHub
+                  </Link>
+                  <Link
+                    href="https://usefathom.com"
+                    color="fg.muted"
+                    _hover={{ color: 'fg' }}
+                  >
+                    Fathom
+                  </Link>
+                </HStack>
+              </Flex>
+            </Container>
+          </Box>
+        </Box>
       </FathomProvider>
     </ChakraProvider>
   )

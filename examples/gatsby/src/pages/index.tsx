@@ -1,6 +1,6 @@
 import React from 'react'
 import type { HeadFC, PageProps } from 'gatsby'
-import { Box, Heading, Text, VStack, Button } from '@chakra-ui/react'
+import { Box, Heading, Text, VStack, Button, HStack } from '@chakra-ui/react'
 import { useFathom } from 'react-fathom'
 
 import { Layout } from '../components/Layout'
@@ -10,47 +10,55 @@ const IndexPage: React.FC<PageProps> = () => {
 
   return (
     <Layout>
-      <VStack gap={6} align="stretch">
+      <VStack gap={10} align="stretch">
         <Box>
-          <Heading size="lg" mb={2}>
-            Welcome to react-fathom
+          <Heading as="h1" size="4xl" fontWeight="bold" lineHeight="1.1" mb={4}>
+            Gatsby
+            <Text as="span" display="block" color="fg.muted">
+              Example
+            </Text>
           </Heading>
-          <Text color="gray.600" _dark={{ color: 'gray.400' }}>
+          <Text fontSize="md" color="fg.muted" maxW="480px">
             This example demonstrates the Gatsby integration with react-fathom
             for privacy-focused analytics.
           </Text>
         </Box>
 
-        <Box>
-          <Heading size="md" mb={3}>
+        <Box borderTopWidth="1px" borderColor="border.muted" pt={8}>
+          <Heading as="h2" size="lg" fontWeight="semibold" mb={6}>
             Try It Out
           </Heading>
-          <VStack gap={3} align="start">
+          <HStack gap={3}>
             <Button
-              colorScheme="purple"
+              bg="black"
+              color="white"
+              _hover={{ opacity: 0.8 }}
+              _dark={{ bg: 'white', color: 'black' }}
               onClick={() => trackEvent('button_click')}
             >
               Track Event
             </Button>
             <Button
-              colorScheme="green"
+              bg="#E53935"
+              color="white"
+              _hover={{ opacity: 0.8 }}
               onClick={() => trackGoal('EXAMPLE01', 100)}
             >
               Track Goal ($1.00)
             </Button>
-          </VStack>
+          </HStack>
         </Box>
 
-        <Box>
-          <Heading size="md" mb={3}>
+        <Box borderTopWidth="1px" borderColor="border.muted" pt={8}>
+          <Heading as="h2" size="lg" fontWeight="semibold" mb={6}>
             Features
           </Heading>
-          <VStack align="start" gap={2}>
-            <Text>- Automatic pageview tracking on route changes</Text>
-            <Text>- Custom event tracking</Text>
-            <Text>- Goal conversion tracking</Text>
-            <Text>- Debug mode with event visualization</Text>
-            <Text>- Privacy-focused (no cookies)</Text>
+          <VStack align="start" gap={3}>
+            <Text color="fg.muted">— Automatic pageview tracking on route changes</Text>
+            <Text color="fg.muted">— Custom event tracking</Text>
+            <Text color="fg.muted">— Goal conversion tracking</Text>
+            <Text color="fg.muted">— Debug mode with event visualization</Text>
+            <Text color="fg.muted">— Privacy-focused (no cookies)</Text>
           </VStack>
         </Box>
       </VStack>

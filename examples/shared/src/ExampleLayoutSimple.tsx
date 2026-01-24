@@ -51,7 +51,7 @@ const defaultNavLinks: NavLink[] = [
 
 /**
  * Shared layout component for example sites using React Router.
- * Includes a responsive navbar, main content area, and footer.
+ * Minimal, content-focused design.
  */
 export function ExampleLayoutSimple({
   children,
@@ -64,29 +64,28 @@ export function ExampleLayoutSimple({
 }: ExampleLayoutSimpleProps) {
   return (
     <>
-    <Box minH="100vh" display="flex" flexDirection="column">
-      {/* Navbar */}
-      <Box
-        as="nav"
-        borderBottomWidth="1px"
-        bg="bg"
-        position="sticky"
-        top={0}
-        zIndex={50}
-      >
-        <Container maxW="container.lg" py={4}>
-          <Flex justify="space-between" align="center">
-            <Link
-              asChild
-              fontWeight="bold"
-              fontSize="lg"
-              _hover={{ textDecoration: 'none', color: 'blue.500' }}
-            >
-              <LinkComponent to="/">{title}</LinkComponent>
-            </Link>
+      <Box minH="100vh" display="flex" flexDirection="column">
+        {/* Header */}
+        <Box as="header" pt={{ base: 6, md: 8 }} pb={{ base: 4, md: 6 }}>
+          <Container maxW="640px" px={{ base: 5, md: 6 }}>
+            <Flex justify="space-between" align="center">
+              <HStack gap={{ base: 3, md: 4 }}>
+                <Link
+                  asChild
+                  fontWeight="medium"
+                  fontSize="sm"
+                  _hover={{ textDecoration: 'none', opacity: 0.7 }}
+                >
+                  <LinkComponent to="/">{title}</LinkComponent>
+                </Link>
+                {frameworkName && (
+                  <Text fontSize="sm" color="fg.muted">
+                    — {frameworkName}
+                  </Text>
+                )}
+              </HStack>
 
-            <HStack gap={6}>
-              <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
+              <HStack gap={{ base: 4, md: 5 }}>
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -94,72 +93,71 @@ export function ExampleLayoutSimple({
                     color="fg.muted"
                     _hover={{ color: 'fg' }}
                     fontSize="sm"
+                    display={{ base: link.href === '/' ? 'none' : 'block', md: 'block' }}
                   >
                     <LinkComponent to={link.href}>{link.label}</LinkComponent>
                   </Link>
                 ))}
+                {showColorModeButton && <ColorModeButtonSimple />}
               </HStack>
-              <Link
-                href="https://github.com/ryanhefner/react-fathom"
-                color="fg.muted"
-                _hover={{ color: 'fg' }}
-                fontSize="sm"
-              >
-                GitHub
-              </Link>
-              {showColorModeButton && <ColorModeButtonSimple />}
-            </HStack>
-          </Flex>
-        </Container>
-      </Box>
+            </Flex>
+          </Container>
+        </Box>
 
-      {/* Main Content */}
-      <Box as="main" flex={1} py={8}>
-        <Container maxW="container.lg">{children}</Container>
-      </Box>
+        {/* Main Content */}
+        <Box as="main" flex={1} py={{ base: 8, md: 12 }}>
+          <Container maxW="640px" px={{ base: 5, md: 6 }}>
+            {children}
+          </Container>
+        </Box>
 
-      {/* Footer */}
-      <Box borderTopWidth="1px" py={6}>
-        <Container maxW="container.lg">
-          <Flex
-            justify="space-between"
-            align="center"
-            flexDir={{ base: 'column', md: 'row' }}
-            gap={4}
-          >
-            <Text fontSize="sm" color="fg.muted">
-              {frameworkName
-                ? `${frameworkName} example demonstrating `
-                : 'An example application demonstrating '}
-              <Link
-                href="https://github.com/ryanhefner/react-fathom"
-                color="blue.500"
-                _hover={{ textDecoration: 'underline' }}
-              >
-                react-fathom
-              </Link>
-            </Text>
-            <HStack gap={4} fontSize="sm">
-              <Link
-                href="https://react-fathom.com/docs"
-                color="fg.muted"
-                _hover={{ color: 'fg' }}
-              >
-                Documentation
-              </Link>
-              <Link
-                href="https://usefathom.com"
-                color="fg.muted"
-                _hover={{ color: 'fg' }}
-              >
-                Fathom Analytics
-              </Link>
-            </HStack>
-          </Flex>
-        </Container>
+        {/* Footer */}
+        <Box borderTopWidth="1px" borderColor="border.muted" py={{ base: 6, md: 8 }}>
+          <Container maxW="640px" px={{ base: 5, md: 6 }}>
+            <Flex
+              justify="space-between"
+              align="center"
+              flexDir={{ base: 'column', md: 'row' }}
+              gap={4}
+            >
+              <Text fontSize="xs" color="fg.muted">
+                © {new Date().getFullYear()} —{' '}
+                <Link
+                  href="https://github.com/ryanhefner/react-fathom"
+                  color="fg.muted"
+                  _hover={{ color: 'fg' }}
+                >
+                  react-fathom
+                </Link>
+              </Text>
+              <HStack gap={4} fontSize="xs">
+                <Link
+                  href="https://react-fathom.com/docs"
+                  color="fg.muted"
+                  _hover={{ color: 'fg' }}
+                >
+                  Docs
+                </Link>
+                <Link
+                  href="https://github.com/ryanhefner/react-fathom"
+                  color="fg.muted"
+                  _hover={{ color: 'fg' }}
+                >
+                  GitHub
+                </Link>
+                <Link
+                  href="https://usefathom.com"
+                  color="fg.muted"
+                  _hover={{ color: 'fg' }}
+                >
+                  Fathom
+                </Link>
+              </HStack>
+            </Flex>
+          </Container>
+        </Box>
       </Box>
-    </Box>
-    {showEventStream && <EventStreamPanel />}
-  </>
+      {showEventStream && <EventStreamPanel />}
+    </>
   )
 }

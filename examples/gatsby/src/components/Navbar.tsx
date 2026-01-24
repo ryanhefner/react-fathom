@@ -1,36 +1,57 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import { Box, Flex, Text, HStack } from '@chakra-ui/react'
+import { Box, Flex, Text, HStack, Link as ChakraLink } from '@chakra-ui/react'
 
 export function Navbar() {
   return (
-    <Box
-      as="nav"
-      bg="gray.100"
-      _dark={{ bg: 'gray.800' }}
-      borderBottomWidth="1px"
-      borderBottomColor="gray.200"
-      _darkBorderColor={{ borderBottomColor: 'gray.700' }}
-    >
+    <Box as="header" pt={{ base: 6, md: 8 }} pb={{ base: 4, md: 6 }}>
       <Flex
-        maxW="800px"
+        maxW="640px"
         mx="auto"
-        px={4}
-        py={3}
+        px={{ base: 5, md: 6 }}
         justify="space-between"
         align="center"
       >
-        <Text fontWeight="bold" fontSize="lg">
-          react-fathom
-        </Text>
-        <HStack gap={4}>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
+        <HStack gap={{ base: 3, md: 4 }}>
+          <ChakraLink
+            asChild
+            fontWeight="medium"
+            fontSize="sm"
+            _hover={{ textDecoration: 'none', opacity: 0.7 }}
+          >
+            <Link to="/">react-fathom</Link>
+          </ChakraLink>
+          <Text fontSize="sm" color="fg.muted">
+            — Gatsby
+          </Text>
         </HStack>
-        <Text fontSize="sm" color="gray.600" _dark={{ color: 'gray.400' }}>
-          Gatsby
-        </Text>
+        <HStack gap={{ base: 4, md: 5 }}>
+          <ChakraLink
+            asChild
+            color="fg.muted"
+            _hover={{ color: 'fg' }}
+            fontSize="sm"
+            display={{ base: 'none', md: 'block' }}
+          >
+            <Link to="/">Home</Link>
+          </ChakraLink>
+          <ChakraLink
+            asChild
+            color="fg.muted"
+            _hover={{ color: 'fg' }}
+            fontSize="sm"
+          >
+            <Link to="/about">About</Link>
+          </ChakraLink>
+          <ChakraLink
+            asChild
+            color="fg.muted"
+            _hover={{ color: 'fg' }}
+            fontSize="sm"
+          >
+            <Link to="/contact">Contact</Link>
+          </ChakraLink>
+        </HStack>
       </Flex>
     </Box>
   )
