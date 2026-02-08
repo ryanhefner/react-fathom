@@ -1,0 +1,230 @@
+---
+title: "Troubleshooting"
+description: "Common issues and solutions for react-fathom."
+---
+
+# Troubleshooting
+
+Common issues and solutions.
+
+## Events Not Appearing
+
+### 1. Verify Your Site ID
+
+Your site ID should match exactly what's in your [Fathom dashboard](https://app.usefathom.com). It's an 8-character alphanumeric string like `ABCD1234`.
+
+```tsx
+// Double-check this value
+<FathomProvider siteId="ABCD1234">
+```
+
+### 2. Check for Ad Blockers
+
+Many ad blockers and privacy extensions block analytics scripts. To test:
+
+- Open an incognito/private window with extensions disabled
+- Or temporarily whitelist your development domain
+
+Consider using [custom domains](/docs/guides/custom-domains) to improve tracking reliability.
+
+### 3. Domain Restrictions
+
+Fathom only tracks events from configured domains. For local development:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{
+    includedDomains: ['localhost', 'yourdomain.com']
+  }}
+>
+```
+
+### 4. Inspect Network Requests
+
+Open your browser's Network tab and look for requests to `cdn.usefathom.com`:
+
+| Symptom | Cause |
+|---------|-------|
+| No requests | Script isn't loading—check provider setup |
+| Blocked requests | Ad blocker interference |
+| Failed requests | Check site ID and domain configuration |
+
+---
+
+## Duplicate Pageviews
+
+If you see double pageviews, you have multiple tracking sources:
+
+```tsx
+// WRONG: NextFathomTrackViewApp tracks AND clientOptions.auto defaults to true
+<FathomProvider siteId="YOUR_SITE_ID">
+  <NextFathomTrackViewApp />
+</FathomProvider>
+
+// CORRECT: Disable fathom-client's built-in auto tracking
+<FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
+  <NextFathomTrackViewApp />
+</FathomProvider>
+```
+
+Same applies to `NextFathomProviderApp`:
+
+```tsx
+<NextFathomProviderApp
+  siteId="YOUR_SITE_ID"
+  clientOptions={{ auto: false }}
+>
+  {children}
+</NextFathomProviderApp>
+```
+
+---
+
+## Next.js Issues
+
+### "use client" Errors
+
+Server Components can't use hooks directly. Use the pre-configured client component:
+
+```tsx
+// app/layout.tsx
+import { NextFathomProviderApp } from 'react-fathom/next'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NextFathomProviderApp siteId="YOUR_SITE_ID">
+          {children}
+        </NextFathomProviderApp>
+      </body>
+    </html>
+  )
+}
+```
+
+Or create your own client component wrapper:
+
+```tsx
+// components/AnalyticsProvider.tsx
+'use client'
+import { FathomProvider } from 'react-fathom'
+
+export function AnalyticsProvider({ children }) {
+  return (
+    <FathomProvider siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
+      {children}
+    </FathomProvider>
+  )
+}
+```
+
+### Environment Variables Not Loading
+
+Ensure your variable is prefixed with `NEXT_PUBLIC_`:
+
+```bash
+# .env.local
+NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID  # ✓ Works client-side
+FATHOM_SITE_ID=YOUR_SITE_ID               # ✗ Server-only
+```
+
+---
+
+## React Native Issues
+
+### Events Not Sending
+
+#### 1. Verify react-native-webview is installed
+
+```bash
+npm install react-native-webview
+
+# For iOS
+cd ios && pod install
+```
+
+#### 2. Check WebView is ready
+
+Events are queued until the WebView loads:
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  debug={true}
+  onReady={() => console.log('Fathom WebView ready!')}
+  onError={(err) => console.error('Fathom error:', err)}
+>
+```
+
+#### 3. Verify network connectivity
+
+The WebView needs network access to load the Fathom script from `cdn.usefathom.com` (or your custom domain).
+
+#### 4. Check for WebView restrictions
+
+Some enterprise MDM solutions or app configurations block WebViews from loading external scripts.
+
+### Queue Not Flushing
+
+If events stay queued:
+
+1. Check `onReady` is being called
+2. Verify no `onError` is firing
+3. Use `debug={true}` to see queue activity
+
+```tsx
+const clientRef = useRef(null)
+
+<NativeFathomProvider siteId="YOUR_SITE_ID" clientRef={clientRef}>
+  {/* Check queue length */}
+  {console.log('Queue:', clientRef.current?.getQueueLength())}
+</NativeFathomProvider>
+```
+
+---
+
+## Debugging Tips
+
+### Enable Debug Logging
+
+For React Native:
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  debug={__DEV__}
+>
+```
+
+### Use a Console Client
+
+Replace the real client with one that logs everything:
+
+```tsx
+const debugClient = {
+  load: (id, opts) => console.log('load:', id, opts),
+  trackPageview: (opts) => console.log('pageview:', opts),
+  trackEvent: (name, opts) => console.log('event:', name, opts),
+  trackGoal: (code, cents) => console.log('goal:', code, cents),
+  setSite: (id) => console.log('setSite:', id),
+  blockTrackingForMe: () => console.log('blocked'),
+  enableTrackingForMe: () => console.log('enabled'),
+  isTrackingEnabled: () => true,
+}
+
+<FathomProvider client={debugClient}>
+```
+
+### Verify Real-time in Dashboard
+
+Fathom's dashboard updates in real-time. Open it alongside your app to see events as they're tracked.
+
+---
+
+## Getting Help
+
+- [Open an issue](https://github.com/ryanhefner/react-fathom/issues) on GitHub
+- [Search existing issues](https://github.com/ryanhefner/react-fathom/issues?q=is%3Aissue) for solutions
+- [Fathom Analytics docs](https://usefathom.com/docs) for platform-specific questions

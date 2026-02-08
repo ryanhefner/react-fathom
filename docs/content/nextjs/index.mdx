@@ -1,0 +1,64 @@
+---
+title: Next.js
+description: First-class Next.js support with automatic pageview tracking
+---
+
+# Next.js
+
+react-fathom provides first-class support for Next.js with automatic pageview tracking on route changes.
+
+## Which Router Are You Using?
+
+Next.js has two routing systems. Choose the guide that matches your project:
+
+<Cards>
+  <Card title="App Router" href="/docs/nextjs/app-router">
+    Next.js 13.4+ with the `app/` directory. Uses Server Components and the new routing system.
+  </Card>
+  <Card title="Pages Router" href="/docs/nextjs/pages-router">
+    Traditional Next.js with the `pages/` directory. Works with all Next.js versions.
+  </Card>
+</Cards>
+
+## Quick Comparison
+
+| Feature | App Router | Pages Router |
+|---------|-----------|--------------|
+| Provider | `NextFathomProviderApp` | `FathomProvider` |
+| Route tracking | `NextFathomTrackViewApp` (included) | `NextFathomTrackViewPages` |
+| Setup location | `app/layout.tsx` | `pages/_app.tsx` |
+| Server Components | Yes (provider is a Client Component) | N/A |
+
+## Import Path
+
+All Next.js-specific exports come from `react-fathom/next`:
+
+```tsx
+import {
+  NextFathomProviderApp,
+  NextFathomTrackViewApp,
+  NextFathomTrackViewPages,
+} from 'react-fathom/next'
+```
+
+The base `FathomProvider`, hooks, and components come from `react-fathom`:
+
+```tsx
+import { FathomProvider, useFathom, TrackClick } from 'react-fathom'
+```
+
+## Environment Variables
+
+Store your site ID in an environment variable for production:
+
+```bash
+NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID
+```
+
+```tsx
+<NextFathomProviderApp siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
+```
+
+<Callout type="warning">
+  Environment variables must be prefixed with `NEXT_PUBLIC_` to be available on the client side.
+</Callout>

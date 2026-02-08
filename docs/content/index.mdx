@@ -1,0 +1,82 @@
+---
+title: "react-fathom"
+description: "Privacy-focused analytics for React, Next.js, and React Native."
+---
+
+# react-fathom
+
+**Privacy-focused analytics for React, Next.js, and React Native.**
+
+Easily integrate [Fathom Analytics](https://usefathom.com/ref/EKONBS) into your applications with automatic pageview tracking, custom event tracking, and full TypeScript support.
+
+## Why Fathom?
+
+[Fathom Analytics](https://usefathom.com/ref/EKONBS) is a privacy-focused alternative to Google Analytics. Unlike traditional analytics platforms:
+
+- **No cookies required** — GDPR, CCPA, and PECR compliant out of the box
+- **No personal data collection** — Respects user privacy by design
+- **No consent banners needed** — Simplified compliance for your websites
+- **Fast and lightweight** — Won't slow down your site
+
+**New to Fathom?** Get a **$10 credit** when you sign up using [this referral link](https://usefathom.com/ref/EKONBS).
+
+## Why react-fathom?
+
+The official `fathom-client` works, but react-fathom provides a better developer experience:
+
+| Problem | react-fathom solution |
+|---------|----------------------|
+| Web only—no React Native | **Full React Native support** with offline event queuing |
+| Next.js App Router requires boilerplate | **`NextFathomProviderApp`** works directly in Server Component layouts |
+| Imperative API only | **Hooks** (`useFathom`, `useTrackOnMount`, `useTrackOnVisible`) and **declarative components** (`<TrackClick>`, `<TrackVisible>`) |
+| No tree-shaking | **Fully tree-shakeable**—bundle only what you use |
+
+## Features
+
+- **Zero-config** Fathom Analytics integration for React
+- **Tree-shakeable** — Only bundle what you use
+- **Automatic pageview tracking** for Next.js (Pages Router & App Router)
+- **React Native support** with offline queuing and navigation tracking
+- **Full TypeScript** support with type definitions
+- **Flexible** — Works with any React app, Next.js, or React Native
+- **Lightweight** — Minimal bundle size impact
+
+## Quick Start
+
+```bash
+npm install react-fathom fathom-client
+```
+
+```tsx
+import { FathomProvider } from 'react-fathom'
+
+function App() {
+  return (
+    <FathomProvider siteId="YOUR_FATHOM_SITE_ID">
+      <YourApp />
+    </FathomProvider>
+  )
+}
+```
+
+```tsx
+import { useFathom } from 'react-fathom'
+
+function MyComponent() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <button onClick={() => trackEvent('button-click')}>
+      Click me
+    </button>
+  )
+}
+```
+
+That's it! Pageviews are tracked automatically.
+
+## Platform Guides
+
+- [React](/docs/react) — Basic React setup with hooks and components
+- [Next.js](/docs/nextjs) — App Router and Pages Router integration
+- [React Native](/docs/react-native) — Mobile apps with offline queuing

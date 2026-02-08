@@ -1,0 +1,220 @@
+---
+title: App Router
+description: Integrating react-fathom with Next.js App Router
+---
+
+# App Router
+
+This guide covers integrating react-fathom with Next.js 13.4+ using the App Router (`app/` directory).
+
+## Recommended Setup
+
+Use `NextFathomProviderApp` for the simplest setup. It combines the provider and automatic route tracking:
+
+```tsx filename="app/layout.tsx"
+import { NextFathomProviderApp } from 'react-fathom/next'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NextFathomProviderApp siteId="YOUR_SITE_ID">
+          {children}
+        </NextFathomProviderApp>
+      </body>
+    </html>
+  )
+}
+```
+
+That's it! Pageviews are now tracked automatically on every route change.
+
+## How It Works
+
+`NextFathomProviderApp` is a Client Component (marked with `'use client'`) that:
+
+1. Wraps your app with `FathomProvider`
+2. Includes `NextFathomTrackViewApp` for automatic route tracking
+3. Can be used directly in Server Component layouts
+
+## Configuration Options
+
+```tsx filename="app/layout.tsx"
+<NextFathomProviderApp
+  siteId="YOUR_SITE_ID"
+  clientOptions={{
+    includedDomains: ['yourdomain.com'],
+    auto: false, // Disable fathom-client's built-in tracking
+  }}
+  defaultEventOptions={{ _site_id: 'my-app' }}
+  defaultPageviewOptions={{ referrer: 'https://example.com' }}
+>
+  {children}
+</NextFathomProviderApp>
+```
+
+### Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `siteId` | `string` | Your Fathom site ID |
+| `clientOptions` | `LoadOptions` | Options passed to `fathom-client` |
+| `defaultPageviewOptions` | `PageViewOptions` | Default options for all pageviews |
+| `defaultEventOptions` | `EventOptions` | Default options for all events |
+| `disableAutoTrack` | `boolean` | Disable automatic route tracking |
+| `children` | `ReactNode` | Your app content |
+
+## Alternative: Manual Setup
+
+If you need more control, use `FathomProvider` with `NextFathomTrackViewApp` separately:
+
+```tsx filename="app/layout.tsx"
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewApp } from 'react-fathom/next'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <FathomProvider siteId="YOUR_SITE_ID">
+          <NextFathomTrackViewApp />
+          {children}
+        </FathomProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+<Callout type="info">
+  Since `FathomProvider` uses React hooks, you may need to wrap it in your own Client Component when using this approach directly in a Server Component layout.
+</Callout>
+
+## Custom Client Component Wrapper
+
+For advanced setups, create your own client component:
+
+```tsx filename="components/AnalyticsProvider.tsx"
+'use client'
+
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewApp } from 'react-fathom/next'
+
+export function AnalyticsProvider({ children }) {
+  return (
+    <FathomProvider siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
+      <NextFathomTrackViewApp />
+      {children}
+    </FathomProvider>
+  )
+}
+```
+
+```tsx filename="app/layout.tsx"
+import { AnalyticsProvider } from '@/components/AnalyticsProvider'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <AnalyticsProvider>{children}</AnalyticsProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+## Tracking Events
+
+Use hooks and components in any Client Component:
+
+```tsx filename="components/SignUpButton.tsx"
+'use client'
+
+import { useFathom } from 'react-fathom'
+
+export function SignUpButton() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <button onClick={() => trackEvent('signup-click')}>
+      Sign Up
+    </button>
+  )
+}
+```
+
+Or use declarative components:
+
+```tsx filename="components/CTASection.tsx"
+'use client'
+
+import { TrackClick, TrackVisible } from 'react-fathom'
+
+export function CTASection() {
+  return (
+    <TrackVisible eventName="cta-section-viewed">
+      <section>
+        <h2>Ready to get started?</h2>
+        <TrackClick eventName="cta-click">
+          <button>Start Free Trial</button>
+        </TrackClick>
+      </section>
+    </TrackVisible>
+  )
+}
+```
+
+## Disabling Auto-Tracking
+
+To handle pageview tracking manually:
+
+```tsx
+<NextFathomProviderApp siteId="YOUR_SITE_ID" disableAutoTrack>
+  {children}
+</NextFathomProviderApp>
+```
+
+Then track pageviews where needed:
+
+```tsx
+'use client'
+
+import { useFathom } from 'react-fathom'
+import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
+
+function CustomTracker() {
+  const { trackPageview } = useFathom()
+  const pathname = usePathname()
+
+  useEffect(() => {
+    // Custom logic before tracking
+    if (pathname !== '/excluded-page') {
+      trackPageview({ url: pathname })
+    }
+  }, [pathname, trackPageview])
+
+  return null
+}
+```
+
+## Avoiding Duplicate Pageviews
+
+If you see duplicate pageviews, you likely have multiple tracking sources:
+
+```tsx
+// WRONG: Both auto tracking AND fathom-client's auto
+<NextFathomProviderApp siteId="YOUR_SITE_ID">
+  {/* NextFathomTrackViewApp tracks pageviews */}
+  {/* AND clientOptions.auto defaults to true */}
+</NextFathomProviderApp>
+
+// CORRECT: Disable fathom-client's built-in auto tracking
+<NextFathomProviderApp
+  siteId="YOUR_SITE_ID"
+  clientOptions={{ auto: false }}
+>
+  {children}
+</NextFathomProviderApp>
+```

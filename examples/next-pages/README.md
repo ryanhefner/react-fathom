@@ -2,6 +2,10 @@
 
 A complete example of integrating privacy-focused analytics into a **Next.js Pages Router** application using `react-fathom`.
 
+## Live Demo
+
+Visit [next-pages.react-fathom.com](https://next-pages.react-fathom.com) to see this example in action.
+
 ## Why This Approach?
 
 The Pages Router is the traditional Next.js routing system using the `pages/` directory. This example demonstrates the recommended pattern for adding Fathom Analytics to existing Pages Router applications or new projects that prefer this routing approach.
@@ -89,6 +93,8 @@ export default function MyPage() {
 pages/
 ├── _app.tsx        # FathomProvider setup
 ├── index.tsx       # Home page with event tracking
+├── docs.tsx        # Self-documenting integration guide
+├── events.tsx      # Interactive event tracking demo
 ├── about.tsx       # Static page (auto pageview tracking)
 └── contact.tsx     # Form with event tracking
 ```
@@ -99,6 +105,6 @@ If you're planning to migrate to the App Router, check out the [next-app example
 
 ## Learn More
 
-- [react-fathom Documentation](../../README.md)
+- [react-fathom Documentation](https://react-fathom.com/docs/nextjs)
 - [Next.js Pages Router Guide](https://nextjs.org/docs/pages)
 - [Fathom Analytics](https://usefathom.com/ref/EKONBS)

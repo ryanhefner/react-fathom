@@ -1,0 +1,176 @@
+---
+title: "Components"
+description: "API reference for TrackPageview, TrackClick, and TrackVisible components."
+---
+
+# Components
+
+## TrackPageview
+
+Track a pageview when the component mounts.
+
+```tsx
+import { TrackPageview } from 'react-fathom'
+
+function Dashboard() {
+  return (
+    <TrackPageview url="/dashboard">
+      <div>Dashboard content</div>
+    </TrackPageview>
+  )
+}
+```
+
+### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `url` | `string` | No | URL to track |
+| `referrer` | `string` | No | Referrer URL |
+| `children` | `ReactNode` | No | Child elements to render |
+
+### Without Children
+
+```tsx
+<>
+  <TrackPageview url="/landing" />
+  <LandingPageContent />
+</>
+```
+
+### With Referrer
+
+```tsx
+<TrackPageview url="/campaign" referrer="https://twitter.com">
+  <CampaignPage />
+</TrackPageview>
+```
+
+---
+
+## TrackClick
+
+Track an event when a child element is clicked.
+
+```tsx
+import { TrackClick } from 'react-fathom'
+
+function SignUpSection() {
+  return (
+    <TrackClick eventName="signup-click">
+      <button>Sign Up Free</button>
+    </TrackClick>
+  )
+}
+```
+
+### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `eventName` | `string` | Yes | Event name to track |
+| `_value` | `number` | No | Value in cents |
+| `preventDefault` | `boolean` | No | Prevent default click behavior |
+| `children` | `ReactNode` | Yes | Clickable child element |
+
+### With Value
+
+```tsx
+<TrackClick eventName="plan-selected" _value={999}>
+  <button>Choose Pro Plan - $9.99/mo</button>
+</TrackClick>
+```
+
+### With Links
+
+```tsx
+<TrackClick eventName="docs-link-click">
+  <a href="/docs">View Documentation</a>
+</TrackClick>
+```
+
+### Multiple Children
+
+The click handler is attached to a wrapper `div`:
+
+```tsx
+<TrackClick eventName="card-click">
+  <div className="card">
+    <h3>Feature</h3>
+    <p>Description</p>
+  </div>
+</TrackClick>
+```
+
+---
+
+## TrackVisible
+
+Track an event when an element becomes visible in the viewport.
+
+```tsx
+import { TrackVisible } from 'react-fathom'
+
+function PricingSection() {
+  return (
+    <TrackVisible eventName="pricing-viewed">
+      <section>
+        <h2>Pricing</h2>
+        {/* pricing content */}
+      </section>
+    </TrackVisible>
+  )
+}
+```
+
+### Props
+
+| Prop | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `eventName` | `string` | Yes | - | Event name to track |
+| `_value` | `number` | No | - | Value in cents |
+| `threshold` | `number` | No | `0.1` | Visibility threshold (0-1) |
+| `rootMargin` | `string` | No | - | IntersectionObserver root margin |
+| `as` | `string` | No | `'div'` | HTML element to render |
+| `children` | `ReactNode` | Yes | - | Child elements |
+
+### Custom Element Type
+
+```tsx
+<TrackVisible eventName="footer-viewed" as="footer">
+  <p>Footer content</p>
+</TrackVisible>
+```
+
+```tsx
+<TrackVisible eventName="section-viewed" as="section" className="my-section">
+  <h2>Section Title</h2>
+</TrackVisible>
+```
+
+### With Threshold
+
+```tsx
+// Track when 50% of the element is visible
+<TrackVisible eventName="hero-viewed" threshold={0.5}>
+  <div className="hero">
+    <h1>Welcome</h1>
+  </div>
+</TrackVisible>
+```
+
+### With Root Margin
+
+```tsx
+// Track 100px before the element enters the viewport
+<TrackVisible eventName="upcoming-section" rootMargin="100px">
+  <section>Content</section>
+</TrackVisible>
+```
+
+### Implementation Notes
+
+- Uses `IntersectionObserver` internally
+- Only tracks once per mount
+- Passes through all additional props to the wrapper element
+- Falls back gracefully if IntersectionObserver is unavailable

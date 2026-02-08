@@ -1,0 +1,119 @@
+---
+title: "App State Tracking"
+description: "Track when users foreground or background your React Native app."
+---
+
+# App State Tracking
+
+Track when users foreground or background your app.
+
+## Automatic Tracking
+
+Enable with the `trackAppState` prop:
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  trackAppState
+>
+  <App />
+</NativeFathomProvider>
+```
+
+This tracks:
+- `app-foreground` when the app becomes active
+- `app-background` when the app goes to background
+
+## Custom Hook
+
+For more control, use the `useAppStateTracking` hook:
+
+```tsx
+import { useAppStateTracking } from 'react-fathom/native'
+
+function AppStateTracker() {
+  useAppStateTracking({
+    foregroundEventName: 'app-resumed',
+    backgroundEventName: 'app-paused',
+    onStateChange: (state) => {
+      console.log('App state changed:', state)
+    },
+  })
+
+  return null
+}
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `foregroundEventName` | `string` | `'app-foreground'` | Event name for foreground |
+| `backgroundEventName` | `string` | `'app-background'` | Event name for background |
+| `eventOptions` | `EventOptions` | `undefined` | Additional options for events |
+| `onStateChange` | `(state) => void` | `undefined` | Callback on state change |
+
+## State Values
+
+The `onStateChange` callback receives one of:
+
+| State | Description |
+|-------|-------------|
+| `'active'` | App is in the foreground and interactive |
+| `'background'` | App is in the background |
+| `'inactive'` | App is transitioning (iOS only) |
+
+## Examples
+
+### Track with value
+
+```tsx
+useAppStateTracking({
+  foregroundEventName: 'session-resumed',
+  eventOptions: { _value: 1 },
+})
+```
+
+### Custom logic on state change
+
+```tsx
+useAppStateTracking({
+  onStateChange: (state) => {
+    if (state === 'background') {
+      // Save draft, pause audio, etc.
+      saveDraft()
+    }
+    if (state === 'active') {
+      // Refresh data
+      refetchData()
+    }
+  },
+})
+```
+
+### Conditional tracking
+
+```tsx
+function ConditionalAppStateTracker({ isLoggedIn }) {
+  useAppStateTracking({
+    foregroundEventName: isLoggedIn ? 'user-resumed' : 'visitor-resumed',
+    backgroundEventName: isLoggedIn ? 'user-paused' : 'visitor-paused',
+  })
+
+  return null
+}
+```
+
+## Combining with Provider
+
+You can use both the provider's `trackAppState` and the hook together if you want different event names:
+
+```tsx
+// Provider tracks default events
+<NativeFathomProvider siteId="YOUR_SITE_ID" trackAppState>
+  <AppStateTracker /> {/* Hook tracks custom events */}
+  <App />
+</NativeFathomProvider>
+```
+
+However, this will fire two events per state change. Usually you want one or the other.

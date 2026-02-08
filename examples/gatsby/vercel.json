@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "gatsby",
+  "buildCommand": "cd ../.. && npm run build && cd examples/gatsby && npm run build",
+  "installCommand": "cd ../.. && npm install && cd examples/gatsby && npm install",
+  "outputDirectory": "public"
+}

@@ -1,0 +1,175 @@
+---
+title: Advanced Setup
+description: Manual WebView configuration and advanced use cases
+---
+
+# Advanced Setup
+
+For advanced use cases, you can manually control the WebView and client.
+
+## Manual WebView Setup
+
+If you need full control over the WebView lifecycle:
+
+```tsx
+import { useRef, useMemo, useCallback } from 'react'
+import {
+  FathomWebView,
+  createWebViewClient,
+  FathomProvider,
+  type FathomWebViewRef,
+} from 'react-fathom/native'
+
+function App() {
+  const webViewRef = useRef<FathomWebViewRef>(null)
+
+  const client = useMemo(
+    () => createWebViewClient(() => webViewRef.current, { debug: __DEV__ }),
+    []
+  )
+
+  const handleReady = useCallback(() => {
+    client.setWebViewReady()
+  }, [client])
+
+  return (
+    <FathomProvider client={client} siteId="YOUR_SITE_ID">
+      <FathomWebView
+        ref={webViewRef}
+        siteId="YOUR_SITE_ID"
+        onReady={handleReady}
+      />
+      <YourApp />
+    </FathomProvider>
+  )
+}
+```
+
+## FathomWebView Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `siteId` | `string` | Your Fathom site ID (required) |
+| `loadOptions` | `LoadOptions` | Options passed to `fathom.load()` |
+| `scriptDomain` | `string` | Custom domain (default: `cdn.usefathom.com`) |
+| `onReady` | `() => void` | Called when script loads |
+| `onError` | `(error: string) => void` | Called on error |
+| `debug` | `boolean` | Enable debug logging |
+
+## FathomWebView Ref Methods
+
+Access these methods via the ref:
+
+| Method | Description |
+|--------|-------------|
+| `trackPageview(opts?)` | Track a pageview |
+| `trackEvent(name, opts?)` | Track a custom event |
+| `trackGoal(code, cents)` | Track a goal conversion |
+| `blockTrackingForMe()` | Block tracking for user |
+| `enableTrackingForMe()` | Enable tracking for user |
+| `isReady()` | Check if WebView is ready |
+
+## createWebViewClient Options
+
+```tsx
+const client = createWebViewClient(getWebViewRef, {
+  debug: true,           // Enable debug logging
+  enableQueue: true,     // Queue commands before ready (default: true)
+  maxQueueSize: 100,     // Max queued commands (default: 100)
+})
+```
+
+### Client Methods
+
+The client includes additional methods for queue management:
+
+| Method | Description |
+|--------|-------------|
+| `processQueue()` | Manually process queued commands |
+| `getQueueLength()` | Get current queue length |
+| `setWebViewReady()` | Signal that WebView is ready |
+
+## Custom Domains
+
+If you use [Fathom's custom domains](https://usefathom.com/docs/script/custom-domains):
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  scriptDomain="your-custom-domain.com"
+>
+  <YourApp />
+</NativeFathomProvider>
+```
+
+Or with manual setup:
+
+```tsx
+<FathomWebView
+  ref={webViewRef}
+  siteId="YOUR_SITE_ID"
+  scriptDomain="your-custom-domain.com"
+  onReady={handleReady}
+/>
+```
+
+## Parent Access via clientRef
+
+Access the client directly from a parent component:
+
+```tsx
+import { useRef } from 'react'
+import { NativeFathomProvider, WebViewFathomClient } from 'react-fathom/native'
+
+function App() {
+  const clientRef = useRef<WebViewFathomClient>(null)
+
+  const handleDeepLink = (url: string) => {
+    // Track from parent before provider is mounted in children
+    clientRef.current?.trackEvent('deep_link', { _url: url })
+
+    // Check queue status
+    console.log('Queued events:', clientRef.current?.getQueueLength())
+  }
+
+  return (
+    <NativeFathomProvider siteId="YOUR_SITE_ID" clientRef={clientRef}>
+      <YourApp onDeepLink={handleDeepLink} />
+    </NativeFathomProvider>
+  )
+}
+```
+
+## Debugging
+
+Enable debug mode to see all tracking activity:
+
+```tsx
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  debug={__DEV__}
+  onReady={() => console.log('WebView ready')}
+  onError={(err) => console.error('WebView error:', err)}
+>
+```
+
+Debug mode logs:
+- When events are queued
+- When the queue is flushed
+- All tracking calls
+- Any errors
+
+## Offline Behavior
+
+Events are automatically queued when:
+- The WebView hasn't loaded yet
+- Network is unavailable (events stay in queue)
+
+The queue:
+- Has a max size (default: 100 events)
+- Is processed in order when WebView becomes ready
+- Persists only in memory (not across app restarts)
+
+<Callout type="warning">
+  The queue does not persist across app restarts. Events queued when the app is killed will be lost.
+</Callout>
