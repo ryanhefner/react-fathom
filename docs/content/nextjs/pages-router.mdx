@@ -1,0 +1,208 @@
+---
+title: "Pages Router"
+description: "Integrate react-fathom with Next.js Pages Router."
+---
+
+# Pages Router
+
+This guide covers integrating react-fathom with Next.js using the Pages Router (`pages/` directory).
+
+## Setup
+
+Add the provider and route tracker to your `_app.tsx`:
+
+```tsx filename="pages/_app.tsx"
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewPages } from 'react-fathom/next'
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <NextFathomTrackViewPages />
+      <Component {...pageProps} />
+    </FathomProvider>
+  )
+}
+
+export default MyApp
+```
+
+Pageviews are now tracked automatically on every route change.
+
+## Configuration Options
+
+```tsx filename="pages/_app.tsx"
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewPages } from 'react-fathom/next'
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <FathomProvider
+      siteId="YOUR_SITE_ID"
+      clientOptions={{
+        includedDomains: ['yourdomain.com'],
+        auto: false, // Disable fathom-client's built-in tracking
+      }}
+      defaultEventOptions={{ _site_id: 'my-app' }}
+      defaultPageviewOptions={{ referrer: 'https://example.com' }}
+    >
+      <NextFathomTrackViewPages />
+      <Component {...pageProps} />
+    </FathomProvider>
+  )
+}
+
+export default MyApp
+```
+
+### FathomProvider Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `siteId` | `string` | Your Fathom site ID |
+| `clientOptions` | `LoadOptions` | Options passed to `fathom-client` |
+| `defaultPageviewOptions` | `PageViewOptions` | Default options for all pageviews |
+| `defaultEventOptions` | `EventOptions` | Default options for all events |
+
+### NextFathomTrackViewPages Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `disableAutoTrack` | `boolean` | Disable automatic route tracking |
+
+## Tracking Events
+
+Use hooks in any component:
+
+```tsx filename="components/SignUpButton.tsx"
+import { useFathom } from 'react-fathom'
+
+export function SignUpButton() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <button onClick={() => trackEvent('signup-click')}>
+      Sign Up
+    </button>
+  )
+}
+```
+
+Or use declarative components:
+
+```tsx filename="components/PricingSection.tsx"
+import { TrackClick, TrackVisible } from 'react-fathom'
+
+export function PricingSection() {
+  return (
+    <TrackVisible eventName="pricing-viewed">
+      <section>
+        <h2>Pricing</h2>
+        <TrackClick eventName="plan-selected" _value={999}>
+          <button>Choose Pro Plan</button>
+        </TrackClick>
+      </section>
+    </TrackVisible>
+  )
+}
+```
+
+## Page-Specific Tracking
+
+Track custom data on specific pages:
+
+```tsx filename="pages/product/[id].tsx"
+import { useTrackOnMount } from 'react-fathom'
+import { useRouter } from 'next/router'
+
+export default function ProductPage({ product }) {
+  const router = useRouter()
+
+  useTrackOnMount({
+    url: `/product/${router.query.id}`,
+    referrer: document.referrer,
+  })
+
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      {/* ... */}
+    </div>
+  )
+}
+```
+
+## Disabling Auto-Tracking
+
+To handle pageview tracking manually:
+
+```tsx filename="pages/_app.tsx"
+<FathomProvider siteId="YOUR_SITE_ID">
+  <NextFathomTrackViewPages disableAutoTrack />
+  <Component {...pageProps} />
+</FathomProvider>
+```
+
+Then implement your own tracking logic:
+
+```tsx filename="components/CustomTracker.tsx"
+import { useFathom } from 'react-fathom'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+
+export function CustomTracker() {
+  const { trackPageview } = useFathom()
+  const router = useRouter()
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      // Custom logic before tracking
+      if (!url.startsWith('/admin')) {
+        trackPageview({ url })
+      }
+    }
+
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events, trackPageview])
+
+  return null
+}
+```
+
+## Avoiding Duplicate Pageviews
+
+If you see duplicate pageviews, disable `fathom-client`'s built-in auto tracking:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{ auto: false }}
+>
+  <NextFathomTrackViewPages />
+  <Component {...pageProps} />
+</FathomProvider>
+```
+
+## TypeScript
+
+The Pages Router setup is fully typed:
+
+```tsx filename="pages/_app.tsx"
+import type { AppProps } from 'next/app'
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewPages } from 'react-fathom/next'
+
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <FathomProvider siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID!}>
+      <NextFathomTrackViewPages />
+      <Component {...pageProps} />
+    </FathomProvider>
+  )
+}
+
+export default MyApp
+```

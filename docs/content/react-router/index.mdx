@@ -1,0 +1,231 @@
+---
+title: "React Router"
+description: "Using react-fathom with React Router and Remix for automatic pageview tracking."
+---
+
+# React Router
+
+This guide covers integrating react-fathom with React Router v6+ and Remix applications for automatic pageview tracking on route changes.
+
+## Installation
+
+Make sure you have both `react-fathom` and `react-router-dom` installed:
+
+```bash
+npm install react-fathom react-router-dom fathom-client
+```
+
+## Quick Start
+
+Import `ReactRouterFathomTrackView` from `react-fathom/react-router` and add it inside your `FathomProvider`:
+
+```tsx
+import { BrowserRouter } from 'react-router-dom'
+import { FathomProvider } from 'react-fathom'
+import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <FathomProvider siteId="YOUR_SITE_ID">
+        <ReactRouterFathomTrackView />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </FathomProvider>
+    </BrowserRouter>
+  )
+}
+```
+
+The component will automatically track:
+- Initial pageview on app load
+- Subsequent pageviews on every route change
+
+## Remix Integration
+
+For Remix applications, add the component to your root layout:
+
+```tsx
+// app/root.tsx
+import { Outlet } from '@remix-run/react'
+import { FathomProvider } from 'react-fathom'
+import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
+
+export default function App() {
+  return (
+    <html>
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <FathomProvider siteId="YOUR_SITE_ID">
+          <ReactRouterFathomTrackView />
+          <Outlet />
+        </FathomProvider>
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+```
+
+## Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `disableAutoTrack` | `boolean` | `false` | Disable automatic pageview tracking |
+| `includeSearchParams` | `boolean` | `true` | Include query parameters in tracked URL |
+| `includeHash` | `boolean` | `false` | Include hash fragment in tracked URL |
+| `transformUrl` | `(url: string) => string \| null` | — | Transform URL before tracking |
+
+## Configuration Options
+
+### Including/Excluding URL Parts
+
+By default, search parameters are included but hash fragments are not:
+
+```tsx
+// Track /products?category=shoes (includes search params)
+<ReactRouterFathomTrackView />
+
+// Track /products (excludes search params)
+<ReactRouterFathomTrackView includeSearchParams={false} />
+
+// Track /docs#installation (includes hash)
+<ReactRouterFathomTrackView includeHash />
+```
+
+### URL Transformation
+
+Use `transformUrl` to modify URLs before tracking. This is useful for:
+- Removing sensitive parameters (tokens, session IDs)
+- Normalizing URLs
+- Skipping certain routes
+
+```tsx
+// Remove sensitive parameters
+<ReactRouterFathomTrackView
+  transformUrl={(url) => {
+    const urlObj = new URL(url)
+    urlObj.searchParams.delete('token')
+    urlObj.searchParams.delete('session')
+    return urlObj.toString()
+  }}
+/>
+
+// Normalize dynamic IDs to patterns
+<ReactRouterFathomTrackView
+  transformUrl={(url) => {
+    return url.replace(/\/users\/\d+/, '/users/:id')
+  }}
+/>
+
+// Skip tracking certain routes (return null)
+<ReactRouterFathomTrackView
+  transformUrl={(url) => {
+    if (url.includes('/admin')) {
+      return null // Skip tracking admin pages
+    }
+    return url
+  }}
+/>
+```
+
+### Disabling Auto-Tracking
+
+If you need manual control over pageview tracking:
+
+```tsx
+import { useFathom } from 'react-fathom'
+import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
+
+function App() {
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      {/* Disable auto-tracking, handle manually */}
+      <ReactRouterFathomTrackView disableAutoTrack />
+      <Routes>...</Routes>
+    </FathomProvider>
+  )
+}
+
+// Manual tracking in a specific component
+function SpecialPage() {
+  const { trackPageview } = useFathom()
+
+  useEffect(() => {
+    // Custom tracking logic
+    trackPageview({ url: '/special-page-custom' })
+  }, [])
+
+  return <div>Special Page</div>
+}
+```
+
+## Combining with Event Tracking
+
+Use alongside other react-fathom features for comprehensive analytics:
+
+```tsx
+import { useFathom, TrackClick, TrackVisible } from 'react-fathom'
+import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <FathomProvider siteId="YOUR_SITE_ID">
+        {/* Automatic pageview tracking */}
+        <ReactRouterFathomTrackView />
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/pricing" element={<Pricing />} />
+        </Routes>
+      </FathomProvider>
+    </BrowserRouter>
+  )
+}
+
+function Pricing() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <div>
+      {/* Track when pricing section becomes visible */}
+      <TrackVisible eventName="pricing-viewed">
+        <h1>Pricing</h1>
+      </TrackVisible>
+
+      {/* Track CTA clicks */}
+      <TrackClick eventName="start-trial-click">
+        <button>Start Free Trial</button>
+      </TrackClick>
+    </div>
+  )
+}
+```
+
+## TypeScript
+
+The component is fully typed. Import types if needed:
+
+```tsx
+import type { ReactRouterFathomTrackViewProps } from 'react-fathom/react-router'
+
+const config: ReactRouterFathomTrackViewProps = {
+  includeSearchParams: true,
+  includeHash: false,
+  transformUrl: (url) => url.toLowerCase(),
+}
+```
+
+## Next Steps
+
+- [React Guide](/docs/react) — Hooks and components for React
+- [API Reference: Hooks](/docs/api/hooks) — Full hook documentation
+- [API Reference: Components](/docs/api/components) — Full component documentation
+- [Testing Guide](/docs/guides/testing) — Mock clients for testing

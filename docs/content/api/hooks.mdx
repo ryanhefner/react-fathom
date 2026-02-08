@@ -1,0 +1,244 @@
+---
+title: "Hooks"
+description: "API reference for useFathom, useTrackOnMount, useTrackOnClick, and useTrackOnVisible hooks."
+---
+
+# Hooks
+
+## useFathom
+
+Main hook for accessing Fathom tracking methods.
+
+```tsx
+import { useFathom } from 'react-fathom'
+
+function MyComponent() {
+  const {
+    trackPageview,
+    trackEvent,
+    trackGoal,
+    load,
+    setSite,
+    blockTrackingForMe,
+    enableTrackingForMe,
+    isTrackingEnabled,
+    client,
+    defaultPageviewOptions,
+    defaultEventOptions,
+  } = useFathom()
+}
+```
+
+### Return Value
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `trackPageview` | `(options?) => void` | Track a pageview |
+| `trackEvent` | `(eventName, options?) => void` | Track a custom event |
+| `trackGoal` | `(code, cents) => void` | Track a goal conversion |
+| `load` | `(siteId, options?) => void` | Load Fathom with a site ID |
+| `setSite` | `(siteId) => void` | Change the site ID |
+| `blockTrackingForMe` | `() => void` | Block tracking for current user |
+| `enableTrackingForMe` | `() => void` | Enable tracking for current user |
+| `isTrackingEnabled` | `() => boolean` | Check if tracking is enabled |
+| `client` | `FathomClient` | The underlying client instance |
+| `defaultPageviewOptions` | `PageViewOptions` | Current default pageview options |
+| `defaultEventOptions` | `EventOptions` | Current default event options |
+
+### trackPageview
+
+```tsx
+const { trackPageview } = useFathom()
+
+// Track current page
+trackPageview()
+
+// Track with custom URL
+trackPageview({ url: '/custom-page' })
+
+// Track with referrer
+trackPageview({ url: '/landing', referrer: 'https://google.com' })
+```
+
+**Options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `url` | `string` | URL to track |
+| `referrer` | `string` | Referrer URL |
+
+### trackEvent
+
+```tsx
+const { trackEvent } = useFathom()
+
+// Basic event
+trackEvent('button-click')
+
+// Event with value (in cents)
+trackEvent('purchase', { _value: 2999 }) // $29.99
+```
+
+**Options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `_value` | `number` | Value in cents |
+| `_site_id` | `string` | Override site ID |
+
+### trackGoal
+
+```tsx
+const { trackGoal } = useFathom()
+
+// Track a goal conversion
+trackGoal('SIGNUP', 0)        // No value
+trackGoal('PURCHASE', 4999)   // $49.99
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `code` | `string` | Goal code from Fathom dashboard |
+| `cents` | `number` | Value in cents |
+
+---
+
+## useTrackOnMount
+
+Track a pageview when a component mounts.
+
+```tsx
+import { useTrackOnMount } from 'react-fathom'
+
+function LandingPage() {
+  useTrackOnMount({ url: '/landing' })
+
+  return <div>Welcome!</div>
+}
+```
+
+### Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `url` | `string` | URL to track |
+| `referrer` | `string` | Referrer URL |
+
+All options are passed to `trackPageview`.
+
+---
+
+## useTrackOnClick
+
+Returns a click handler that tracks an event.
+
+```tsx
+import { useTrackOnClick } from 'react-fathom'
+
+function CTAButton() {
+  const handleClick = useTrackOnClick({
+    eventName: 'cta-click',
+    _value: 100,
+  })
+
+  return <button onClick={handleClick}>Get Started</button>
+}
+```
+
+### Options
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `eventName` | `string` | Yes | Event name to track |
+| `preventDefault` | `boolean` | No | Prevent default click behavior |
+| `callback` | `(e?: MouseEvent) => void` | No | Called after tracking |
+| `_value` | `number` | No | Value in cents |
+
+### With Callback
+
+```tsx
+const handleClick = useTrackOnClick({
+  eventName: 'signup-click',
+  callback: (e) => {
+    // Do something after tracking
+    router.push('/signup')
+  },
+})
+```
+
+### With preventDefault
+
+```tsx
+const handleClick = useTrackOnClick({
+  eventName: 'link-click',
+  preventDefault: true,
+  callback: () => {
+    // Handle navigation manually
+    window.location.href = '/external-link'
+  },
+})
+
+return <a href="/external-link" onClick={handleClick}>External Link</a>
+```
+
+---
+
+## useTrackOnVisible
+
+Returns a ref that tracks an event when the element becomes visible.
+
+```tsx
+import { useTrackOnVisible } from 'react-fathom'
+
+function HeroSection() {
+  const ref = useTrackOnVisible({
+    eventName: 'hero-viewed',
+  })
+
+  return (
+    <section ref={ref}>
+      <h1>Welcome</h1>
+    </section>
+  )
+}
+```
+
+### Options
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `eventName` | `string` | Yes | Event name to track |
+| `threshold` | `number` | No | Visibility threshold (0-1, default: `0.1`) |
+| `rootMargin` | `string` | No | IntersectionObserver root margin |
+| `callback` | `(entry: IntersectionObserverEntry) => void` | No | Called when visible |
+| `_value` | `number` | No | Value in cents |
+
+### With Threshold
+
+```tsx
+// Track when 50% visible
+const ref = useTrackOnVisible({
+  eventName: 'section-viewed',
+  threshold: 0.5,
+})
+```
+
+### With Callback
+
+```tsx
+const ref = useTrackOnVisible({
+  eventName: 'pricing-viewed',
+  callback: (entry) => {
+    console.log('Pricing section visible!', entry.intersectionRatio)
+  },
+})
+```
+
+### Implementation Notes
+
+- Uses `IntersectionObserver` internally
+- Only tracks once per mount
+- Cleans up observer on unmount
+- Falls back gracefully if IntersectionObserver is unavailable

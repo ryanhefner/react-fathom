@@ -1,0 +1,175 @@
+'use client'
+
+import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
+import NextLink from 'next/link'
+import { AnnouncementBanner } from './AnnouncementBanner'
+import { Navbar } from './Navbar'
+import { Sidebar } from './Sidebar'
+import { TableOfContents } from './TableOfContents'
+import { Breadcrumbs } from './Breadcrumbs'
+import { KeyboardShortcuts } from './KeyboardShortcuts'
+import type { NavItem, TOCItem, Frontmatter, AdjacentPages, BreadcrumbItem } from '@/lib/docs'
+
+const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
+const DOCS_PATH = 'docs/content'
+
+interface Announcement {
+  id: string
+  message: string
+  linkText?: string
+  linkHref?: string
+  variant?: 'info' | 'warning' | 'success'
+}
+
+interface DocsLayoutProps {
+  children: React.ReactNode
+  nav: NavItem[]
+  toc: TOCItem[]
+  frontmatter: Frontmatter
+  adjacentPages?: AdjacentPages
+  slug?: string[]
+  breadcrumbs?: BreadcrumbItem[]
+  lastUpdated?: string | null
+  announcement?: Announcement
+}
+
+function getEditUrl(slug: string[]): string {
+  const filePath = slug.length === 0 ? 'index' : slug.join('/')
+  return `${GITHUB_REPO}/edit/main/${DOCS_PATH}/${filePath}.mdx`
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+export function DocsLayout({
+  children,
+  nav,
+  toc,
+  frontmatter,
+  adjacentPages,
+  slug = [],
+  breadcrumbs,
+  lastUpdated,
+  announcement,
+}: DocsLayoutProps) {
+  const editUrl = getEditUrl(slug)
+
+  return (
+    <Box minH="100vh">
+      <KeyboardShortcuts
+        prevHref={adjacentPages?.prev?.href}
+        nextHref={adjacentPages?.next?.href}
+      />
+      {announcement && (
+        <AnnouncementBanner
+          id={announcement.id}
+          message={announcement.message}
+          linkText={announcement.linkText}
+          linkHref={announcement.linkHref}
+          variant={announcement.variant}
+        />
+      )}
+      <Navbar nav={nav} />
+      <Container maxW="container.xl">
+        <Flex>
+          <Sidebar nav={nav} />
+          <Box
+            as="main"
+            flex={1}
+            minW={0}
+            py={8}
+            px={{ base: 4, lg: 8 }}
+          >
+            <Box maxW="container.md">
+              {breadcrumbs && breadcrumbs.length > 1 && (
+                <Breadcrumbs items={breadcrumbs} />
+              )}
+              {frontmatter.title && (
+                <Text as="h1" fontSize="4xl" fontWeight="bold" mb={2}>
+                  {frontmatter.title}
+                </Text>
+              )}
+              {frontmatter.description && (
+                <Text fontSize="xl" color="fg.muted" mb={8}>
+                  {frontmatter.description}
+                </Text>
+              )}
+              <Box className="mdx-content" data-pagefind-body>
+                {children}
+              </Box>
+              <Flex mt={8} pt={4} borderTopWidth="1px" justify="space-between" align="center" flexWrap="wrap" gap={2}>
+                {lastUpdated && (
+                  <Text fontSize="sm" color="fg.muted">
+                    Last updated: {formatDate(lastUpdated)}
+                  </Text>
+                )}
+                <Link
+                  href={editUrl}
+                  fontSize="sm"
+                  color="fg.muted"
+                  _hover={{ color: 'fg' }}
+                  ml="auto"
+                >
+                  Edit this page on GitHub →
+                </Link>
+              </Flex>
+              {adjacentPages && (
+                <Flex
+                  mt={8}
+                  pt={6}
+                  borderTopWidth="1px"
+                  justify="space-between"
+                  gap={4}
+                >
+                  {adjacentPages.prev ? (
+                    <Link asChild flex={1} _hover={{ textDecoration: 'none' }}>
+                      <NextLink href={adjacentPages.prev.href}>
+                        <Box
+                          p={4}
+                          borderWidth="1px"
+                          borderRadius="lg"
+                          _hover={{ borderColor: 'blue.500' }}
+                        >
+                          <Text fontSize="sm" color="fg.muted">← Previous</Text>
+                          <Text fontWeight="medium">{adjacentPages.prev.title}</Text>
+                        </Box>
+                      </NextLink>
+                    </Link>
+                  ) : <Box flex={1} />}
+                  {adjacentPages.next ? (
+                    <Link asChild flex={1} _hover={{ textDecoration: 'none' }}>
+                      <NextLink href={adjacentPages.next.href}>
+                        <Box
+                          p={4}
+                          borderWidth="1px"
+                          borderRadius="lg"
+                          textAlign="right"
+                          _hover={{ borderColor: 'blue.500' }}
+                        >
+                          <Text fontSize="sm" color="fg.muted">Next →</Text>
+                          <Text fontWeight="medium">{adjacentPages.next.title}</Text>
+                        </Box>
+                      </NextLink>
+                    </Link>
+                  ) : <Box flex={1} />}
+                </Flex>
+              )}
+              <Box as="footer" mt={12} pt={6} borderTopWidth="1px">
+                <Text fontSize="sm" color="fg.muted">
+                  MIT {new Date().getFullYear()} © Ryan Hefner
+                </Text>
+              </Box>
+            </Box>
+          </Box>
+          <TableOfContents toc={toc} />
+        </Flex>
+      </Container>
+    </Box>
+  )
+}

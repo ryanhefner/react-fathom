@@ -1,0 +1,27 @@
+{
+  "name": "react-fathom-tanstack-router-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-fathom/example-ui": "file:../shared",
+    "@tanstack/react-router": "^1.120.3",
+    "fathom-client": "^3.6.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-fathom": "file:../.."
+  },
+  "devDependencies": {
+    "@tanstack/router-plugin": "^1.120.3",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  }
+}

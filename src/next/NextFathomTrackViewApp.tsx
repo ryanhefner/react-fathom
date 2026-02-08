@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation.js'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from './utils'
 
 export interface NextFathomTrackViewAppProps {
   /**
@@ -12,6 +13,22 @@ export interface NextFathomTrackViewAppProps {
    * @default false
    */
   disableAutoTrack?: boolean
+  /**
+   * Transform the URL before tracking.
+   * Useful for stripping sensitive parameters or normalizing URLs.
+   *
+   * @example
+   * ```tsx
+   * <NextFathomTrackViewApp
+   *   transformUrl={(url) => {
+   *     const u = new URL(url)
+   *     u.searchParams.delete('token')
+   *     return u.toString()
+   *   }}
+   * />
+   * ```
+   */
+  transformUrl?: (url: string) => string
 }
 
 /**
@@ -40,6 +57,7 @@ export interface NextFathomTrackViewAppProps {
  */
 export const NextFathomTrackViewApp: React.FC<NextFathomTrackViewAppProps> = ({
   disableAutoTrack = false,
+  transformUrl,
 }) => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -53,25 +71,20 @@ export const NextFathomTrackViewApp: React.FC<NextFathomTrackViewAppProps> = ({
     }
 
     const searchString = searchParams?.toString()
-    const url =
+    const path =
       pathname +
       (searchString !== undefined && searchString !== ''
         ? `?${searchString}`
         : '')
 
+    const url = buildTrackingUrl(path, transformUrl)
+
     // Track initial pageview only once
     if (!hasTrackedInitialPageview.current) {
       hasTrackedInitialPageview.current = true
-      trackPageview({
-        url: window.location.origin + url,
-      })
-    } else {
-      // Track subsequent route changes
-      trackPageview({
-        url: window.location.origin + url,
-      })
     }
-  }, [pathname, searchParams, trackPageview, client, disableAutoTrack])
+    trackPageview({ url })
+  }, [pathname, searchParams, trackPageview, client, disableAutoTrack, transformUrl])
 
   // This component doesn't render anything
   return null

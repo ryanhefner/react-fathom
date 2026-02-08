@@ -1,0 +1,321 @@
+---
+title: "Gatsby"
+description: "Integrate react-fathom with Gatsby for automatic pageview tracking."
+---
+
+# Gatsby Integration
+
+This guide covers integrating `react-fathom` with Gatsby applications for automatic pageview tracking.
+
+## Installation
+
+Install the required packages:
+
+```bash npm2yarn
+npm install react-fathom fathom-client
+```
+
+## Setup Options
+
+There are two ways to integrate react-fathom with Gatsby:
+
+1. **Component-based** (recommended) — Use `GatsbyFathomTrackView` in your layout
+2. **gatsby-browser.js** — Use helpers in your gatsby-browser.js file
+
+## Option 1: Component-Based (Recommended)
+
+This approach uses a React component in your layout file, consistent with other react-fathom integrations.
+
+### Layout Setup
+
+```tsx
+// src/components/Layout.tsx
+import React from 'react'
+import { FathomProvider } from 'react-fathom'
+import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
+
+interface LayoutProps {
+  children: React.ReactNode
+}
+
+export function Layout({ children }: LayoutProps) {
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <GatsbyFathomTrackView />
+      {children}
+    </FathomProvider>
+  )
+}
+```
+
+### Wrap Pages with Layout
+
+Use the layout in your pages:
+
+```tsx
+// src/pages/index.tsx
+import React from 'react'
+import { Layout } from '../components/Layout'
+
+export default function HomePage() {
+  return (
+    <Layout>
+      <h1>Welcome to my Gatsby site</h1>
+    </Layout>
+  )
+}
+```
+
+Or use `gatsby-browser.js` to wrap all pages:
+
+```js
+// gatsby-browser.js
+import React from 'react'
+import { FathomProvider } from 'react-fathom'
+import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
+
+export const wrapRootElement = ({ element }) => (
+  <FathomProvider siteId="YOUR_SITE_ID">
+    <GatsbyFathomTrackView />
+    {element}
+  </FathomProvider>
+)
+```
+
+## Option 2: gatsby-browser.js Helpers
+
+For users who prefer configuring analytics entirely in `gatsby-browser.js`, react-fathom provides helper functions.
+
+### Using createGatsbyFathomPlugins
+
+```js
+// gatsby-browser.js
+import { createGatsbyFathomPlugins } from 'react-fathom/gatsby'
+
+const fathomPlugins = createGatsbyFathomPlugins({
+  siteId: 'YOUR_SITE_ID',
+  // Optional configuration
+  includedDomains: ['yourdomain.com'],
+  excludedDomains: ['staging.yourdomain.com'],
+  spa: 'auto',
+  honorDNT: false,
+})
+
+export const onClientEntry = fathomPlugins.onClientEntry
+export const onRouteUpdate = fathomPlugins.onRouteUpdate
+```
+
+### Manual Configuration
+
+For more control, use `trackGatsbyPageview` directly:
+
+```js
+// gatsby-browser.js
+import Fathom from 'fathom-client'
+import { trackGatsbyPageview } from 'react-fathom/gatsby'
+
+export const onClientEntry = () => {
+  Fathom.load('YOUR_SITE_ID', {
+    includedDomains: ['yourdomain.com'],
+  })
+}
+
+export const onRouteUpdate = ({ location }) => {
+  trackGatsbyPageview(Fathom, location, {
+    includeSearchParams: true,
+    includeHash: false,
+  })
+}
+```
+
+## GatsbyFathomTrackView Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `disableAutoTrack` | `boolean` | `false` | Disable automatic pageview tracking |
+| `includeSearchParams` | `boolean` | `true` | Include query parameters in tracked URLs |
+| `includeHash` | `boolean` | `false` | Include URL hash in tracked URLs |
+| `transformUrl` | `(url: string) => string \| null` | — | Transform URL before tracking; return `null` to skip |
+
+## Tracking Custom Events
+
+Use the `useFathom` hook in any component:
+
+```tsx
+import React from 'react'
+import { useFathom } from 'react-fathom'
+
+function NewsletterForm() {
+  const { trackEvent } = useFathom()
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    trackEvent('newsletter-signup')
+    // Submit form...
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="email" placeholder="Enter your email" />
+      <button type="submit">Subscribe</button>
+    </form>
+  )
+}
+```
+
+## URL Transformation
+
+### Sanitizing Dynamic Routes
+
+Remove dynamic segments from URLs for cleaner analytics:
+
+```tsx
+<GatsbyFathomTrackView
+  transformUrl={(url) => {
+    // /blog/post-123 → /blog/[slug]
+    return url.replace(/\/blog\/[^/]+/, '/blog/[slug]')
+  }}
+/>
+```
+
+### Excluding Routes
+
+Skip tracking for specific routes:
+
+```tsx
+<GatsbyFathomTrackView
+  transformUrl={(url) => {
+    // Don't track admin pages
+    if (url.includes('/admin')) {
+      return null
+    }
+    return url
+  }}
+/>
+```
+
+## Environment Variables
+
+Store your site ID in environment variables:
+
+```bash
+# .env.development
+GATSBY_FATHOM_SITE_ID=YOUR_SITE_ID
+```
+
+```tsx
+<FathomProvider siteId={process.env.GATSBY_FATHOM_SITE_ID}>
+```
+
+## Local Development
+
+Enable tracking on localhost:
+
+```tsx
+<FathomProvider
+  siteId={process.env.GATSBY_FATHOM_SITE_ID}
+  clientOptions={{
+    includedDomains: ['localhost', 'yourdomain.com']
+  }}
+>
+```
+
+Or with gatsby-browser.js helpers:
+
+```js
+const fathomPlugins = createGatsbyFathomPlugins({
+  siteId: 'YOUR_SITE_ID',
+  includedDomains: ['localhost', 'yourdomain.com'],
+})
+```
+
+## TypeScript Support
+
+All Gatsby exports are fully typed. Import types as needed:
+
+```tsx
+import type { GatsbyFathomTrackViewProps } from 'react-fathom/gatsby'
+```
+
+## How It Works
+
+Gatsby uses `@reach/router` internally. The `GatsbyFathomTrackView` component listens to route changes via `@reach/router`'s `globalHistory`:
+
+1. On mount, tracks the initial pageview
+2. Listens for `PUSH` and `POP` history actions
+3. Constructs the full URL from `window.location.origin` and the route path
+4. Calls `trackPageview` with the constructed URL
+
+The `gatsby-browser.js` helpers use Gatsby's built-in `onRouteUpdate` API, which fires after each client-side navigation.
+
+## Complete Example
+
+Here's a full Gatsby setup with react-fathom:
+
+```tsx
+// src/components/Layout.tsx
+import React from 'react'
+import { FathomProvider } from 'react-fathom'
+import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <FathomProvider
+      siteId={process.env.GATSBY_FATHOM_SITE_ID!}
+      clientOptions={{
+        includedDomains: [
+          'localhost',
+          'yourdomain.com',
+        ],
+      }}
+    >
+      <GatsbyFathomTrackView
+        transformUrl={(url) => {
+          // Normalize blog post URLs
+          return url.replace(/\/blog\/[^/]+$/, '/blog/[slug]')
+        }}
+      />
+      <header>...</header>
+      <main>{children}</main>
+      <footer>...</footer>
+    </FathomProvider>
+  )
+}
+```
+
+```tsx
+// src/pages/index.tsx
+import React from 'react'
+import { useFathom } from 'react-fathom'
+import { Layout } from '../components/Layout'
+
+export default function HomePage() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <Layout>
+      <h1>Welcome</h1>
+      <button onClick={() => trackEvent('cta-click')}>
+        Get Started
+      </button>
+    </Layout>
+  )
+}
+```
+
+## Troubleshooting
+
+### Events not appearing in Fathom?
+
+1. Verify your site ID matches your [Fathom dashboard](https://app.usefathom.com)
+2. Check for ad blockers (test in incognito mode)
+3. Add `localhost` to `includedDomains` for local testing
+4. Ensure `FathomProvider` wraps your entire app
+
+### Duplicate pageviews?
+
+If using both the component approach and gatsby-browser.js helpers, you may get duplicate tracking. Use only one approach.
+
+### Route changes not tracking?
+
+Ensure `GatsbyFathomTrackView` is rendered inside `FathomProvider` and that the provider persists across route changes (use gatsby-browser.js `wrapRootElement`).

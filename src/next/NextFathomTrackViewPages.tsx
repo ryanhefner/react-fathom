@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { useRouter } from 'next/compat/router.js'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from './utils'
 
 export interface NextFathomTrackViewPagesProps {
   /**
@@ -10,6 +11,22 @@ export interface NextFathomTrackViewPagesProps {
    * @default false
    */
   disableAutoTrack?: boolean
+  /**
+   * Transform the URL before tracking.
+   * Useful for stripping sensitive parameters or normalizing URLs.
+   *
+   * @example
+   * ```tsx
+   * <NextFathomTrackViewPages
+   *   transformUrl={(url) => {
+   *     const u = new URL(url)
+   *     u.searchParams.delete('token')
+   *     return u.toString()
+   *   }}
+   * />
+   * ```
+   */
+  transformUrl?: (url: string) => string
 }
 
 /**
@@ -34,7 +51,7 @@ export interface NextFathomTrackViewPagesProps {
  */
 export const NextFathomTrackViewPages: React.FC<
   NextFathomTrackViewPagesProps
-> = ({ disableAutoTrack = false }) => {
+> = ({ disableAutoTrack = false, transformUrl }) => {
   const hasTrackedInitialPageview = useRef(false)
   const { trackPageview, client } = useFathom()
 
@@ -54,10 +71,9 @@ export const NextFathomTrackViewPages: React.FC<
       return
     }
 
-    const handleRouteChangeComplete = (url: string): void => {
-      trackPageview({
-        url: window.location.origin + url,
-      })
+    const handleRouteChangeComplete = (path: string): void => {
+      const url = buildTrackingUrl(path, transformUrl)
+      trackPageview({ url })
     }
 
     // router.events is stable in Next.js, so we can use it without including router in dependencies
@@ -67,7 +83,7 @@ export const NextFathomTrackViewPages: React.FC<
       router?.events?.off('routeChangeComplete', handleRouteChangeComplete)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackPageview, client, disableAutoTrack])
+  }, [trackPageview, client, disableAutoTrack, transformUrl])
 
   // Track initial pageview (routeChangeComplete doesn't fire on initial load)
   useEffect(() => {
@@ -83,10 +99,12 @@ export const NextFathomTrackViewPages: React.FC<
     }
 
     hasTrackedInitialPageview.current = true
-    trackPageview({
-      url: window.location.href,
-    })
-  }, [trackPageview, client, disableAutoTrack, router])
+    const url = buildTrackingUrl(
+      window.location.pathname + window.location.search,
+      transformUrl,
+    )
+    trackPageview({ url })
+  }, [trackPageview, client, disableAutoTrack, router, transformUrl])
 
   // This component doesn't render anything
   return null

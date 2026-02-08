@@ -1,12 +1,27 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { NextFathomProviderApp } from 'react-fathom/next'
+import { ExampleProviderNext, ExampleLayout } from '@react-fathom/example-ui/next'
 
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Next.js App Router Example - react-fathom',
-  description: 'Example Next.js App Router application using react-fathom',
+  description:
+    'Example Next.js App Router application demonstrating react-fathom analytics integration',
+  openGraph: {
+    type: 'website',
+    title: 'Next.js App Router Example - react-fathom',
+    description:
+      'Example Next.js App Router application demonstrating react-fathom analytics integration',
+    siteName: 'react-fathom examples',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Next.js App Router Example - react-fathom',
+    description:
+      'Example Next.js App Router application demonstrating react-fathom analytics integration',
+  },
 }
 
 export default function RootLayout({
@@ -17,35 +32,18 @@ export default function RootLayout({
   const siteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID || 'DEMO'
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <NextFathomProviderApp siteId={siteId}>
-          <nav className="nav">
-            <div className="nav-container">
-              <Link href="/" className="nav-logo">
-                react-fathom
-              </Link>
-              <div className="nav-links">
-                <Link href="/">Home</Link>
-                <Link href="/about">About</Link>
-                <Link href="/contact">Contact</Link>
-              </div>
-            </div>
-          </nav>
-          <main className="main">{children}</main>
-          <footer className="footer">
-            <p>
-              This is an example Next.js App Router application demonstrating{' '}
-              <a
-                href="https://github.com/ryanhefner/react-fathom"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                react-fathom
-              </a>
-            </p>
-          </footer>
-        </NextFathomProviderApp>
+        <ExampleProviderNext>
+          <NextFathomProviderApp siteId={siteId} debug={{ enabled: true }}>
+            <ExampleLayout
+              linkComponent={Link}
+              frameworkName="Next.js App Router"
+            >
+              {children}
+            </ExampleLayout>
+          </NextFathomProviderApp>
+        </ExampleProviderNext>
       </body>
     </html>
   )

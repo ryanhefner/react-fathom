@@ -1,0 +1,113 @@
+---
+title: "Getting Started"
+description: "Install and set up react-fathom in your application."
+---
+
+# Getting Started
+
+## Installation
+
+Install `react-fathom` and its peer dependency `fathom-client`:
+
+```bash npm2yarn
+npm install react-fathom fathom-client
+```
+
+## Peer Dependencies
+
+| Package | Version | Required for |
+|---------|---------|--------------|
+| `react` | >= 16.8 | All |
+| `react-dom` | >= 16.8 | Web only |
+| `fathom-client` | >= 3.0.0 | Web only (not needed for React Native) |
+| `next` | >= 10.0.0 | Next.js providers only |
+| `react-router-dom` | >= 6.0.0 | React Router / Remix only |
+| `@reach/router` | >= 1.3.0 | Gatsby only |
+| `gatsby` | >= 4.0.0 | Gatsby only |
+| `@tanstack/react-router` | >= 1.0.0 | TanStack Router only |
+| `react-native` | >= 0.60.0 | React Native only |
+| `react-native-webview` | >= 11.0.0 | React Native only |
+
+## Basic Setup
+
+### 1. Get Your Site ID
+
+Your Fathom site ID is an 8-character alphanumeric string (e.g., `ABCD1234`). Find it in your [Fathom dashboard](https://app.usefathom.com) under **Settings → Site ID**.
+
+### 2. Add the Provider
+
+Wrap your application with `FathomProvider`:
+
+```tsx
+import { FathomProvider } from 'react-fathom'
+
+function App() {
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <YourApp />
+    </FathomProvider>
+  )
+}
+```
+
+### 3. Track Events
+
+Use the `useFathom` hook to track custom events:
+
+```tsx
+import { useFathom } from 'react-fathom'
+
+function SignUpButton() {
+  const { trackEvent } = useFathom()
+
+  return (
+    <button onClick={() => trackEvent('signup-click')}>
+      Sign Up
+    </button>
+  )
+}
+```
+
+Pageviews are tracked automatically by default.
+
+## Next Steps
+
+- [React usage guide](/docs/react) — Hooks and declarative components
+- [React Router integration](/docs/react-router) — Automatic pageview tracking for React Router and Remix
+- [Gatsby integration](/docs/gatsby) — Automatic pageview tracking for Gatsby
+- [TanStack Router integration](/docs/tanstack-router) — Type-safe routing with automatic tracking
+- [Next.js integration](/docs/nextjs) — App Router and Pages Router
+- [React Native setup](/docs/react-native) — Mobile apps with offline queuing
+- [API Reference](/docs/api/providers) — Full provider props and options
+
+## Environment Variables
+
+For production apps, store your site ID in an environment variable:
+
+```tsx
+<FathomProvider siteId={process.env.REACT_APP_FATHOM_SITE_ID}>
+```
+
+For Next.js, use the `NEXT_PUBLIC_` prefix:
+
+```bash
+# .env.local
+NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID
+```
+
+```tsx
+<FathomProvider siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
+```
+
+## Local Development
+
+By default, Fathom only tracks events from configured domains. To track during local development:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{
+    includedDomains: ['localhost', 'yourdomain.com']
+  }}
+>
+```

@@ -1,0 +1,194 @@
+---
+title: "Providers"
+description: "API reference for FathomProvider, NextFathomProviderApp, and NativeFathomProvider."
+---
+
+# Providers
+
+## FathomProvider
+
+Main provider component for React apps. Wraps your application and provides the Fathom context.
+
+```tsx
+import { FathomProvider } from 'react-fathom'
+
+<FathomProvider siteId="YOUR_SITE_ID">
+  <App />
+</FathomProvider>
+```
+
+### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `siteId` | `string` | No* | Your Fathom Analytics site ID |
+| `client` | `FathomClient` | No* | Custom Fathom client instance |
+| `clientRef` | `MutableRefObject<FathomClient>` | No | Ref populated with the client instance |
+| `clientOptions` | `LoadOptions` | No | Options passed to `fathom-client` |
+| `defaultPageviewOptions` | `PageViewOptions` | No | Default options merged into all `trackPageview` calls |
+| `defaultEventOptions` | `EventOptions` | No | Default options merged into all `trackEvent` calls |
+| `children` | `ReactNode` | Yes | Child components |
+
+*Either `siteId` or `client` must be provided.
+
+### clientOptions
+
+Options passed to the underlying `fathom-client`:
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `auto` | `boolean` | Enable automatic pageview tracking (default: `true`) |
+| `canonical` | `boolean` | Use canonical URL for tracking |
+| `honorDNT` | `boolean` | Honor Do Not Track browser setting |
+| `includedDomains` | `string[]` | Only track on these domains |
+| `excludedDomains` | `string[]` | Don't track on these domains |
+| `spa` | `'auto' \| 'history' \| 'hash'` | SPA mode for route detection |
+
+### Example with All Options
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  clientOptions={{
+    includedDomains: ['yourdomain.com', 'localhost'],
+    auto: false,
+    honorDNT: true,
+  }}
+  defaultPageviewOptions={{ referrer: 'https://example.com' }}
+  defaultEventOptions={{ _site_id: 'my-app' }}
+>
+  <App />
+</FathomProvider>
+```
+
+### Nested Providers
+
+Providers can be nested to override defaults for specific sections:
+
+```tsx
+<FathomProvider
+  siteId="YOUR_SITE_ID"
+  defaultEventOptions={{ _site_id: 'global' }}
+>
+  {/* Events here use _site_id: 'global' */}
+
+  <FathomProvider defaultEventOptions={{ _site_id: 'dashboard' }}>
+    {/* Events here use _site_id: 'dashboard' */}
+  </FathomProvider>
+</FathomProvider>
+```
+
+---
+
+## NextFathomProviderApp
+
+Client Component wrapper for Next.js App Router. Combines `FathomProvider` and `NextFathomTrackViewApp`.
+
+```tsx
+import { NextFathomProviderApp } from 'react-fathom/next'
+
+// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NextFathomProviderApp siteId="YOUR_SITE_ID">
+          {children}
+        </NextFathomProviderApp>
+      </body>
+    </html>
+  )
+}
+```
+
+### Props
+
+All `FathomProvider` props, plus:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `disableAutoTrack` | `boolean` | `false` | Disable automatic pageview tracking on route changes |
+
+---
+
+## NextFathomTrackViewApp
+
+Tracks pageviews for Next.js App Router. Must be used within a `FathomProvider`.
+
+```tsx
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewApp } from 'react-fathom/next'
+
+<FathomProvider siteId="YOUR_SITE_ID">
+  <NextFathomTrackViewApp />
+  {children}
+</FathomProvider>
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `disableAutoTrack` | `boolean` | `false` | Disable automatic route tracking |
+
+---
+
+## NextFathomTrackViewPages
+
+Tracks pageviews for Next.js Pages Router. Must be used within a `FathomProvider`.
+
+```tsx
+import { FathomProvider } from 'react-fathom'
+import { NextFathomTrackViewPages } from 'react-fathom/next'
+
+// pages/_app.tsx
+function MyApp({ Component, pageProps }) {
+  return (
+    <FathomProvider siteId="YOUR_SITE_ID">
+      <NextFathomTrackViewPages />
+      <Component {...pageProps} />
+    </FathomProvider>
+  )
+}
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `disableAutoTrack` | `boolean` | `false` | Disable automatic route tracking |
+
+---
+
+## NativeFathomProvider
+
+Provider for React Native apps. Manages a hidden WebView with Fathom's tracking script.
+
+```tsx
+import { NativeFathomProvider } from 'react-fathom/native'
+
+<NativeFathomProvider
+  siteId="YOUR_SITE_ID"
+  debug={__DEV__}
+>
+  <App />
+</NativeFathomProvider>
+```
+
+### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `siteId` | `string` | Yes | Your Fathom site ID |
+| `loadOptions` | `LoadOptions` | No | Options passed to `fathom.load()` |
+| `scriptDomain` | `string` | No | Custom domain (default: `cdn.usefathom.com`) |
+| `defaultPageviewOptions` | `PageViewOptions` | No | Default pageview options |
+| `defaultEventOptions` | `EventOptions` | No | Default event options |
+| `trackAppState` | `boolean` | No | Enable automatic app state tracking |
+| `debug` | `boolean` | No | Enable debug logging |
+| `onReady` | `() => void` | No | Called when Fathom script loads |
+| `onError` | `(error: string) => void` | No | Called on script load error |
+| `clientRef` | `MutableRefObject<WebViewFathomClient>` | No | Ref for direct client access |
+| `children` | `ReactNode` | Yes | Child components |
+
+See the [React Native guide](/docs/react-native) for detailed usage.
