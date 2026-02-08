@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { globalHistory } from '@reach/router'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from '../utils'
 
 export interface GatsbyFathomTrackViewProps {
   /**
@@ -75,27 +76,14 @@ export const GatsbyFathomTrackView: React.FC<GatsbyFathomTrackViewProps> = ({
 
   // Build URL from location
   const buildUrl = (location: { pathname: string; search: string; hash: string }) => {
-    if (typeof window === 'undefined') return null
-
-    let url = window.location.origin + location.pathname
-
-    if (includeSearchParams && location.search) {
-      url += location.search
-    }
-
-    if (includeHash && location.hash) {
-      url += location.hash
-    }
-
-    if (transformUrl) {
-      const transformed = transformUrl(url)
-      if (transformed === null || transformed === undefined) {
-        return null
-      }
-      url = transformed
-    }
-
-    return url
+    return buildTrackingUrl({
+      pathname: location.pathname,
+      search: location.search,
+      hash: location.hash,
+      includeSearchParams,
+      includeHash,
+      transformUrl,
+    })
   }
 
   // Track initial pageview

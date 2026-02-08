@@ -887,4 +887,196 @@ describe('FathomProvider', () => {
       expect(() => result.current.trackEvent?.('test-event')).not.toThrow()
     })
   })
+
+  describe('siteId validation', () => {
+    it('should warn when empty siteId is provided', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} siteId="">
+          {children}
+        </FathomProvider>
+      )
+
+      renderHook(() => useFathom(), { wrapper })
+
+      await waitFor(() => {
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining('Empty siteId provided')
+        )
+      })
+
+      // Should not call load with empty siteId
+      expect(mockClient.load).not.toHaveBeenCalled()
+
+      warnSpy.mockRestore()
+    })
+
+    it('should not call load when siteId is undefined', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient}>
+          {children}
+        </FathomProvider>
+      )
+
+      renderHook(() => useFathom(), { wrapper })
+
+      await waitFor(() => {
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining('No siteId provided')
+        )
+      })
+
+      expect(mockClient.load).not.toHaveBeenCalled()
+
+      warnSpy.mockRestore()
+    })
+  })
+
+  describe('production debug warning', () => {
+    it('should warn when debug is enabled in production', async () => {
+      const originalEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'production'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} siteId="TEST" debug>
+          {children}
+        </FathomProvider>
+      )
+
+      renderHook(() => useFathom(), { wrapper })
+
+      await waitFor(() => {
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining('Debug mode is enabled in production')
+        )
+      })
+
+      warnSpy.mockRestore()
+      process.env.NODE_ENV = originalEnv
+    })
+
+    it('should not warn when debug is disabled in production', async () => {
+      const originalEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'production'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider client={mockClient} siteId="TEST">
+          {children}
+        </FathomProvider>
+      )
+
+      renderHook(() => useFathom(), { wrapper })
+
+      // Give effects time to run
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      expect(warnSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Debug mode is enabled in production')
+      )
+
+      warnSpy.mockRestore()
+      process.env.NODE_ENV = originalEnv
+    })
+  })
+
+  describe('debug event counter isolation', () => {
+    it('should generate unique debug event IDs per provider instance', () => {
+      const events1: string[] = []
+      const events2: string[] = []
+
+      const mockClient = {
+        trackEvent: vi.fn(),
+        trackPageview: vi.fn(),
+        trackGoal: vi.fn(),
+        load: vi.fn(),
+        setSite: vi.fn(),
+        blockTrackingForMe: vi.fn(),
+        enableTrackingForMe: vi.fn(),
+        isTrackingEnabled: vi.fn(() => true),
+      }
+
+      // First provider
+      const wrapper1 = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider
+          client={mockClient}
+          debug={{ enabled: true, console: false, onTrack: (e) => events1.push(e.id) }}
+        >
+          {children}
+        </FathomProvider>
+      )
+
+      const { result: result1 } = renderHook(() => useFathom(), { wrapper: wrapper1 })
+      result1.current.trackEvent?.('event-a')
+      result1.current.trackEvent?.('event-b')
+
+      // Second provider
+      const wrapper2 = ({ children }: { children: React.ReactNode }) => (
+        <FathomProvider
+          client={mockClient}
+          debug={{ enabled: true, console: false, onTrack: (e) => events2.push(e.id) }}
+        >
+          {children}
+        </FathomProvider>
+      )
+
+      const { result: result2 } = renderHook(() => useFathom(), { wrapper: wrapper2 })
+      result2.current.trackEvent?.('event-c')
+
+      // Each provider should have its own counter sequence
+      expect(events1).toHaveLength(2)
+      expect(events2).toHaveLength(1)
+
+      // All IDs should be unique
+      const allIds = [...events1, ...events2]
+      const uniqueIds = new Set(allIds)
+      expect(uniqueIds.size).toBe(allIds.length)
+    })
+  })
 })

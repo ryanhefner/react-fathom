@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from '../utils'
 
 export interface TanStackRouterFathomTrackViewProps {
   /**
@@ -92,29 +93,16 @@ export const TanStackRouterFathomTrackView: React.FC<
 
   // Build URL from location parts
   const buildUrl = useCallback(() => {
-    if (typeof window === 'undefined') return null
-
-    let url = window.location.origin + location.pathname
-
-    // TanStack Router provides search as an object, use the serialized searchStr
-    if (includeSearchParams && location.searchStr) {
-      url += location.searchStr
-    }
-
-    if (includeHash && location.hash) {
-      // TanStack Router's hash doesn't include the # prefix
-      url += location.hash.startsWith('#') ? location.hash : `#${location.hash}`
-    }
-
-    if (transformUrl) {
-      const transformed = transformUrl(url)
-      if (transformed === null || transformed === undefined) {
-        return null
-      }
-      url = transformed
-    }
-
-    return url
+    return buildTrackingUrl({
+      pathname: location.pathname,
+      // TanStack Router provides search as an object, use the serialized searchStr
+      search: location.searchStr,
+      // TanStack Router's hash may not include the # prefix - buildTrackingUrl normalizes this
+      hash: location.hash,
+      includeSearchParams,
+      includeHash,
+      transformUrl,
+    })
   }, [location.pathname, location.searchStr, location.hash, includeSearchParams, includeHash, transformUrl])
 
   // Track pageviews on route changes

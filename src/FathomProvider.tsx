@@ -8,10 +8,6 @@ import type { EventOptions, LoadOptions, PageViewOptions } from 'fathom-client'
 import { FathomContext } from './FathomContext'
 import type { DebugEvent, DebugEventCallback, DebugOptions, FathomProviderProps } from './types'
 
-// Generate unique IDs for debug events
-let debugEventCounter = 0
-const generateDebugEventId = () => `debug-${Date.now()}-${++debugEventCounter}`
-
 const FathomProvider: React.FC<FathomProviderProps> = ({
   children,
   client: providedClient,
@@ -23,6 +19,13 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   debug: debugProp,
   onError,
 }) => {
+  // Instance-scoped counter for unique debug event IDs
+  const debugEventCounterRef = useRef(0)
+  const generateDebugEventId = useCallback(
+    () => `debug-${Date.now()}-${++debugEventCounterRef.current}`,
+    [],
+  )
+
   // Read parent context if it exists
   const parentContext = useContext(FathomContext)
 
@@ -54,10 +57,16 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
     }
   }, [debugEnabled])
 
-  // Log debug prop for diagnostics
+  // Warn if debug mode is enabled in production
   useEffect(() => {
-    console.log('[react-fathom] FathomProvider mounted, debugProp:', debugProp, 'debugEnabled:', debugEnabled)
-  }, [])
+    if (debugEnabled && process.env.NODE_ENV === 'production') {
+      console.warn(
+        '[react-fathom] Debug mode is enabled in production. ' +
+          'This may expose tracking data via CustomEvent broadcasts and console logs. ' +
+          'Consider disabling debug mode for production builds.'
+      )
+    }
+  }, [debugEnabled])
 
   // Store debug subscribers
   const debugSubscribersRef = useRef<Set<DebugEventCallback>>(new Set())
@@ -207,7 +216,7 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       // Track to Fathom
       safeClientCall('trackEvent', () => client.trackEvent(eventName, mergedOptions), [eventName, mergedOptions])
     },
-    [client, defaultEventOptions, emitDebugEvent, safeClientCall],
+    [client, defaultEventOptions, emitDebugEvent, generateDebugEventId, safeClientCall],
   )
 
   const trackPageview = useCallback(
@@ -229,7 +238,7 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       // Track to Fathom
       safeClientCall('trackPageview', () => client.trackPageview(mergedOptions), [mergedOptions])
     },
-    [client, defaultPageviewOptions, emitDebugEvent, safeClientCall],
+    [client, defaultPageviewOptions, emitDebugEvent, generateDebugEventId, safeClientCall],
   )
 
   const trackGoal = useCallback(
@@ -246,18 +255,25 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       // Track to Fathom
       safeClientCall('trackGoal', () => client.trackGoal(code, cents), [code, cents])
     },
-    [client, emitDebugEvent, safeClientCall],
+    [client, emitDebugEvent, generateDebugEventId, safeClientCall],
   )
 
   useEffect(() => {
-    if (siteId !== undefined) {
+    if (siteId !== undefined && siteId !== '') {
       load(siteId, clientOptions)
     } else if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        '[react-fathom] No siteId provided to FathomProvider. ' +
-          'Analytics tracking will not be sent to Fathom until a siteId is configured. ' +
-          'Debug events will still be captured if debug mode is enabled.'
-      )
+      if (siteId === '') {
+        console.warn(
+          '[react-fathom] Empty siteId provided to FathomProvider. ' +
+            'Please provide a valid Fathom site ID.'
+        )
+      } else {
+        console.warn(
+          '[react-fathom] No siteId provided to FathomProvider. ' +
+            'Analytics tracking will not be sent to Fathom until a siteId is configured. ' +
+            'Debug events will still be captured if debug mode is enabled.'
+        )
+      }
     }
   }, [clientOptions, load, siteId])
 

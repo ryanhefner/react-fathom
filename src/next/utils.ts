@@ -1,3 +1,5 @@
+import { buildTrackingUrl as buildTrackingUrlFromParts } from '../utils'
+
 /**
  * Builds a full URL for tracking, applying optional transformation.
  *
@@ -9,9 +11,10 @@ export function buildTrackingUrl(
   path: string,
   transformUrl?: (url: string) => string,
 ): string {
-  let url = window.location.origin + path
-  if (transformUrl) {
-    url = transformUrl(url)
-  }
-  return url
+  // The Next.js adapter always returns a string (never null) since it runs
+  // client-side only and its transformUrl signature doesn't support null.
+  return buildTrackingUrlFromParts({
+    pathname: path,
+    transformUrl,
+  }) ?? ''
 }
