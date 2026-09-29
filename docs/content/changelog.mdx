@@ -5,6 +5,21 @@ description: Release history and version changes for react-fathom
 
 View the full release history on [GitHub Releases](https://github.com/ryanhefner/react-fathom/releases).
 
+## Unreleased
+
+- Add dedicated adapters for Next.js App Router and Pages Router, React Router and Remix, Gatsby, and TanStack Router
+- Add a debug event stream, subscriptions, console controls, and production safety warnings
+- Expand React Native support with a hardened WebView bridge, bounded offline queueing, app-state events, and navigation tracking
+- Add shared, SSR-safe URL construction with query, hash, and URL-transform controls across router adapters
+- Add provider error handling, configurable clients, nested option inheritance, and ref access to the resolved client
+- Publish focused ESM and CommonJS subpath exports with preserved client directives and NodeNext-compatible declarations
+- Add packed-consumer verification, clean builds, full release checks, and production documentation builds to CI
+- Add framework examples and replace the former Nextra site with a custom Chakra UI documentation site
+
+Compatibility for the upcoming release starts at Node.js 20 and Next.js 13. The
+React Native entrypoint continues to require `react-native-webview` only when it
+is used.
+
 ## Recent Releases
 
 ### 0.2.0

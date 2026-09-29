@@ -21,31 +21,32 @@ Contributions are welcome! Whether it's bug fixes, new features, documentation i
 
 ### Prerequisites
 
-- Node.js 18+
-- npm 9+
+- Node.js 20+ (the repository pins Node.js 22.15.1 in `.nvmrc`)
+- Yarn 1.22.19
 
 ### 1. Clone and Install
 
 ```bash
 git clone https://github.com/ryanhefner/react-fathom.git
 cd react-fathom
-npm install
+yarn install --frozen-lockfile
+yarn --cwd docs install --frozen-lockfile
 ```
 
 ### 2. Development Workflow
 
 ```bash
 # Run tests in watch mode during development
-npm run test:watch
+yarn vitest
 
-# Run the full test suite
-npm test
+# Run tests with coverage
+yarn test:ci
 
 # Build the package
-npm run build
+yarn build
 
-# Type check without emitting
-npm run typecheck
+# Run every release validation, including a clean packed consumer
+yarn release:check
 ```
 
 ## Project Structure
@@ -66,8 +67,11 @@ react-fathom/
 │   │   ├── TrackClick.tsx
 │   │   ├── TrackPageview.tsx
 │   │   └── TrackVisible.tsx
-│   ├── next/                 # Next.js-specific exports
-│   │   └── index.ts
+│   ├── debug/                # Debug event-stream exports
+│   ├── next/                 # Next.js App and Pages Router exports
+│   ├── react-router/         # React Router and Remix exports
+│   ├── gatsby/               # Gatsby exports
+│   ├── tanstack-router/      # TanStack Router exports
 │   └── native/               # React Native exports
 │       ├── index.ts
 │       ├── FathomWebView.tsx
@@ -75,7 +79,9 @@ react-fathom/
 │       ├── NativeFathomProvider.tsx
 │       ├── useNavigationTracking.ts
 │       └── useAppStateTracking.ts
-├── docs/                     # Documentation site (Nextra)
+├── docs/                     # Chakra UI documentation site
+├── examples/                 # Framework-specific example applications
+├── scripts/                  # Build and release verification
 └── dist/                     # Built output (generated)
 ```
 
@@ -85,13 +91,13 @@ We use [Vitest](https://vitest.dev/) for testing. All new features should includ
 
 ```bash
 # Run all tests
-npm test
+yarn test:ci
 
 # Run tests in watch mode
-npm run test:watch
+yarn vitest
 
-# Run tests with coverage
-npm run test:coverage
+# Run a focused test file
+yarn vitest run src/FathomProvider.test.tsx
 ```
 
 ### Writing Tests
@@ -132,8 +138,8 @@ describe('useMyHook', () => {
 ## Code Style
 
 - **TypeScript**: All code should be fully typed
-- **Formatting**: We use Prettier (run `npm run format` before committing)
-- **Linting**: ESLint catches common issues (run `npm run lint`)
+- **Formatting**: We use Prettier (run `yarn format` before committing)
+- **Linting**: ESLint catches common issues (run `yarn lint`)
 - **Naming**:
   - Components: PascalCase (`TrackClick.tsx`)
   - Hooks: camelCase with `use` prefix (`useFathom.ts`)
@@ -152,9 +158,7 @@ describe('useMyHook', () => {
 4. **Add or update tests** for your changes
 5. **Ensure CI passes**:
    ```bash
-   npm run lint
-   npm test
-   npm run build
+   yarn release:check
    ```
 6. **Submit a PR** with a clear description of what and why
 
@@ -174,12 +178,27 @@ Prefixes: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`
 
 ## Documentation
 
-The docs site uses [Nextra](https://nextra.site) and lives in the `/docs` directory.
+The docs site uses Next.js and Chakra UI and lives in the `/docs` directory.
 
 ```bash
-cd docs
-npm install
-npm run dev
+yarn --cwd docs install --frozen-lockfile
+yarn --cwd docs dev
 ```
 
 When adding new features, please also update the relevant documentation pages.
+
+## Release Validation
+
+Run the complete release gate before changing the package version or creating a
+tag:
+
+```bash
+yarn release:check
+```
+
+This command checks formatting and lint, runs the full suite with coverage,
+builds every package entrypoint from a clean output directory, installs the
+packed tarball into an isolated ESM/CommonJS/NodeNext consumer, and creates a
+production build of the documentation site. Make the version bump as the final
+release commit after this command succeeds, then publish and tag that exact
+commit.
