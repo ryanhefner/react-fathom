@@ -1,12 +1,23 @@
 'use client'
 
-import React, { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 
 import * as Fathom from 'fathom-client'
 import type { EventOptions, LoadOptions, PageViewOptions } from 'fathom-client'
 
 import { FathomContext } from './FathomContext'
-import type { DebugEvent, DebugEventCallback, DebugOptions, FathomProviderProps } from './types'
+import type {
+  DebugEvent,
+  DebugEventCallback,
+  DebugOptions,
+  FathomProviderProps,
+} from './types'
 
 // Generate unique IDs for debug events
 let debugEventCounter = 0
@@ -47,28 +58,25 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
 
   const debugEnabled = debugOptions.enabled
 
-  // Log debug state when enabled
+  // Debug mode exposes tracking details through callbacks, console output, and
+  // a global browser event. Keep production usage visible to consumers.
   useEffect(() => {
-    if (debugEnabled) {
+    if (!debugEnabled) return
+
+    if (process.env.NODE_ENV === 'production') {
+      console.warn(
+        '[react-fathom] Debug mode is enabled in production. ' +
+          'Tracking details may be exposed through callbacks and browser events.',
+      )
+    }
+
+    if (debugOptions.console) {
       console.log('[react-fathom] Debug mode: enabled')
     }
-  }, [debugEnabled])
-
-  // Log debug prop for diagnostics
-  useEffect(() => {
-    console.log('[react-fathom] FathomProvider mounted, debugProp:', debugProp, 'debugEnabled:', debugEnabled)
-  }, [])
+  }, [debugEnabled, debugOptions.console])
 
   // Store debug subscribers
   const debugSubscribersRef = useRef<Set<DebugEventCallback>>(new Set())
-
-  // Inherit parent's subscribers if we're a nested provider without our own debug config
-  useEffect(() => {
-    if (!debugProp && parentContext.subscribeToDebug) {
-      // We don't have our own debug config, so we don't need our own subscribers
-      // Events will flow through parent
-    }
-  }, [debugProp, parentContext.subscribeToDebug])
 
   // Subscribe to debug events
   const subscribeToDebug = useCallback((callback: DebugEventCallback) => {
@@ -84,30 +92,42 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       // Always emit global custom event when debug is enabled
       // This helps with linked packages where React context may not be shared
       if (debugEnabled && typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('react-fathom:debug', { detail: event }))
+        window.dispatchEvent(
+          new CustomEvent('react-fathom:debug', { detail: event }),
+        )
       }
 
       if (!debugEnabled) return
 
       // Log to console if enabled
       if (debugOptions.console) {
-        const emoji = event.type === 'pageview' ? '📄' : event.type === 'event' ? '🎯' : '🏆'
-        const label = event.type === 'pageview'
-          ? `Pageview: ${event.url || '(current page)'}`
-          : event.type === 'event'
-            ? `Event: ${event.eventName}`
-            : `Goal: ${event.goalCode} ($${((event.goalCents || 0) / 100).toFixed(2)})`
+        const emoji =
+          event.type === 'pageview'
+            ? '📄'
+            : event.type === 'event'
+              ? '🎯'
+              : '🏆'
+        const label =
+          event.type === 'pageview'
+            ? `Pageview: ${event.url || '(current page)'}`
+            : event.type === 'event'
+              ? `Event: ${event.eventName}`
+              : `Goal: ${event.goalCode} ($${((event.goalCents || 0) / 100).toFixed(2)})`
 
         console.log(
           `%c[react-fathom] ${emoji} ${label}`,
           'color: #8b5cf6; font-weight: bold;',
-          event.options || ''
+          event.options || '',
         )
       }
 
       // Call the onTrack callback if provided
       if (debugOptions.onTrack) {
-        debugOptions.onTrack(event)
+        try {
+          debugOptions.onTrack(event)
+        } catch (error) {
+          console.error('[react-fathom] Debug onTrack callback error:', error)
+        }
       }
 
       // Notify all subscribers
@@ -119,7 +139,7 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
         }
       })
     },
-    [debugEnabled, debugOptions]
+    [debugEnabled, debugOptions],
   )
 
   // Use provided client or fall back to parent client or default Fathom
@@ -163,29 +183,48 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   )
 
   const blockTrackingForMe = useCallback(() => {
-    client.blockTrackingForMe()
-  }, [client])
+    safeClientCall('blockTrackingForMe', () => client.blockTrackingForMe())
+  }, [client, safeClientCall])
 
   const enableTrackingForMe = useCallback(() => {
-    client.enableTrackingForMe()
-  }, [client])
+    safeClientCall('enableTrackingForMe', () => client.enableTrackingForMe())
+  }, [client, safeClientCall])
 
   const isTrackingEnabled = useCallback(() => {
-    return client.isTrackingEnabled() ?? false
-  }, [client])
+    return (
+      safeClientCall('isTrackingEnabled', () => client.isTrackingEnabled()) ??
+      false
+    )
+  }, [client, safeClientCall])
 
   const load = useCallback(
     (siteId: string, clientOptions?: LoadOptions) => {
-      safeClientCall('load', () => client.load(siteId, clientOptions), [siteId, clientOptions])
+      const normalizedSiteId = siteId.trim()
+
+      if (!normalizedSiteId) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(
+            '[react-fathom] load() requires a non-empty siteId. ' +
+              'Analytics tracking was not initialized.',
+          )
+        }
+        return
+      }
+
+      safeClientCall(
+        'load',
+        () => client.load(normalizedSiteId, clientOptions),
+        [normalizedSiteId, clientOptions],
+      )
     },
     [client, safeClientCall],
   )
 
   const setSite = useCallback(
     (siteId: string) => {
-      client.setSite(siteId)
+      safeClientCall('setSite', () => client.setSite(siteId), [siteId])
     },
-    [client],
+    [client, safeClientCall],
   )
 
   const trackEvent = useCallback(
@@ -205,7 +244,11 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       })
 
       // Track to Fathom
-      safeClientCall('trackEvent', () => client.trackEvent(eventName, mergedOptions), [eventName, mergedOptions])
+      safeClientCall(
+        'trackEvent',
+        () => client.trackEvent(eventName, mergedOptions),
+        [eventName, mergedOptions],
+      )
     },
     [client, defaultEventOptions, emitDebugEvent, safeClientCall],
   )
@@ -227,7 +270,11 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       })
 
       // Track to Fathom
-      safeClientCall('trackPageview', () => client.trackPageview(mergedOptions), [mergedOptions])
+      safeClientCall(
+        'trackPageview',
+        () => client.trackPageview(mergedOptions),
+        [mergedOptions],
+      )
     },
     [client, defaultPageviewOptions, emitDebugEvent, safeClientCall],
   )
@@ -244,7 +291,10 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       })
 
       // Track to Fathom
-      safeClientCall('trackGoal', () => client.trackGoal(code, cents), [code, cents])
+      safeClientCall('trackGoal', () => client.trackGoal(code, cents), [
+        code,
+        cents,
+      ])
     },
     [client, emitDebugEvent, safeClientCall],
   )
@@ -256,7 +306,7 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
       console.warn(
         '[react-fathom] No siteId provided to FathomProvider. ' +
           'Analytics tracking will not be sent to Fathom until a siteId is configured. ' +
-          'Debug events will still be captured if debug mode is enabled.'
+          'Debug events will still be captured if debug mode is enabled.',
       )
     }
   }, [clientOptions, load, siteId])
@@ -265,6 +315,12 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   useEffect(() => {
     if (clientRef) {
       clientRef.current = client
+
+      return () => {
+        if (clientRef.current === client) {
+          clientRef.current = null
+        }
+      }
     }
   }, [client, clientRef])
 
