@@ -59,9 +59,62 @@ jobs:
           name: Build documentation
           command: yarn --cwd docs build
 
+  build-examples:
+    docker:
+      - image: cimg/node:22.15.1
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v2-root-dependencies-{{ checksum "yarn.lock" }}
+            - v2-root-dependencies-
+
+      - run:
+          name: Install package dependencies
+          command: yarn install --frozen-lockfile
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-root-dependencies-{{ checksum "yarn.lock" }}
+
+      - run:
+          name: Build package
+          command: yarn build
+
+      - run:
+          name: Install example dependencies
+          command: |
+            for example in next-app next-pages react tanstack-router gatsby react-native; do
+              yarn --cwd "examples/${example}" install --no-lockfile
+            done
+
+      - run:
+          name: Build browser examples
+          command: |
+            yarn --cwd examples/next-app build
+            yarn --cwd examples/next-pages build
+            yarn --cwd examples/react build
+            yarn --cwd examples/tanstack-router build
+
+      - run:
+          name: Build Gatsby example
+          command: |
+            GATSBY_TELEMETRY_DISABLED=1 \
+              XDG_CONFIG_HOME=/tmp/react-fathom-gatsby-config \
+              yarn --cwd examples/gatsby build
+
+      - run:
+          name: Validate Expo example
+          command: |
+            yarn --cwd examples/react-native typecheck
+            EXPO_NO_TELEMETRY=1 yarn --cwd examples/react-native build:web
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   test-package:
     jobs:
       - build-test-package
+      - build-examples
