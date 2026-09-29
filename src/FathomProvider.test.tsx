@@ -70,6 +70,30 @@ describe('FathomProvider', () => {
     expect(result.current.client).toBe(customClient)
   })
 
+  it('should not require a siteId when a configured client is provided', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const customClient = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={customClient}>{children}</FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    expect(warnSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('No siteId provided'),
+    )
+  })
+
   it('should load Fathom when siteId is provided', async () => {
     const loadSpy = vi.fn()
     const mockClient = {

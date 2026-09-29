@@ -302,14 +302,18 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
   useEffect(() => {
     if (siteId !== undefined) {
       load(siteId, clientOptions)
-    } else if (process.env.NODE_ENV !== 'production') {
+    } else if (
+      !providedClient &&
+      !parentContext.client &&
+      process.env.NODE_ENV !== 'production'
+    ) {
       console.warn(
         '[react-fathom] No siteId provided to FathomProvider. ' +
           'Analytics tracking will not be sent to Fathom until a siteId is configured. ' +
           'Debug events will still be captured if debug mode is enabled.',
       )
     }
-  }, [clientOptions, load, siteId])
+  }, [clientOptions, load, parentContext.client, providedClient, siteId])
 
   // Populate the clientRef so the parent component can access the client
   useEffect(() => {
