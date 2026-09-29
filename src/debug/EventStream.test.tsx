@@ -64,7 +64,7 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     // Wait for hydration
@@ -77,11 +77,13 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /show event stream/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
     })
   })
 
@@ -89,11 +91,13 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /show event stream/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
     })
 
     fireEvent.click(screen.getByRole('button', { name: /show event stream/i }))
@@ -106,7 +110,7 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream defaultVisible />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
@@ -122,7 +126,10 @@ describe('EventStream', () => {
     const TestComponent = () => {
       const [tracked, setTracked] = React.useState(false)
       return (
-        <FathomProvider client={mockClient} debug={{ enabled: true, console: false }}>
+        <FathomProvider
+          client={mockClient}
+          debug={{ enabled: true, console: false }}
+        >
           <EventStream defaultVisible />
           {!tracked && (
             <button
@@ -152,11 +159,13 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /show event stream/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
     })
 
     // Panel should not be visible initially
@@ -181,11 +190,13 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /show event stream/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
     })
 
     // Press Ctrl + .
@@ -196,22 +207,46 @@ describe('EventStream', () => {
     expect(screen.getByText('📊 Event Stream')).toBeInTheDocument()
   })
 
+  it('should not intercept the keyboard shortcut while typing', async () => {
+    render(
+      <FathomProvider client={mockClient} debug={{ enabled: true }}>
+        <input aria-label="Example input" />
+        <EventStream />
+      </FathomProvider>,
+    )
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
+    })
+
+    fireEvent.keyDown(screen.getByRole('textbox', { name: 'Example input' }), {
+      key: '.',
+      metaKey: true,
+    })
+
+    expect(screen.queryByText('📊 Event Stream')).not.toBeInTheDocument()
+  })
+
   it('should persist visibility state to localStorage', async () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /show event stream/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
     })
 
     fireEvent.click(screen.getByRole('button', { name: /show event stream/i }))
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       'react-fathom-event-stream-visible',
-      'true'
+      'true',
     )
   })
 
@@ -221,12 +256,16 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
       expect(screen.getByText('📊 Event Stream')).toBeInTheDocument()
     })
+
+    expect(
+      screen.getByRole('region', { name: 'Fathom event stream' }),
+    ).toBeInTheDocument()
   })
 
   it('should handle localStorage errors gracefully', async () => {
@@ -239,7 +278,7 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream defaultVisible />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
@@ -257,11 +296,13 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /show event stream/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
     })
 
     // Should not throw when clicking
@@ -274,7 +315,7 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream position="bottom-left" defaultVisible />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
@@ -282,15 +323,19 @@ describe('EventStream', () => {
     })
 
     // Panel container should be rendered - find the outer positioned div
-    const panelContainer = screen.getByText('📊 Event Stream').parentElement?.parentElement
-    expect(panelContainer).toHaveAttribute('style', expect.stringContaining('left: 0'))
+    const panelContainer =
+      screen.getByText('📊 Event Stream').parentElement?.parentElement
+    expect(panelContainer).toHaveAttribute(
+      'style',
+      expect.stringContaining('left: 0'),
+    )
   })
 
   it('should show keyboard shortcut hint in footer', async () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream defaultVisible />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
@@ -304,7 +349,7 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug={{ enabled: true }}>
         <EventStream defaultVisible />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
@@ -319,11 +364,13 @@ describe('EventStream', () => {
     render(
       <FathomProvider client={mockClient} debug>
         <EventStream />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /show event stream/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show event stream/i }),
+      ).toBeInTheDocument()
     })
   })
 })

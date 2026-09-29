@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+
 import { useDebugSubscription } from '../hooks/useDebugSubscription'
 import type { DebugEvent } from '../types'
 
@@ -31,7 +32,9 @@ function EventCard({ event }: EventCardProps) {
   switch (event.type) {
     case 'pageview':
       title = 'Pageview'
-      subtitle = event.url || (typeof window !== 'undefined' ? window.location.pathname : '')
+      subtitle =
+        event.url ||
+        (typeof window !== 'undefined' ? window.location.pathname : '')
       break
     case 'event':
       title = 'Event'
@@ -53,11 +56,21 @@ function EventCard({ event }: EventCardProps) {
         marginBottom: '8px',
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '4px',
+        }}
+      >
         <strong style={{ fontSize: '14px' }}>{title}</strong>
-        <span style={{ fontSize: '12px', color: '#6b7280' }}>{formatTime(event.timestamp)}</span>
+        <span style={{ fontSize: '12px', color: '#6b7280' }}>
+          {formatTime(event.timestamp)}
+        </span>
       </div>
-      <div style={{ fontSize: '12px', color: '#4b5563', wordBreak: 'break-all' }}>
+      <div
+        style={{ fontSize: '12px', color: '#4b5563', wordBreak: 'break-all' }}
+      >
         {subtitle}
       </div>
     </div>
@@ -101,11 +114,15 @@ export function EventStream({
 }: EventStreamProps = {}) {
   const [isVisible, setIsVisible] = useState(defaultVisible)
   const [isHydrated, setIsHydrated] = useState(false)
-  const { events, debugEnabled, clearEvents } = useDebugSubscription({ maxEvents })
+  const { events, debugEnabled, clearEvents } = useDebugSubscription({
+    maxEvents,
+  })
 
   useEffect(() => {
-    setIsHydrated(true)
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return
+
+    // Defer client-only state so the server and first client render match.
+    const timeoutId = window.setTimeout(() => {
       try {
         const stored = localStorage.getItem(STORAGE_KEY)
         if (stored !== null) {
@@ -114,11 +131,24 @@ export function EventStream({
       } catch {
         // localStorage may be unavailable (private browsing, security restrictions, etc.)
       }
-    }
+
+      setIsHydrated(true)
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
   }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          target.matches('input, textarea, select, [role="textbox"]'))
+      ) {
+        return
+      }
+
       if ((e.metaKey || e.ctrlKey) && e.key === '.') {
         e.preventDefault()
         setIsVisible((prev) => !prev)
@@ -145,7 +175,8 @@ export function EventStream({
   return (
     <>
       <button
-        onClick={() => setIsVisible(!isVisible)}
+        type="button"
+        onClick={() => setIsVisible((current) => !current)}
         aria-label={isVisible ? 'Hide event stream' : 'Show event stream'}
         style={{
           position: 'fixed',
@@ -168,19 +199,24 @@ export function EventStream({
 
       {isVisible && (
         <div
+          role="region"
+          aria-label="Fathom event stream"
           style={{
             position: 'fixed',
             top: 0,
             [isRight ? 'right' : 'left']: 0,
             bottom: 0,
             width: '320px',
+            maxWidth: '100vw',
             backgroundColor: 'var(--rf-panel-bg, white)',
             borderLeft: isRight ? '1px solid #e5e7eb' : undefined,
             borderRight: isRight ? undefined : '1px solid #e5e7eb',
             zIndex: 999,
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: isRight ? '-4px 0 12px rgba(0,0,0,0.1)' : '4px 0 12px rgba(0,0,0,0.1)',
+            boxShadow: isRight
+              ? '-4px 0 12px rgba(0,0,0,0.1)'
+              : '4px 0 12px rgba(0,0,0,0.1)',
           }}
         >
           <div
@@ -195,6 +231,7 @@ export function EventStream({
           >
             <strong>📊 Event Stream</strong>
             <button
+              type="button"
               onClick={clearEvents}
               disabled={events.length === 0}
               style={{
@@ -213,10 +250,18 @@ export function EventStream({
 
           <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
             {events.length === 0 ? (
-              <div style={{ textAlign: 'center', color: '#6b7280', padding: '32px 16px' }}>
+              <div
+                style={{
+                  textAlign: 'center',
+                  color: '#6b7280',
+                  padding: '32px 16px',
+                }}
+              >
                 <div style={{ fontSize: '32px', marginBottom: '8px' }}>🔍</div>
                 <div style={{ fontSize: '14px' }}>
-                  No events yet.<br />Navigate or interact to see tracking events.
+                  No events yet.
+                  <br />
+                  Navigate or interact to see tracking events.
                 </div>
               </div>
             ) : (
@@ -235,7 +280,16 @@ export function EventStream({
             }}
           >
             {events.length} event{events.length !== 1 ? 's' : ''} •{' '}
-            <code style={{ backgroundColor: '#e5e7eb', padding: '2px 4px', borderRadius: '4px' }}>⌘.</code> to toggle
+            <code
+              style={{
+                backgroundColor: '#e5e7eb',
+                padding: '2px 4px',
+                borderRadius: '4px',
+              }}
+            >
+              ⌘.
+            </code>{' '}
+            to toggle
           </div>
         </div>
       )}
