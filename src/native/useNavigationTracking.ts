@@ -1,7 +1,46 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
-import { useFathom } from '../hooks/useFathom'
 import type { UseNavigationTrackingOptions } from './types'
+import { useFathom } from '../hooks/useFathom'
+
+interface NavigationRouteSnapshot {
+  name: string
+  params?: Record<string, unknown>
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const getActiveRoute = (
+  state: unknown,
+): NavigationRouteSnapshot | undefined => {
+  let currentState = state
+  const visitedStates = new Set<object>()
+
+  while (isRecord(currentState)) {
+    if (visitedStates.has(currentState)) return undefined
+    visitedStates.add(currentState)
+
+    const routes = currentState.routes
+    const index = currentState.index
+    if (!Array.isArray(routes) || typeof index !== 'number') return undefined
+
+    const route: unknown = routes[index]
+    if (!isRecord(route) || typeof route.name !== 'string') return undefined
+
+    if (route.state !== undefined) {
+      currentState = route.state
+      continue
+    }
+
+    return {
+      name: route.name,
+      params: isRecord(route.params) ? route.params : undefined,
+    }
+  }
+
+  return undefined
+}
 
 /**
  * Hook that tracks screen navigation as pageviews using React Navigation.
@@ -39,63 +78,37 @@ export function useNavigationTracking(options: UseNavigationTrackingOptions) {
   } = options
 
   const { trackPageview } = useFathom()
-  const routeNameRef = useRef<string | undefined>(undefined)
+  const trackedUrlRef = useRef<string | undefined>(undefined)
 
   /**
-   * Get the current route name from the navigation state
+   * Get the active route from the navigation state
    */
-  const getCurrentRouteName = useCallback((): string | undefined => {
+  const getCurrentRoute = useCallback(():
+    | NavigationRouteSnapshot
+    | undefined => {
     if (!navigationRef.current) {
       return undefined
     }
 
-    const state = navigationRef.current.getRootState?.()
-    if (!state) {
-      return undefined
-    }
-
-    // Navigate through nested navigators to get the deepest route
-    let currentState = state
-    while (currentState.routes[currentState.index]?.state) {
-      currentState = currentState.routes[currentState.index].state as any
-    }
-
-    return currentState.routes[currentState.index]?.name
-  }, [navigationRef])
-
-  /**
-   * Get the current route params from the navigation state
-   */
-  const getCurrentRouteParams = useCallback((): Record<string, any> | undefined => {
-    if (!navigationRef.current) {
-      return undefined
-    }
-
-    const state = navigationRef.current.getRootState?.()
-    if (!state) {
-      return undefined
-    }
-
-    // Navigate through nested navigators to get the deepest route
-    let currentState = state
-    while (currentState.routes[currentState.index]?.state) {
-      currentState = currentState.routes[currentState.index].state as any
-    }
-
-    return currentState.routes[currentState.index]?.params as Record<string, any> | undefined
+    return getActiveRoute(navigationRef.current.getRootState?.())
   }, [navigationRef])
 
   /**
    * Build the URL to track
    */
   const buildTrackingUrl = useCallback(
-    (routeName: string, params?: Record<string, any>): string => {
-      let url = transformRouteName ? transformRouteName(routeName) : `/${routeName}`
+    (routeName: string, params?: Record<string, unknown>): string => {
+      let url = transformRouteName
+        ? transformRouteName(routeName)
+        : `/${routeName}`
 
       if (includeParams && params && Object.keys(params).length > 0) {
         const queryString = Object.entries(params)
-          .filter(([_, value]) => value !== undefined && value !== null)
-          .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+          .filter(([, value]) => value !== undefined && value !== null)
+          .map(
+            ([key, value]) =>
+              `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
+          )
           .join('&')
 
         if (queryString) {
@@ -112,30 +125,29 @@ export function useNavigationTracking(options: UseNavigationTrackingOptions) {
    * Handle navigation state change
    */
   const handleStateChange = useCallback(() => {
-    const currentRouteName = getCurrentRouteName()
-    const previousRouteName = routeNameRef.current
+    const currentRoute = getCurrentRoute()
+    if (!currentRoute) return
 
-    if (currentRouteName && currentRouteName !== previousRouteName) {
-      const params = includeParams ? getCurrentRouteParams() : undefined
+    const params = includeParams ? currentRoute.params : undefined
+    const url = buildTrackingUrl(currentRoute.name, params)
+
+    if (url !== trackedUrlRef.current) {
+      const previousUrl = trackedUrlRef.current
 
       // Check if this route should be tracked
-      if (shouldTrackRoute && !shouldTrackRoute(currentRouteName, params)) {
-        routeNameRef.current = currentRouteName
+      if (shouldTrackRoute && !shouldTrackRoute(currentRoute.name, params)) {
         return
       }
 
-      const url = buildTrackingUrl(currentRouteName, params)
-
       trackPageview?.({
         url,
-        referrer: previousRouteName ? buildTrackingUrl(previousRouteName) : undefined,
+        referrer: previousUrl,
       })
 
-      routeNameRef.current = currentRouteName
+      trackedUrlRef.current = url
     }
   }, [
-    getCurrentRouteName,
-    getCurrentRouteParams,
+    getCurrentRoute,
     shouldTrackRoute,
     buildTrackingUrl,
     trackPageview,
@@ -146,20 +158,28 @@ export function useNavigationTracking(options: UseNavigationTrackingOptions) {
   useEffect(() => {
     // Small delay to ensure navigation is ready
     const timeout = setTimeout(() => {
-      const initialRoute = getCurrentRouteName()
-      if (initialRoute) {
-        const params = includeParams ? getCurrentRouteParams() : undefined
+      if (trackedUrlRef.current !== undefined) return
 
-        if (!shouldTrackRoute || shouldTrackRoute(initialRoute, params)) {
-          const url = buildTrackingUrl(initialRoute, params)
+      const initialRoute = getCurrentRoute()
+      if (initialRoute) {
+        const params = includeParams ? initialRoute.params : undefined
+
+        if (!shouldTrackRoute || shouldTrackRoute(initialRoute.name, params)) {
+          const url = buildTrackingUrl(initialRoute.name, params)
           trackPageview?.({ url })
-          routeNameRef.current = initialRoute
+          trackedUrlRef.current = url
         }
       }
     }, 0)
 
     return () => clearTimeout(timeout)
-  }, []) // Only on mount
+  }, [
+    buildTrackingUrl,
+    getCurrentRoute,
+    includeParams,
+    shouldTrackRoute,
+    trackPageview,
+  ])
 
   // Set up navigation state change listener
   useEffect(() => {
@@ -168,7 +188,10 @@ export function useNavigationTracking(options: UseNavigationTrackingOptions) {
     }
 
     // Listen for navigation state changes
-    const unsubscribe = navigationRef.current.addListener?.('state', handleStateChange)
+    const unsubscribe = navigationRef.current.addListener?.(
+      'state',
+      handleStateChange,
+    )
 
     return () => {
       unsubscribe?.()

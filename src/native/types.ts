@@ -1,5 +1,11 @@
 import type { MutableRefObject } from 'react'
-import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from '../types'
+
+import type {
+  EventOptions,
+  FathomClient,
+  LoadOptions,
+  PageViewOptions,
+} from '../types'
 import type { WebViewFathomClient } from './createWebViewClient'
 
 /**
@@ -98,7 +104,9 @@ export interface UseNavigationTrackingOptions {
   /**
    * React Navigation navigation container ref
    */
-  navigationRef: React.RefObject<any>
+  navigationRef: {
+    readonly current: NavigationContainerRefLike | null
+  }
 
   /**
    * Transform the route name before tracking (e.g., add prefixes)
@@ -108,12 +116,24 @@ export interface UseNavigationTrackingOptions {
   /**
    * Filter which routes should be tracked (return false to skip)
    */
-  shouldTrackRoute?: (routeName: string, params?: Record<string, any>) => boolean
+  shouldTrackRoute?: (
+    routeName: string,
+    params?: Record<string, unknown>,
+  ) => boolean
 
   /**
    * Include route params in the tracked URL
    */
   includeParams?: boolean
+}
+
+/** Minimal React Navigation surface required by useNavigationTracking. */
+export interface NavigationContainerRefLike {
+  getRootState?: () => unknown
+  addListener?: (
+    event: 'state',
+    callback: () => void,
+  ) => (() => void) | undefined
 }
 
 /**

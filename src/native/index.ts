@@ -23,6 +23,7 @@ export { useNavigationTracking } from './useNavigationTracking'
 // Types
 export type {
   NativeFathomProviderProps,
+  NavigationContainerRefLike,
   UseNavigationTrackingOptions,
   UseAppStateTrackingOptions,
   // Re-exported from core
