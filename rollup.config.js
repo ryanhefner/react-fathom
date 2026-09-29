@@ -17,7 +17,7 @@ const defaultOutputOptions = {
     'fathom-client': 'Fathom',
     react: 'React',
   },
-  banner: `/*! ${pkg.name} - ${pkg.version} !*/`,
+  banner: `'use client';\n/*! ${pkg.name} - ${pkg.version} !*/`,
   footer: `/* Copyright ${new Date().getFullYear()} - ${pkg.author} */`,
   sourcemap: true,
 }
@@ -137,10 +137,14 @@ const nextExternal = [
   'next/compat/router',
   'next/navigation',
 ]
-const nativeExternal = ['react', 'react-native']
+const nativeExternal = ['react', 'react-native', 'react-native-webview']
 const reactRouterExternal = ['fathom-client', 'react', 'react-router-dom']
 const gatsbyExternal = ['fathom-client', 'react', '@reach/router']
-const tanstackRouterExternal = ['fathom-client', 'react', '@tanstack/react-router']
+const tanstackRouterExternal = [
+  'fathom-client',
+  'react',
+  '@tanstack/react-router',
+]
 
 const input = 'src/index.ts'
 const debugInput = 'src/debug/index.ts'
@@ -149,6 +153,19 @@ const nativeInput = 'src/native/index.ts'
 const reactRouterInput = 'src/react-router/index.ts'
 const gatsbyInput = 'src/gatsby/index.ts'
 const tanstackRouterInput = 'src/tanstack-router/index.ts'
+
+const onwarn = (warning, warn) => {
+  // Source directives are intentionally replaced by the output banner so the
+  // published ESM and CJS entrypoints both retain the client boundary.
+  if (
+    warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
+    warning.message.includes('use client')
+  ) {
+    return
+  }
+
+  warn(warning)
+}
 
 export default [
   // UMD - Minified
@@ -341,4 +358,4 @@ export default [
     external: makeExternal(tanstackRouterExternal),
     plugins: defaultPlugins,
   },
-]
+].map((config) => ({ ...config, onwarn }))

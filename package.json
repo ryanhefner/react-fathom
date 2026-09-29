@@ -158,7 +158,7 @@
     "clean": "rimraf dist types",
     "types": "tsc",
     "build:rollup": "rollup -c",
-    "build": "tsc && rollup -c && node scripts/add-use-client.js",
+    "build": "tsc && rollup -c && node scripts/verify-build.mjs",
     "lint": "eslint .",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
@@ -175,7 +175,7 @@
     "@tanstack/react-router": ">=1.0.0",
     "fathom-client": ">=3.0.0",
     "gatsby": ">=4.0.0",
-    "next": ">=10.0.0",
+    "next": ">=13.0.0",
     "react": ">=16.8",
     "react-dom": ">=16.8",
     "react-native": ">=0.60.0",
@@ -202,9 +202,6 @@
       "optional": true
     },
     "react-router-dom": {
-      "optional": true
-    },
-    "fathom-client": {
       "optional": true
     }
   },
