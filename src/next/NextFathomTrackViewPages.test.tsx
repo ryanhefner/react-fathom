@@ -29,23 +29,21 @@ vi.mock('next/compat/router', () => ({
   useRouter: () => mockRouter,
 }))
 
-// Mock fathom-client
-vi.mock('fathom-client', () => {
-  const mockFathomDefault = {
-    trackEvent: vi.fn(),
-    trackPageview: vi.fn(),
-    trackGoal: vi.fn(),
-    load: vi.fn(),
-    setSite: vi.fn(),
-    blockTrackingForMe: vi.fn(),
-    enableTrackingForMe: vi.fn(),
-    isTrackingEnabled: vi.fn(() => true),
-  }
+const mockFathomClient = vi.hoisted(() => ({
+  trackEvent: vi.fn(),
+  trackPageview: vi.fn(),
+  trackGoal: vi.fn(),
+  load: vi.fn(),
+  setSite: vi.fn(),
+  blockTrackingForMe: vi.fn(),
+  enableTrackingForMe: vi.fn(),
+  isTrackingEnabled: vi.fn(() => true),
+}))
 
-  return {
-    default: mockFathomDefault,
-  }
-})
+vi.mock('fathom-client', () => ({
+  ...mockFathomClient,
+  default: mockFathomClient,
+}))
 
 describe('NextFathomTrackViewPages', () => {
   beforeEach(() => {
@@ -162,29 +160,29 @@ describe('NextFathomTrackViewPages', () => {
     expect(trackPageviewSpy).not.toHaveBeenCalled()
   })
 
-  it('should not track when client is not available', async () => {
-    // This test verifies that the component doesn't track when client is not available
-    // The component should gracefully handle missing client
-    try {
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <FathomProvider siteId="TEST_SITE_ID">
-          <NextFathomTrackViewPages />
-          {children}
-        </FathomProvider>
+  it('should use the default Fathom client when no client is provided', async () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider siteId="TEST_SITE_ID">
+        <NextFathomTrackViewPages />
+        {children}
+      </FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    await waitFor(() => {
+      expect(mockFathomClient.load).toHaveBeenCalledWith(
+        'TEST_SITE_ID',
+        undefined,
       )
-
-      renderHook(() => useFathom(), { wrapper })
-
-      await waitFor(() => {
-        expect(mockRouter.events.on).not.toHaveBeenCalled()
+      expect(mockFathomClient.trackPageview).toHaveBeenCalledWith({
+        url: 'https://example.com/test-page',
       })
-
-      // Component should not crash and should not track
-      expect(true).toBe(true)
-    } catch (error) {
-      // If there's an error with Next.js hooks, skip this test
-      expect(error).toBeDefined()
-    }
+      expect(mockRouter.events.on).toHaveBeenCalledWith(
+        'routeChangeComplete',
+        expect.any(Function),
+      )
+    })
   })
 
   it('should clean up event listeners on unmount', async () => {
