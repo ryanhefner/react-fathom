@@ -5,8 +5,8 @@ import type {
   FathomClient,
   LoadOptions,
   PageViewOptions,
-} from '../types'
-import type { WebViewFathomClient } from './createWebViewClient'
+} from '../types.js'
+import type { WebViewFathomClient } from './createWebViewClient.js'
 
 /**
  * Options for the NativeFathomProvider component

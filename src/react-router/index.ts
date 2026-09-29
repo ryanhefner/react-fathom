@@ -1,2 +1,2 @@
 // React Router tracking component
-export * from './ReactRouterFathomTrackView'
+export * from './ReactRouterFathomTrackView.js'

@@ -1,1 +1,1 @@
-export * from './TanStackRouterFathomTrackView'
+export * from './TanStackRouterFathomTrackView.js'

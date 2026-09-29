@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { useDebugSubscription } from '../hooks/useDebugSubscription'
-import type { DebugEvent } from '../types'
+import { useDebugSubscription } from '../hooks/useDebugSubscription.js'
+import type { DebugEvent } from '../types.js'
 
 const STORAGE_KEY = 'react-fathom-event-stream-visible'
 

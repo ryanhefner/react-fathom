@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 
-import type { FathomProviderProps } from '../types'
+import type { FathomProviderProps } from '../types.js'
 
 export interface NextFathomProviderProps
   extends PropsWithChildren, Omit<FathomProviderProps, 'disableDefaultTrack'> {

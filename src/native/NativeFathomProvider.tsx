@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 
-import { FathomProvider } from '../FathomProvider'
+import { FathomProvider } from '../FathomProvider.js'
 import {
   createWebViewClient,
   type WebViewFathomClient,
-} from './createWebViewClient'
-import { FathomWebView, type FathomWebViewRef } from './FathomWebView'
-import type { NativeFathomProviderProps } from './types'
-import { useAppStateTracking } from './useAppStateTracking'
+} from './createWebViewClient.js'
+import { FathomWebView, type FathomWebViewRef } from './FathomWebView.js'
+import type { NativeFathomProviderProps } from './types.js'
+import { useAppStateTracking } from './useAppStateTracking.js'
 
 /**
  * Internal component that handles app state tracking

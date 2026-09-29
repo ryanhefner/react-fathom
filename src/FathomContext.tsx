@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-import type { FathomContextInterface } from './types'
+import type { FathomContextInterface } from './types.js'
 
 const warnMissingProvider = (methodName: string) => {
   if (process.env.NODE_ENV !== 'production') {

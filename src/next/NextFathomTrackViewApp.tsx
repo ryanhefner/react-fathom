@@ -4,8 +4,8 @@ import React, { useEffect, useRef } from 'react'
 
 import { usePathname, useSearchParams } from 'next/navigation.js'
 
-import { useFathom } from '../hooks/useFathom'
-import { buildTrackingUrl } from '../utils'
+import { useFathom } from '../hooks/useFathom.js'
+import { buildTrackingUrl } from '../utils.js'
 
 export interface NextFathomTrackViewAppProps {
   /**

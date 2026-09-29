@@ -9,7 +9,7 @@ import React, {
 import { StyleSheet, View } from 'react-native'
 import { WebView, type WebViewMessageEvent } from 'react-native-webview'
 
-import type { EventOptions, LoadOptions, PageViewOptions } from '../types'
+import type { EventOptions, LoadOptions, PageViewOptions } from '../types.js'
 
 const escapeHtmlAttribute = (value: string) =>
   value

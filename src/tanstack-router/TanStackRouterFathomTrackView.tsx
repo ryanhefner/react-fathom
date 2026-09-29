@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useRef } from 'react'
 
 import { useRouterState } from '@tanstack/react-router'
 
-import { useFathom } from '../hooks/useFathom'
-import { buildTrackingUrl } from '../utils'
+import { useFathom } from '../hooks/useFathom.js'
+import { buildTrackingUrl } from '../utils.js'
 
 export interface TanStackRouterFathomTrackViewProps {
   /**

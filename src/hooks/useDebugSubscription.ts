@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { FathomContext } from '../FathomContext'
-import type { DebugEvent, DebugEventCallback } from '../types'
+import { FathomContext } from '../FathomContext.js'
+import type { DebugEvent, DebugEventCallback } from '../types.js'
 
 export interface UseDebugSubscriptionOptions {
   /**

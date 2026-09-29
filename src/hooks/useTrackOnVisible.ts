@@ -3,7 +3,7 @@ import type { RefObject } from 'react'
 
 import type { EventOptions } from 'fathom-client'
 
-import { useFathom } from './useFathom'
+import { useFathom } from './useFathom.js'
 
 export interface UseTrackOnVisibleOptions extends EventOptions {
   /**

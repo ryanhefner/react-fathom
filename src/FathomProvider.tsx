@@ -11,13 +11,13 @@ import React, {
 import * as Fathom from 'fathom-client'
 import type { EventOptions, LoadOptions, PageViewOptions } from 'fathom-client'
 
-import { FathomContext } from './FathomContext'
+import { FathomContext } from './FathomContext.js'
 import type {
   DebugEvent,
   DebugEventCallback,
   DebugOptions,
   FathomProviderProps,
-} from './types'
+} from './types.js'
 
 // Generate unique IDs for debug events
 let debugEventCounter = 0

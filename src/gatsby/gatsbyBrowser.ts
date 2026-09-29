@@ -1,6 +1,6 @@
 import type * as FathomType from 'fathom-client'
 
-import { buildTrackingUrl } from '../utils'
+import { buildTrackingUrl } from '../utils.js'
 
 export interface GatsbyFathomOptions {
   /**

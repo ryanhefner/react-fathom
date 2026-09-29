@@ -2,9 +2,9 @@
 
 import React, { Suspense } from 'react'
 
-import { FathomProvider } from '../FathomProvider'
-import type { FathomProviderProps } from '../types'
-import { NextFathomTrackViewApp } from './NextFathomTrackViewApp'
+import { FathomProvider } from '../FathomProvider.js'
+import type { FathomProviderProps } from '../types.js'
+import { NextFathomTrackViewApp } from './NextFathomTrackViewApp.js'
 
 export interface NextFathomProviderAppProps extends Omit<
   FathomProviderProps,

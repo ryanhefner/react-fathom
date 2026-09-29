@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 import type { PageViewOptions } from 'fathom-client'
 
-import { useFathom } from '../hooks/useFathom'
+import { useFathom } from '../hooks/useFathom.js'
 
 export interface TrackPageviewProps extends PageViewOptions {
   /**

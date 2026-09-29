@@ -3,8 +3,8 @@ import type {
   FathomClient,
   LoadOptions,
   PageViewOptions,
-} from '../types'
-import type { FathomWebViewRef } from './FathomWebView'
+} from '../types.js'
+import type { FathomWebViewRef } from './FathomWebView.js'
 
 export interface WebViewClientOptions {
   /**

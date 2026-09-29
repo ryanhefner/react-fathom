@@ -3,7 +3,7 @@ import type { ElementType, ReactNode } from 'react'
 
 import type { EventOptions } from 'fathom-client'
 
-import { useFathom } from '../hooks/useFathom'
+import { useFathom } from '../hooks/useFathom.js'
 
 export interface TrackVisibleProps extends EventOptions {
   /**

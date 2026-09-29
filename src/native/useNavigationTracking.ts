@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import type { UseNavigationTrackingOptions } from './types'
-import { useFathom } from '../hooks/useFathom'
+import type { UseNavigationTrackingOptions } from './types.js'
+import { useFathom } from '../hooks/useFathom.js'
 
 interface NavigationRouteSnapshot {
   name: string

@@ -3,22 +3,22 @@ export {
   FathomWebView,
   type FathomWebViewRef,
   type FathomWebViewProps,
-} from './FathomWebView'
+} from './FathomWebView.js'
 export {
   createWebViewClient,
   type WebViewClientOptions,
   type WebViewFathomClient,
   type WebViewRefSource,
-} from './createWebViewClient'
+} from './createWebViewClient.js'
 
 // Provider components
-export { NativeFathomProvider } from './NativeFathomProvider'
-export { FathomProvider } from '../FathomProvider'
+export { NativeFathomProvider } from './NativeFathomProvider.js'
+export { FathomProvider } from '../FathomProvider.js'
 
 // Hooks
-export { useFathom } from '../hooks/useFathom'
-export { useAppStateTracking } from './useAppStateTracking'
-export { useNavigationTracking } from './useNavigationTracking'
+export { useFathom } from '../hooks/useFathom.js'
+export { useAppStateTracking } from './useAppStateTracking.js'
+export { useNavigationTracking } from './useNavigationTracking.js'
 
 // Types
 export type {
@@ -31,6 +31,6 @@ export type {
   EventOptions,
   LoadOptions,
   PageViewOptions,
-} from './types'
+} from './types.js'
 
-export type { FathomContextInterface, FathomProviderProps } from '../types'
+export type { FathomContextInterface, FathomProviderProps } from '../types.js'

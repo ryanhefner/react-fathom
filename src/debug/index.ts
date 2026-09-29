@@ -1,3 +1,3 @@
-export * from './EventStream'
-export { useDebugSubscription } from '../hooks/useDebugSubscription'
-export type { DebugEvent, DebugEventCallback, DebugOptions } from '../types'
+export * from './EventStream.js'
+export { useDebugSubscription } from '../hooks/useDebugSubscription.js'
+export type { DebugEvent, DebugEventCallback, DebugOptions } from '../types.js'
