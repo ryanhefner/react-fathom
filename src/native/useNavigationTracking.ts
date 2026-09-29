@@ -84,8 +84,7 @@ export function useNavigationTracking(options: UseNavigationTrackingOptions) {
    * Get the active route from the navigation state
    */
   const getCurrentRoute = useCallback(():
-    | NavigationRouteSnapshot
-    | undefined => {
+    NavigationRouteSnapshot | undefined => {
     if (!navigationRef.current) {
       return undefined
     }

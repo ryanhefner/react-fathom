@@ -1,11 +1,10 @@
 import { createRequire } from 'module'
 
-import { terser } from 'rollup-plugin-terser'
-
 import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import nodeResolve from '@rollup/plugin-node-resolve'
+import terser from '@rollup/plugin-terser'
 
 const require = createRequire(import.meta.url)
 const pkg = require('./package.json')
@@ -25,9 +24,8 @@ const defaultOutputOptions = {
 // Babel configuration inline (replaces .babelrc)
 const getBabelConfig = () => {
   const plugins = [
-    '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-proposal-object-rest-spread',
-    '@babel/plugin-syntax-import-assertions',
+    '@babel/plugin-transform-class-properties',
+    '@babel/plugin-transform-object-rest-spread',
     '@babel/plugin-transform-runtime',
   ]
 

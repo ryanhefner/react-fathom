@@ -36,6 +36,10 @@ jobs:
           key: v2-docs-dependencies-{{ checksum "docs/yarn.lock" }}
 
       - run:
+          name: Audit dependencies
+          command: yarn security:audit
+
+      - run:
           name: Check formatting
           command: yarn format:check
 
@@ -54,14 +58,6 @@ jobs:
       - run:
           name: Build documentation
           command: yarn --cwd docs build
-
-      - run:
-          name: Upload coverage to Coveralls
-          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
-      - run:
-          name: Upload coverage to Codecov
-          command: bash <(curl -s https://codecov.io/bash)
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
