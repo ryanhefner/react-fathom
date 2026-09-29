@@ -1,6 +1,15 @@
 // WebView-based client (recommended for Fathom Pro)
-export { FathomWebView, type FathomWebViewRef, type FathomWebViewProps } from './FathomWebView'
-export { createWebViewClient, type WebViewFathomClient, type WebViewClientOptions } from './createWebViewClient'
+export {
+  FathomWebView,
+  type FathomWebViewRef,
+  type FathomWebViewProps,
+} from './FathomWebView'
+export {
+  createWebViewClient,
+  type WebViewClientOptions,
+  type WebViewFathomClient,
+  type WebViewRefSource,
+} from './createWebViewClient'
 
 // Provider components
 export { NativeFathomProvider } from './NativeFathomProvider'
@@ -23,7 +32,4 @@ export type {
   PageViewOptions,
 } from './types'
 
-export type {
-  FathomContextInterface,
-  FathomProviderProps,
-} from '../types'
+export type { FathomContextInterface, FathomProviderProps } from '../types'

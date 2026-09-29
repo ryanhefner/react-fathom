@@ -1,14 +1,27 @@
 import React, {
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useRef,
   useState,
-  useCallback,
 } from 'react'
+
 import { StyleSheet, View } from 'react-native'
 import { WebView, type WebViewMessageEvent } from 'react-native-webview'
 
-import type { EventOptions, PageViewOptions, LoadOptions } from '../types'
+import type { EventOptions, LoadOptions, PageViewOptions } from '../types'
+
+const escapeHtmlAttribute = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+
+const getWebViewErrorMessage = (value: unknown) =>
+  typeof value === 'string' && value.trim()
+    ? value
+    : 'Unknown Fathom WebView error'
 
 export interface FathomWebViewRef {
   trackPageview: (opts?: PageViewOptions) => void
@@ -98,7 +111,9 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
 
     // Build data attributes for load options
     const buildDataAttributes = useCallback(() => {
-      const attrs: string[] = [`data-site="${siteId}"`]
+      const attrs: string[] = [
+        `data-site="${escapeHtmlAttribute(siteId.trim())}"`,
+      ]
 
       if (loadOptions.auto === false) {
         attrs.push('data-auto="false"')
@@ -110,7 +125,7 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
         attrs.push('data-canonical="false"')
       }
       if (loadOptions.spa) {
-        attrs.push(`data-spa="${loadOptions.spa}"`)
+        attrs.push(`data-spa="${escapeHtmlAttribute(String(loadOptions.spa))}"`)
       }
 
       return attrs.join(' ')
@@ -122,7 +137,7 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
       <html>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <script src="https://${scriptDomain}/script.js" ${buildDataAttributes()} defer></script>
+          <script src="https://${escapeHtmlAttribute(scriptDomain.trim())}/script.js" ${buildDataAttributes()} defer></script>
           <script>
             // Wait for Fathom to be available
             function waitForFathom(callback, maxAttempts = 50) {
@@ -182,7 +197,7 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
               } catch (error) {
                 window.ReactNativeWebView.postMessage(JSON.stringify({
                   type: 'error',
-                  message: error.message
+                  message: error instanceof Error ? error.message : String(error)
                 }));
               }
             };
@@ -209,7 +224,12 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
     const handleMessage = useCallback(
       (event: WebViewMessageEvent) => {
         try {
-          const data = JSON.parse(event.nativeEvent.data)
+          const data: unknown = JSON.parse(event.nativeEvent.data)
+
+          if (!data || typeof data !== 'object' || !('type' in data)) {
+            log('Invalid message from WebView:', data)
+            return
+          }
 
           switch (data.type) {
             case 'ready':
@@ -217,10 +237,14 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
               setIsReady(true)
               onReady?.()
               break
-            case 'error':
-              log('Error from WebView:', data.message)
-              onError?.(data.message)
+            case 'error': {
+              const message = getWebViewErrorMessage(
+                'message' in data ? data.message : undefined,
+              )
+              log('Error from WebView:', message)
+              onError?.(message)
               break
+            }
             default:
               log('Unknown message type:', data.type)
           }
