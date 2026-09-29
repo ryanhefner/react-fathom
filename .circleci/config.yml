@@ -1,10 +1,4 @@
-# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
 version: 2.1
-
-# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
-# See: https://circleci.com/docs/2.0/orb-intro/
-orbs:
-  node: circleci/node@5.2.0
 
 jobs:
   build-test-package:
@@ -13,35 +7,65 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - v2-root-dependencies-{{ checksum "yarn.lock" }}
+            - v2-root-dependencies-
 
-      - run: yarn
+      - run:
+          name: Install package dependencies
+          command: yarn install --frozen-lockfile
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v2-root-dependencies-{{ checksum "yarn.lock" }}
 
-      - run: yarn build
+      - restore_cache:
+          keys:
+            - v2-docs-dependencies-{{ checksum "docs/yarn.lock" }}
+            - v2-docs-dependencies-
 
-      # run tests!
-      - run: yarn test:ci
+      - run:
+          name: Install docs dependencies
+          command: yarn --cwd docs install --frozen-lockfile
 
-      # send code coverage info to coveralls
-      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      - save_cache:
+          paths:
+            - docs/node_modules
+          key: v2-docs-dependencies-{{ checksum "docs/yarn.lock" }}
 
-      # send code coverage info to codecov
-      - run: bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Check formatting
+          command: yarn format:check
+
+      - run:
+          name: Lint
+          command: yarn lint
+
+      - run:
+          name: Test with coverage
+          command: yarn test:ci
+
+      - run:
+          name: Verify packed package
+          command: yarn release:smoke
+
+      - run:
+          name: Build documentation
+          command: yarn --cwd docs build
+
+      - run:
+          name: Upload coverage to Coveralls
+          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+      - run:
+          name: Upload coverage to Codecov
+          command: bash <(curl -s https://codecov.io/bash)
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  test-package: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  test-package:
     jobs:
       - build-test-package

@@ -173,6 +173,7 @@
     "test": "snyk test && vitest run",
     "test:ci": "vitest run --coverage",
     "release:smoke": "npm run build && node scripts/release-smoke.mjs",
+    "release:check": "npm run format:check && npm run lint && npm run test:ci && npm run release:smoke && yarn --cwd docs build",
     "dev:all": "node scripts/dev-all.js",
     "dev:proxy": "node scripts/dev-all.js --proxy"
   },

@@ -1,2 +1,3 @@
-// Re-export from source files to ensure single context instance
-export * from '../../src/next/index'
+// Re-export the built package entrypoint so the docs exercise the same module
+// boundary as consumers while retaining a single React context instance.
+export * from 'react-fathom/next'
