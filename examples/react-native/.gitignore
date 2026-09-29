@@ -9,4 +9,5 @@ dist
 *.key
 *.mobileprovision
 *.orig.*
+yarn-error.log
 web-build/

@@ -1,11 +1,13 @@
 **/node_modules
 **/.next
+**/.cache
 **/dist
 **/build
 **/coverage
 **/out
 types
 docs/public/pagefind
+examples/gatsby/public
 **/next-env.d.ts
 **/routeTree.gen.ts
 *.min.js

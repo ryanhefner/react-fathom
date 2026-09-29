@@ -13,12 +13,14 @@ export default [
     ignores: [
       '**/node_modules/**',
       '**/.next/**',
+      '**/.cache/**',
       '**/dist/**',
       '**/build/**',
       '**/coverage/**',
       '**/out/**',
       'types/**',
       'docs/public/pagefind/**',
+      'examples/gatsby/public/**',
       '**/next-env.d.ts',
     ],
   },
@@ -156,6 +158,14 @@ export default [
     files: ['docs/**/*.{js,jsx,ts,tsx}', 'examples/**/*.{js,jsx,ts,tsx}'],
     rules: {
       'react/no-unescaped-entities': 'off',
+    },
+  },
+
+  // Expo loads Metro configuration through CommonJS.
+  {
+    files: ['examples/react-native/metro.config.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ]
