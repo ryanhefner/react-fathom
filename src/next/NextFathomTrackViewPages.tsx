@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { useRouter } from 'next/compat/router.js'
 
 import { useFathom } from '../hooks/useFathom'
-import { buildTrackingUrl } from './utils'
+import { buildTrackingUrl } from '../utils'
 
 export interface NextFathomTrackViewPagesProps {
   /**
@@ -26,7 +26,7 @@ export interface NextFathomTrackViewPagesProps {
    * />
    * ```
    */
-  transformUrl?: (url: string) => string
+  transformUrl?: (url: string) => string | null | undefined
 }
 
 /**
@@ -58,6 +58,7 @@ export const NextFathomTrackViewPages: React.FC<
   // Use next/compat/router which doesn't throw when router is not mounted
   // This allows the component to work in various contexts without errors
   const router = useRouter()
+  const routerEvents = router?.events
 
   // Track pageviews on route changes
   useEffect(() => {
@@ -66,24 +67,24 @@ export const NextFathomTrackViewPages: React.FC<
     }
 
     // Check if router is available and has events
-    if (!router || typeof router.events === 'undefined' || !router.events) {
+    if (!routerEvents) {
       // Router not properly initialized - silently return
       return
     }
 
     const handleRouteChangeComplete = (path: string): void => {
-      const url = buildTrackingUrl(path, transformUrl)
-      trackPageview({ url })
+      const url = buildTrackingUrl({ pathname: path, transformUrl })
+      if (url) {
+        trackPageview({ url })
+      }
     }
 
-    // router.events is stable in Next.js, so we can use it without including router in dependencies
-    router.events.on('routeChangeComplete', handleRouteChangeComplete)
+    routerEvents.on('routeChangeComplete', handleRouteChangeComplete)
 
     return () => {
-      router?.events?.off('routeChangeComplete', handleRouteChangeComplete)
+      routerEvents.off('routeChangeComplete', handleRouteChangeComplete)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackPageview, client, disableAutoTrack, transformUrl])
+  }, [trackPageview, client, disableAutoTrack, transformUrl, routerEvents])
 
   // Track initial pageview (routeChangeComplete doesn't fire on initial load)
   useEffect(() => {
@@ -99,11 +100,14 @@ export const NextFathomTrackViewPages: React.FC<
     }
 
     hasTrackedInitialPageview.current = true
-    const url = buildTrackingUrl(
-      window.location.pathname + window.location.search,
+    const url = buildTrackingUrl({
+      pathname: window.location.pathname,
+      search: window.location.search,
       transformUrl,
-    )
-    trackPageview({ url })
+    })
+    if (url) {
+      trackPageview({ url })
+    }
   }, [trackPageview, client, disableAutoTrack, router, transformUrl])
 
   // This component doesn't render anything

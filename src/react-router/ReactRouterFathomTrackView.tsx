@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from '../utils'
 
 export interface ReactRouterFathomTrackViewProps {
   /**
@@ -97,27 +98,25 @@ export const ReactRouterFathomTrackView: React.FC<
   const location = useLocation()
 
   // Build URL from location parts
-  const buildUrl = useCallback(() => {
-    let url = window.location.origin + location.pathname
-
-    if (includeSearchParams && location.search) {
-      url += location.search
-    }
-
-    if (includeHash && location.hash) {
-      url += location.hash
-    }
-
-    if (transformUrl) {
-      const transformed = transformUrl(url)
-      if (transformed === null || transformed === undefined) {
-        return null
-      }
-      url = transformed
-    }
-
-    return url
-  }, [location.pathname, location.search, location.hash, includeSearchParams, includeHash, transformUrl])
+  const buildUrl = useCallback(
+    () =>
+      buildTrackingUrl({
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash,
+        includeSearchParams,
+        includeHash,
+        transformUrl,
+      }),
+    [
+      location.pathname,
+      location.search,
+      location.hash,
+      includeSearchParams,
+      includeHash,
+      transformUrl,
+    ],
+  )
 
   // Track pageviews on route changes
   useEffect(() => {
@@ -134,7 +133,15 @@ export const ReactRouterFathomTrackView: React.FC<
     if (url) {
       trackPageview({ url })
     }
-  }, [location.pathname, location.search, location.hash, trackPageview, client, disableAutoTrack, buildUrl])
+  }, [
+    location.pathname,
+    location.search,
+    location.hash,
+    trackPageview,
+    client,
+    disableAutoTrack,
+    buildUrl,
+  ])
 
   // Track initial pageview
   useEffect(() => {

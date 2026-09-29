@@ -1,5 +1,7 @@
 import type * as FathomType from 'fathom-client'
 
+import { buildTrackingUrl } from '../utils'
+
 export interface GatsbyFathomOptions {
   /**
    * Your Fathom site ID
@@ -74,29 +76,19 @@ export function createGatsbyFathomPlugins(options: GatsbyFathomOptions) {
 
   let fathomClient: typeof FathomType | null = null
 
-  const buildUrl = (location: { pathname: string; search?: string; hash?: string }) => {
-    if (typeof window === 'undefined') return null
-
-    let url = window.location.origin + location.pathname
-
-    if (includeSearchParams && location.search) {
-      url += location.search
-    }
-
-    if (includeHash && location.hash) {
-      url += location.hash
-    }
-
-    if (transformUrl) {
-      const transformed = transformUrl(url)
-      if (transformed === null || transformed === undefined) {
-        return null
-      }
-      url = transformed
-    }
-
-    return url
-  }
+  const buildUrl = (location: {
+    pathname: string
+    search?: string
+    hash?: string
+  }) =>
+    buildTrackingUrl({
+      pathname: location.pathname,
+      search: location.search,
+      hash: location.hash,
+      includeSearchParams,
+      includeHash,
+      transformUrl,
+    })
 
   return {
     /**
@@ -120,7 +112,11 @@ export function createGatsbyFathomPlugins(options: GatsbyFathomOptions) {
      * Called when the user changes routes.
      * Tracks a pageview for the new route.
      */
-    onRouteUpdate: ({ location }: { location: { pathname: string; search?: string; hash?: string } }) => {
+    onRouteUpdate: ({
+      location,
+    }: {
+      location: { pathname: string; search?: string; hash?: string }
+    }) => {
       if (!fathomClient) return
 
       const url = buildUrl(location)
@@ -153,33 +149,22 @@ export function createGatsbyFathomPlugins(options: GatsbyFathomOptions) {
 export function trackGatsbyPageview(
   fathomClient: typeof FathomType,
   location: { pathname: string; search?: string; hash?: string },
-  options?: {
+  options: {
     includeSearchParams?: boolean
     includeHash?: boolean
     transformUrl?: (url: string) => string | null | undefined
-  }
+  } = {},
 ) {
-  if (typeof window === 'undefined') return
+  const url = buildTrackingUrl({
+    pathname: location.pathname,
+    search: location.search,
+    hash: location.hash,
+    includeSearchParams: options.includeSearchParams,
+    includeHash: options.includeHash,
+    transformUrl: options.transformUrl,
+  })
 
-  const { includeSearchParams = true, includeHash = false, transformUrl } = options || {}
-
-  let url = window.location.origin + location.pathname
-
-  if (includeSearchParams && location.search) {
-    url += location.search
+  if (url) {
+    fathomClient.trackPageview({ url })
   }
-
-  if (includeHash && location.hash) {
-    url += location.hash
-  }
-
-  if (transformUrl) {
-    const transformed = transformUrl(url)
-    if (transformed === null || transformed === undefined) {
-      return
-    }
-    url = transformed
-  }
-
-  fathomClient.trackPageview({ url })
 }

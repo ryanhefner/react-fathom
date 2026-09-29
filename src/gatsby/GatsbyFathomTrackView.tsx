@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 
 import { globalHistory } from '@reach/router'
 
 import { useFathom } from '../hooks/useFathom'
+import { buildTrackingUrl } from '../utils'
 
 export interface GatsbyFathomTrackViewProps {
   /**
@@ -74,29 +75,18 @@ export const GatsbyFathomTrackView: React.FC<GatsbyFathomTrackViewProps> = ({
   const { trackPageview, client } = useFathom()
 
   // Build URL from location
-  const buildUrl = (location: { pathname: string; search: string; hash: string }) => {
-    if (typeof window === 'undefined') return null
-
-    let url = window.location.origin + location.pathname
-
-    if (includeSearchParams && location.search) {
-      url += location.search
-    }
-
-    if (includeHash && location.hash) {
-      url += location.hash
-    }
-
-    if (transformUrl) {
-      const transformed = transformUrl(url)
-      if (transformed === null || transformed === undefined) {
-        return null
-      }
-      url = transformed
-    }
-
-    return url
-  }
+  const buildUrl = useCallback(
+    (location: { pathname: string; search?: string; hash?: string }) =>
+      buildTrackingUrl({
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash,
+        includeSearchParams,
+        includeHash,
+        transformUrl,
+      }),
+    [includeSearchParams, includeHash, transformUrl],
+  )
 
   // Track initial pageview
   useEffect(() => {
@@ -119,7 +109,7 @@ export const GatsbyFathomTrackView: React.FC<GatsbyFathomTrackViewProps> = ({
     if (url) {
       trackPageview({ url })
     }
-  }, [trackPageview, client, disableAutoTrack])
+  }, [trackPageview, client, disableAutoTrack, buildUrl])
 
   // Listen to route changes via globalHistory
   useEffect(() => {
@@ -140,7 +130,7 @@ export const GatsbyFathomTrackView: React.FC<GatsbyFathomTrackViewProps> = ({
     return () => {
       unsubscribe()
     }
-  }, [trackPageview, client, disableAutoTrack, includeSearchParams, includeHash, transformUrl])
+  }, [trackPageview, client, disableAutoTrack, buildUrl])
 
   return null
 }
