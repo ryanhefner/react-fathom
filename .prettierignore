@@ -7,5 +7,6 @@
 types
 docs/public/pagefind
 **/next-env.d.ts
+**/routeTree.gen.ts
 *.min.js
 *.lock

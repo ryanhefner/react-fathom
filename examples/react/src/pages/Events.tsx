@@ -106,13 +106,13 @@ export function Events() {
         <HStack gap={4}>
           <TrackClick
             eventName="cta-click"
-            onTrack={() => setEventCount((c) => c + 1)}
+            onClick={() => setEventCount((c) => c + 1)}
           >
             <Button colorPalette="green">Tracked CTA Button</Button>
           </TrackClick>
           <TrackClick
             eventName="link-click"
-            onTrack={() => setEventCount((c) => c + 1)}
+            onClick={() => setEventCount((c) => c + 1)}
           >
             <Button variant="outline">Tracked Link Button</Button>
           </TrackClick>

@@ -38,13 +38,8 @@ export function Home() {
             </Text>
             <Text color="fg.muted" fontSize="sm">
               Visit the{' '}
-              <Link
-                as={RouterLink}
-                to="/events"
-                fontWeight="medium"
-                _hover={{ opacity: 0.7 }}
-              >
-                Events Demo
+              <Link asChild fontWeight="medium" _hover={{ opacity: 0.7 }}>
+                <RouterLink to="/events">Events Demo</RouterLink>
               </Link>{' '}
               page to see custom event tracking in action.
             </Text>
@@ -121,13 +116,8 @@ export function Home() {
       </Box>
 
       <Box>
-        <Link
-          as={RouterLink}
-          to="/docs"
-          fontWeight="medium"
-          _hover={{ opacity: 0.7 }}
-        >
-          Read the full documentation →
+        <Link asChild fontWeight="medium" _hover={{ opacity: 0.7 }}>
+          <RouterLink to="/docs">Read the full documentation →</RouterLink>
         </Link>
       </Box>
     </VStack>
