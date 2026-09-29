@@ -63,6 +63,15 @@ try {
     }
   }
 
+  const unpublishedFiles = [...packedFiles].filter(
+    (path) => path.startsWith('src/') || path.endsWith('.test.tsx'),
+  )
+  if (unpublishedFiles.length > 0) {
+    throw new Error(
+      `Packed package contains unpublished source files: ${unpublishedFiles.join(', ')}`,
+    )
+  }
+
   const staleDeclarations = [
     'types/next/AppRouterProvider.d.ts',
     'types/next/utils.d.ts',

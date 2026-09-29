@@ -56,7 +56,6 @@
   "type": "module",
   "files": [
     "dist",
-    "src",
     "types"
   ],
   "main": "./dist/cjs/index.cjs",
