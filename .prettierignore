@@ -6,5 +6,6 @@
 **/out
 types
 docs/public/pagefind
+**/next-env.d.ts
 *.min.js
 *.lock

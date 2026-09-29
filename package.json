@@ -24,6 +24,9 @@
     "tree-shakeable"
   ],
   "homepage": "https://github.com/ryanhefner/react-fathom#readme",
+  "engines": {
+    "node": ">=20"
+  },
   "bugs": {
     "url": "https://github.com/ryanhefner/react-fathom/issues"
   },
@@ -163,12 +166,13 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run release:smoke",
     "prettier": "prettier --check .",
-    "push-release": "git push origin master && git push --tags",
+    "push-release": "git push origin main && git push --tags",
     "tslint": "npx eslint types/index.d.ts",
     "test": "snyk test && vitest run",
     "test:ci": "vitest run --coverage",
+    "release:smoke": "npm run build && node scripts/release-smoke.mjs",
     "dev:all": "node scripts/dev-all.js",
     "dev:proxy": "node scripts/dev-all.js --proxy"
   },

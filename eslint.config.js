@@ -19,6 +19,7 @@ export default [
       '**/out/**',
       'types/**',
       'docs/public/pagefind/**',
+      '**/next-env.d.ts',
     ],
   },
 
