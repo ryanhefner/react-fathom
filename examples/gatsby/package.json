@@ -16,7 +16,7 @@
     "gatsby": "^5.14.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "react-fathom": "file:../..",
+    "react-fathom": "link:../..",
     "react-helmet": "^6.1.0"
   },
   "devDependencies": {

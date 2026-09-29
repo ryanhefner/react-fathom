@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { NextFathomProviderApp } from 'react-fathom/next'
 
 import {
+  ExampleLayoutNext,
   ExampleProviderNext,
-  ExampleLayout,
 } from '@react-fathom/example-ui/next'
 
 import './globals.css'
@@ -40,12 +39,9 @@ export default function RootLayout({
       <body>
         <ExampleProviderNext>
           <NextFathomProviderApp siteId={siteId} debug={{ enabled: true }}>
-            <ExampleLayout
-              linkComponent={Link}
-              frameworkName="Next.js App Router"
-            >
+            <ExampleLayoutNext frameworkName="Next.js App Router">
               {children}
-            </ExampleLayout>
+            </ExampleLayoutNext>
           </NextFathomProviderApp>
         </ExampleProviderNext>
       </body>
