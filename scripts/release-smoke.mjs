@@ -25,6 +25,23 @@ const run = async (command, args, cwd = workspaceRoot) =>
     maxBuffer: 10 * 1024 * 1024,
   })
 
+const parsePackOutput = (output) => {
+  const lines = output.split(/\r?\n/)
+
+  for (let index = 0; index < lines.length; index += 1) {
+    if (!lines[index].trimStart().startsWith('[')) continue
+
+    try {
+      return JSON.parse(lines.slice(index).join('\n'))
+    } catch {
+      // npm can prepend lifecycle output before its JSON payload. Keep looking
+      // in case an earlier log line also began with an opening bracket.
+    }
+  }
+
+  throw new Error(`npm pack did not return valid JSON:\n${output}`)
+}
+
 try {
   await mkdir(tarballDirectory, { recursive: true })
   await mkdir(consumerDirectory, { recursive: true })
@@ -36,7 +53,7 @@ try {
     '--pack-destination',
     tarballDirectory,
   ])
-  const [packedPackage] = JSON.parse(packOutput)
+  const [packedPackage] = parsePackOutput(packOutput)
 
   if (!packedPackage?.filename) {
     throw new Error('npm pack did not produce a react-fathom tarball.')
