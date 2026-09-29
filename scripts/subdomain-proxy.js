@@ -54,13 +54,13 @@ function proxyRequest(req, res, targetPort) {
         host: `localhost:${targetPort}`,
       },
     },
-    proxyRes => {
+    (proxyRes) => {
       res.writeHead(proxyRes.statusCode, proxyRes.headers)
       proxyRes.pipe(res, { end: true })
-    }
+    },
   )
 
-  proxyReq.on('error', err => {
+  proxyReq.on('error', (err) => {
     console.error(`Proxy error to port ${targetPort}: ${err.message}`)
     res.writeHead(502, { 'Content-Type': 'text/plain' })
     res.end(`Bad Gateway: Could not connect to localhost:${targetPort}`)
@@ -88,13 +88,13 @@ function handleUpgrade(req, socket, head, targetPort) {
         Object.entries(proxyRes.headers)
           .map(([k, v]) => `${k}: ${v}`)
           .join('\r\n') +
-        '\r\n\r\n'
+        '\r\n\r\n',
     )
     proxySocket.pipe(socket)
     socket.pipe(proxySocket)
   })
 
-  proxyReq.on('error', err => {
+  proxyReq.on('error', (err) => {
     console.error(`WebSocket proxy error: ${err.message}`)
     socket.end()
   })
@@ -131,7 +131,7 @@ const server = http.createServer((req, res) => {
             ${Object.entries(routes)
               .map(
                 ([name, port]) =>
-                  `<li><a href="http://${name}.localhost:${PROXY_PORT}">${name}.localhost</a> <span class="port">(port ${port})</span></li>`
+                  `<li><a href="http://${name}.localhost:${PROXY_PORT}">${name}.localhost</a> <span class="port">(port ${port})</span></li>`,
               )
               .join('\n            ')}
           </ul>

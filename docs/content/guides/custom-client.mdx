@@ -1,6 +1,6 @@
 ---
-title: "Custom Client"
-description: "Provide a custom Fathom client implementation for testing, SSR, or custom analytics pipelines."
+title: 'Custom Client'
+description: 'Provide a custom Fathom client implementation for testing, SSR, or custom analytics pipelines.'
 ---
 
 # Custom Client
@@ -12,7 +12,12 @@ Provide a custom Fathom client implementation for testing, SSR, or custom analyt
 Your custom client must implement the `FathomClient` interface:
 
 ```tsx
-import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from 'react-fathom'
+import type {
+  FathomClient,
+  EventOptions,
+  LoadOptions,
+  PageViewOptions,
+} from 'react-fathom'
 
 const myCustomClient: FathomClient = {
   load: (siteId: string, options?: LoadOptions) => {

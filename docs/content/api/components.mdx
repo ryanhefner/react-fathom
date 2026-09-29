@@ -1,6 +1,6 @@
 ---
-title: "Components"
-description: "API reference for TrackPageview, TrackClick, and TrackVisible components."
+title: 'Components'
+description: 'API reference for TrackPageview, TrackClick, and TrackVisible components.'
 ---
 
 # Components
@@ -23,11 +23,11 @@ function Dashboard() {
 
 ### Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `url` | `string` | No | URL to track |
-| `referrer` | `string` | No | Referrer URL |
-| `children` | `ReactNode` | No | Child elements to render |
+| Prop       | Type        | Required | Description              |
+| ---------- | ----------- | -------- | ------------------------ |
+| `url`      | `string`    | No       | URL to track             |
+| `referrer` | `string`    | No       | Referrer URL             |
+| `children` | `ReactNode` | No       | Child elements to render |
 
 ### Without Children
 
@@ -66,12 +66,12 @@ function SignUpSection() {
 
 ### Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `eventName` | `string` | Yes | Event name to track |
-| `_value` | `number` | No | Value in cents |
-| `preventDefault` | `boolean` | No | Prevent default click behavior |
-| `children` | `ReactNode` | Yes | Clickable child element |
+| Prop             | Type        | Required | Description                    |
+| ---------------- | ----------- | -------- | ------------------------------ |
+| `eventName`      | `string`    | Yes      | Event name to track            |
+| `_value`         | `number`    | No       | Value in cents                 |
+| `preventDefault` | `boolean`   | No       | Prevent default click behavior |
+| `children`       | `ReactNode` | Yes      | Clickable child element        |
 
 ### With Value
 
@@ -125,14 +125,14 @@ function PricingSection() {
 
 ### Props
 
-| Prop | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `eventName` | `string` | Yes | - | Event name to track |
-| `_value` | `number` | No | - | Value in cents |
-| `threshold` | `number` | No | `0.1` | Visibility threshold (0-1) |
-| `rootMargin` | `string` | No | - | IntersectionObserver root margin |
-| `as` | `string` | No | `'div'` | HTML element to render |
-| `children` | `ReactNode` | Yes | - | Child elements |
+| Prop         | Type        | Required | Default | Description                      |
+| ------------ | ----------- | -------- | ------- | -------------------------------- |
+| `eventName`  | `string`    | Yes      | -       | Event name to track              |
+| `_value`     | `number`    | No       | -       | Value in cents                   |
+| `threshold`  | `number`    | No       | `0.1`   | Visibility threshold (0-1)       |
+| `rootMargin` | `string`    | No       | -       | IntersectionObserver root margin |
+| `as`         | `string`    | No       | `'div'` | HTML element to render           |
+| `children`   | `ReactNode` | Yes      | -       | Child elements                   |
 
 ### Custom Element Type
 

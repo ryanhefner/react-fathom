@@ -1,6 +1,15 @@
 'use client'
 
-import { Box, Container, Heading, Text, VStack, Link, Flex, HStack } from '@chakra-ui/react'
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  VStack,
+  Link,
+  Flex,
+  HStack,
+} from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { Search } from '@/components/docs/Search'
 import { ColorModeButton } from '@/components/docs/ColorModeButton'
@@ -25,7 +34,12 @@ function SimpleNavbar() {
     >
       <Container maxW="container.xl" py={3}>
         <Flex justify="space-between" align="center">
-          <Link asChild fontWeight="bold" fontSize="lg" _hover={{ textDecoration: 'none' }}>
+          <Link
+            asChild
+            fontWeight="bold"
+            fontSize="lg"
+            _hover={{ textDecoration: 'none' }}
+          >
             <NextLink href="/">react-fathom</NextLink>
           </Link>
           <HStack gap={4}>
@@ -47,7 +61,12 @@ export default function NotFound() {
       <Container maxW="container.md" py={20}>
         <VStack gap={8} textAlign="center">
           <Box>
-            <Text fontSize="8xl" fontWeight="bold" color="fg.muted" lineHeight={1}>
+            <Text
+              fontSize="8xl"
+              fontWeight="bold"
+              color="fg.muted"
+              lineHeight={1}
+            >
               404
             </Text>
             <Heading as="h1" size="xl" mt={4}>

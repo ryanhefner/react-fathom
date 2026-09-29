@@ -118,7 +118,10 @@ export function Figure({ children, ...props }: ComponentProps<'figure'>) {
 }
 
 // Figcaption for filename
-export function Figcaption({ children, ...props }: ComponentProps<'figcaption'>) {
+export function Figcaption({
+  children,
+  ...props
+}: ComponentProps<'figcaption'>) {
   const isCodeTitle = 'data-rehype-pretty-code-title' in props
 
   if (!isCodeTitle) {
@@ -132,7 +135,8 @@ export function Figcaption({ children, ...props }: ComponentProps<'figcaption'>)
         padding: '0.5rem 1rem',
         borderBottom: '1px solid var(--chakra-colors-gray-700)',
         fontSize: '0.875rem',
-        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+        fontFamily:
+          'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
       }}
       className="code-title"
       {...props}

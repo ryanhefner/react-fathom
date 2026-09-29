@@ -80,7 +80,10 @@ describe('useAppStateTracking', () => {
       appStateChangeCallback?.('active')
     })
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('app-foreground', expect.anything())
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      'app-foreground',
+      expect.anything(),
+    )
   })
 
   it('should track background event when app goes to background', () => {
@@ -91,7 +94,10 @@ describe('useAppStateTracking', () => {
       appStateChangeCallback?.('background')
     })
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('app-background', expect.anything())
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      'app-background',
+      expect.anything(),
+    )
   })
 
   it('should use custom foreground event name', () => {
@@ -112,7 +118,10 @@ describe('useAppStateTracking', () => {
       appStateChangeCallback?.('active')
     })
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('app-resumed', expect.anything())
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      'app-resumed',
+      expect.anything(),
+    )
   })
 
   it('should use custom background event name', () => {
@@ -174,7 +183,10 @@ describe('useAppStateTracking', () => {
       appStateChangeCallback?.('inactive')
     })
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('app-background', expect.anything())
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      'app-background',
+      expect.anything(),
+    )
   })
 
   it('should track foreground when transitioning from inactive to active', () => {
@@ -192,7 +204,10 @@ describe('useAppStateTracking', () => {
       appStateChangeCallback?.('active')
     })
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('app-foreground', expect.anything())
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      'app-foreground',
+      expect.anything(),
+    )
   })
 
   it('should not track when transitioning between inactive and background', () => {

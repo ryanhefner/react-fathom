@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Linking,
+  TouchableOpacity,
+} from 'react-native'
 
 export default function About() {
   return (
@@ -15,20 +22,27 @@ export default function About() {
         <Text style={styles.sectionTitle}>Tech Stack</Text>
         <View style={styles.list}>
           <Text style={styles.listItem}>• Expo — React Native framework</Text>
-          <Text style={styles.listItem}>• Expo Router — File-based routing</Text>
+          <Text style={styles.listItem}>
+            • Expo Router — File-based routing
+          </Text>
           <Text style={styles.listItem}>• React Native — Mobile UI</Text>
-          <Text style={styles.listItem}>• react-fathom — Privacy-focused analytics</Text>
+          <Text style={styles.listItem}>
+            • react-fathom — Privacy-focused analytics
+          </Text>
         </View>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Why Fathom Analytics?</Text>
         <Text style={styles.description}>
-          Fathom Analytics is a privacy-focused alternative to traditional analytics
-          that respects user privacy while still providing valuable insights.
+          Fathom Analytics is a privacy-focused alternative to traditional
+          analytics that respects user privacy while still providing valuable
+          insights.
         </Text>
         <View style={styles.list}>
-          <Text style={styles.listItem}>• No cookies required — GDPR compliant</Text>
+          <Text style={styles.listItem}>
+            • No cookies required — GDPR compliant
+          </Text>
           <Text style={styles.listItem}>• No personal data collection</Text>
           <Text style={styles.listItem}>• Simple, actionable dashboard</Text>
           <Text style={styles.listItem}>• Fast and lightweight</Text>
@@ -41,10 +55,18 @@ export default function About() {
           react-fathom provides special features for React Native:
         </Text>
         <View style={styles.list}>
-          <Text style={styles.listItem}>• Offline event queue — events sent when online</Text>
-          <Text style={styles.listItem}>• Navigation tracking — automatic screen tracking</Text>
-          <Text style={styles.listItem}>• App state tracking — foreground/background events</Text>
-          <Text style={styles.listItem}>• Hidden WebView — no visible UI component</Text>
+          <Text style={styles.listItem}>
+            • Offline event queue — events sent when online
+          </Text>
+          <Text style={styles.listItem}>
+            • Navigation tracking — automatic screen tracking
+          </Text>
+          <Text style={styles.listItem}>
+            • App state tracking — foreground/background events
+          </Text>
+          <Text style={styles.listItem}>
+            • Hidden WebView — no visible UI component
+          </Text>
         </View>
       </View>
 
@@ -52,7 +74,9 @@ export default function About() {
         <TouchableOpacity
           onPress={() => Linking.openURL('https://usefathom.com/ref/EKONBS')}
         >
-          <Text style={styles.link}>Try Fathom Analytics (Get $10 credit) →</Text>
+          <Text style={styles.link}>
+            Try Fathom Analytics (Get $10 credit) →
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

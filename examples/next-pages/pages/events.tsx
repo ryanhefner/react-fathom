@@ -46,8 +46,8 @@ export default function Events() {
       </div>
       <div className="content">
         <p>
-          Click the buttons below to track different types of events. Events will be
-          logged below and sent to your Fathom Analytics dashboard.
+          Click the buttons below to track different types of events. Events
+          will be logged below and sent to your Fathom Analytics dashboard.
         </p>
 
         <section style={{ marginTop: '2rem' }}>
@@ -185,7 +185,8 @@ export default function Events() {
                         display: 'inline-block',
                         width: '60px',
                         padding: '0.125rem 0.5rem',
-                        background: event.type === 'Event' ? '#dbeafe' : '#d1fae5',
+                        background:
+                          event.type === 'Event' ? '#dbeafe' : '#d1fae5',
                         color: event.type === 'Event' ? '#1d4ed8' : '#047857',
                         borderRadius: '0.25rem',
                         fontSize: '0.75rem',

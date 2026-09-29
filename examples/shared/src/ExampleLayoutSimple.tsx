@@ -16,7 +16,11 @@ export interface ExampleLayoutSimpleProps {
    * The Link component to use for navigation.
    * Pass React Router's Link component.
    */
-  linkComponent: ComponentType<{ to: string; children: ReactNode; className?: string }>
+  linkComponent: ComponentType<{
+    to: string
+    children: ReactNode
+    className?: string
+  }>
   /**
    * Navigation links to display in the header.
    */
@@ -93,7 +97,10 @@ export function ExampleLayoutSimple({
                     color="fg.muted"
                     _hover={{ color: 'fg' }}
                     fontSize="sm"
-                    display={{ base: link.href === '/' ? 'none' : 'block', md: 'block' }}
+                    display={{
+                      base: link.href === '/' ? 'none' : 'block',
+                      md: 'block',
+                    }}
                   >
                     <LinkComponent to={link.href}>{link.label}</LinkComponent>
                   </Link>
@@ -112,7 +119,11 @@ export function ExampleLayoutSimple({
         </Box>
 
         {/* Footer */}
-        <Box borderTopWidth="1px" borderColor="border.muted" py={{ base: 6, md: 8 }}>
+        <Box
+          borderTopWidth="1px"
+          borderColor="border.muted"
+          py={{ base: 6, md: 8 }}
+        >
           <Container maxW="640px" px={{ base: 5, md: 6 }}>
             <Flex
               justify="space-between"

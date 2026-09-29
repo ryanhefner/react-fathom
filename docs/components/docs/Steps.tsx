@@ -9,7 +9,13 @@ interface StepsProps {
 
 export function Steps({ children }: StepsProps) {
   return (
-    <Box my={6} pl={4} borderLeftWidth="2px" borderLeftColor="gray.200" _dark={{ borderLeftColor: 'gray.700' }}>
+    <Box
+      my={6}
+      pl={4}
+      borderLeftWidth="2px"
+      borderLeftColor="gray.200"
+      _dark={{ borderLeftColor: 'gray.700' }}
+    >
       {children}
     </Box>
   )
@@ -32,7 +38,9 @@ export function Step({ title, children }: StepProps) {
         borderRadius="full"
         bg="blue.500"
       />
-      <Text fontWeight="semibold" mb={2}>{title}</Text>
+      <Text fontWeight="semibold" mb={2}>
+        {title}
+      </Text>
       <Box color="fg.muted" css={{ '& p': { margin: 0 } }}>
         {children}
       </Box>

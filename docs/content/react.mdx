@@ -1,6 +1,6 @@
 ---
-title: "React"
-description: "Using react-fathom hooks and components in standard React applications."
+title: 'React'
+description: 'Using react-fathom hooks and components in standard React applications.'
 ---
 
 # React
@@ -50,16 +50,16 @@ function MyComponent() {
 
 ### Available Methods
 
-| Method | Description |
-|--------|-------------|
-| `trackPageview(options?)` | Track a pageview |
-| `trackEvent(eventName, options?)` | Track a custom event |
-| `trackGoal(code, cents)` | Track a goal conversion |
-| `load(siteId, options?)` | Load Fathom with a site ID |
-| `setSite(siteId)` | Change the site ID |
-| `blockTrackingForMe()` | Block tracking for current user |
-| `enableTrackingForMe()` | Enable tracking for current user |
-| `isTrackingEnabled()` | Check if tracking is enabled |
+| Method                            | Description                      |
+| --------------------------------- | -------------------------------- |
+| `trackPageview(options?)`         | Track a pageview                 |
+| `trackEvent(eventName, options?)` | Track a custom event             |
+| `trackGoal(code, cents)`          | Track a goal conversion          |
+| `load(siteId, options?)`          | Load Fathom with a site ID       |
+| `setSite(siteId)`                 | Change the site ID               |
+| `blockTrackingForMe()`            | Block tracking for current user  |
+| `enableTrackingForMe()`           | Enable tracking for current user |
+| `isTrackingEnabled()`             | Check if tracking is enabled     |
 
 ## Convenience Hooks
 
@@ -206,9 +206,7 @@ function ProductPage({ product }) {
         <p>{product.description}</p>
       </TrackVisible>
 
-      <button onClick={handleAddToCart}>
-        Add to Cart
-      </button>
+      <button onClick={handleAddToCart}>Add to Cart</button>
     </div>
   )
 }

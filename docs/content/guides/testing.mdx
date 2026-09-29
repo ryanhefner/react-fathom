@@ -1,6 +1,6 @@
 ---
-title: "Testing"
-description: "Use mock clients to test tracking behavior without sending real analytics."
+title: 'Testing'
+description: 'Use mock clients to test tracking behavior without sending real analytics.'
 ---
 
 # Testing
@@ -56,7 +56,7 @@ describe('SignUpButton', () => {
     render(
       <FathomProvider client={mockClient}>
         <SignUpButton />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     fireEvent.click(screen.getByRole('button'))
@@ -68,12 +68,14 @@ describe('SignUpButton', () => {
     render(
       <FathomProvider client={mockClient}>
         <PurchaseButton price={2999} />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     fireEvent.click(screen.getByRole('button'))
 
-    expect(mockClient.trackEvent).toHaveBeenCalledWith('purchase', { _value: 2999 })
+    expect(mockClient.trackEvent).toHaveBeenCalledWith('purchase', {
+      _value: 2999,
+    })
   })
 })
 ```
@@ -102,7 +104,7 @@ describe('Dashboard', () => {
     render(
       <FathomProvider client={mockClient}>
         <Dashboard />
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     expect(mockClient.trackPageview).toHaveBeenCalledWith({ url: '/dashboard' })
@@ -135,11 +137,7 @@ export function createMockClient(): FathomClient {
 
 export function createWrapper(client: FathomClient) {
   return function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <FathomProvider client={client}>
-        {children}
-      </FathomProvider>
-    )
+    return <FathomProvider client={client}>{children}</FathomProvider>
   }
 }
 ```
@@ -178,7 +176,7 @@ it('merges default options with provided options', () => {
       defaultEventOptions={{ _site_id: 'test-app' }}
     >
       <TestComponent />
-    </FathomProvider>
+    </FathomProvider>,
   )
 
   fireEvent.click(screen.getByRole('button'))
@@ -215,7 +213,7 @@ describe('TrackVisible', () => {
         <TrackVisible eventName="section-viewed">
           <div>Content</div>
         </TrackVisible>
-      </FathomProvider>
+      </FathomProvider>,
     )
 
     expect(mockIntersectionObserver).toHaveBeenCalled()

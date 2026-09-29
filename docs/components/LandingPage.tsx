@@ -128,14 +128,29 @@ function LandingNavbar() {
     >
       <Container maxW="container.xl" py={4}>
         <Flex justify="space-between" align="center">
-          <Link asChild fontWeight="bold" fontSize="lg" _hover={{ textDecoration: 'none' }}>
+          <Link
+            asChild
+            fontWeight="bold"
+            fontSize="lg"
+            _hover={{ textDecoration: 'none' }}
+          >
             <NextLink href="/">react-fathom</NextLink>
           </Link>
           <HStack gap={6}>
-            <Link asChild color="fg.muted" _hover={{ color: 'fg' }} display={{ base: 'none', md: 'block' }}>
+            <Link
+              asChild
+              color="fg.muted"
+              _hover={{ color: 'fg' }}
+              display={{ base: 'none', md: 'block' }}
+            >
               <NextLink href="/docs">Documentation</NextLink>
             </Link>
-            <Link asChild color="fg.muted" _hover={{ color: 'fg' }} display={{ base: 'none', md: 'block' }}>
+            <Link
+              asChild
+              color="fg.muted"
+              _hover={{ color: 'fg' }}
+              display={{ base: 'none', md: 'block' }}
+            >
               <NextLink href="/docs/api">API</NextLink>
             </Link>
             <Link
@@ -159,7 +174,11 @@ export function LandingPage() {
       <LandingNavbar />
 
       {/* Hero Section */}
-      <Container maxW="container.lg" py={{ base: 16, md: 24 }} textAlign="center">
+      <Container
+        maxW="container.lg"
+        py={{ base: 16, md: 24 }}
+        textAlign="center"
+      >
         <VStack gap={6}>
           <Heading
             as="h1"
@@ -174,12 +193,17 @@ export function LandingPage() {
             </Text>
           </Heading>
           <Text fontSize={{ base: 'lg', md: 'xl' }} color="fg.muted" maxW="2xl">
-            A lightweight React integration for Fathom Analytics.
-            Track page views and custom events while respecting user privacy.
+            A lightweight React integration for Fathom Analytics. Track page
+            views and custom events while respecting user privacy.
           </Text>
 
           {/* Framework Logo Grid */}
-          <HStack gap={{ base: 4, md: 8 }} mt={6} flexWrap="wrap" justify="center">
+          <HStack
+            gap={{ base: 4, md: 8 }}
+            mt={6}
+            flexWrap="wrap"
+            justify="center"
+          >
             {frameworks.map((framework) => (
               <Link
                 key={framework.name}
@@ -197,7 +221,9 @@ export function LandingPage() {
                     _hover={{ opacity: 1 }}
                     transition="opacity 0.2s"
                     filter={framework.invertInDark ? 'invert(1)' : undefined}
-                    _light={{ filter: framework.invertInDark ? 'none' : undefined }}
+                    _light={{
+                      filter: framework.invertInDark ? 'none' : undefined,
+                    }}
                   />
                 </NextLink>
               </Link>
@@ -265,7 +291,11 @@ export function LandingPage() {
             </VStack>
 
             <Grid
-              templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
+              templateColumns={{
+                base: '1fr',
+                sm: 'repeat(2, 1fr)',
+                lg: 'repeat(3, 1fr)',
+              }}
               gap={6}
               width="100%"
             >
@@ -293,8 +323,12 @@ export function LandingPage() {
                         height="40px"
                         width="40px"
                         mb={3}
-                        filter={framework.invertInDark ? 'invert(1)' : undefined}
-                        _light={{ filter: framework.invertInDark ? 'none' : undefined }}
+                        filter={
+                          framework.invertInDark ? 'invert(1)' : undefined
+                        }
+                        _light={{
+                          filter: framework.invertInDark ? 'none' : undefined,
+                        }}
                       />
                       <Heading as="h3" size="md" mb={2}>
                         {framework.name}
@@ -324,7 +358,11 @@ export function LandingPage() {
           </VStack>
 
           <Grid
-            templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
+            templateColumns={{
+              base: '1fr',
+              sm: 'repeat(2, 1fr)',
+              lg: 'repeat(3, 1fr)',
+            }}
             gap={8}
             width="100%"
           >
@@ -379,30 +417,82 @@ export function LandingPage() {
               </Flex>
               <Box p={6} fontFamily="mono" fontSize="sm" color="gray.100">
                 <Text color="purple.400">import</Text>
-                <Text as="span" color="gray.100"> {'{ '}</Text>
-                <Text as="span" color="yellow.300">FathomProvider</Text>
-                <Text as="span" color="gray.100">{' }'} </Text>
-                <Text as="span" color="purple.400">from</Text>
-                <Text as="span" color="green.300"> 'react-fathom'</Text>
+                <Text as="span" color="gray.100">
+                  {' '}
+                  {'{ '}
+                </Text>
+                <Text as="span" color="yellow.300">
+                  FathomProvider
+                </Text>
+                <Text as="span" color="gray.100">
+                  {' }'}{' '}
+                </Text>
+                <Text as="span" color="purple.400">
+                  from
+                </Text>
+                <Text as="span" color="green.300">
+                  {' '}
+                  'react-fathom'
+                </Text>
                 <Text color="gray.100">;</Text>
-                <Text mt={4} color="purple.400">export default function</Text>
-                <Text as="span" color="blue.300"> App</Text>
-                <Text as="span" color="gray.100">() {'{'}</Text>
-                <Text ml={4} color="purple.400">return</Text>
-                <Text as="span" color="gray.100"> (</Text>
-                <Text ml={8} color="gray.100">{'<'}</Text>
-                <Text as="span" color="blue.300">FathomProvider</Text>
-                <Text as="span" color="cyan.300"> siteId</Text>
-                <Text as="span" color="gray.100">=</Text>
-                <Text as="span" color="green.300">"ABCDEFGH"</Text>
-                <Text as="span" color="gray.100">{'>'}</Text>
-                <Text ml={12} color="gray.100">{'<'}</Text>
-                <Text as="span" color="blue.300">YourApp</Text>
-                <Text as="span" color="gray.100"> /{'>'}</Text>
-                <Text ml={8} color="gray.100">{'</'}</Text>
-                <Text as="span" color="blue.300">FathomProvider</Text>
-                <Text as="span" color="gray.100">{'>'}</Text>
-                <Text ml={4} color="gray.100">);</Text>
+                <Text mt={4} color="purple.400">
+                  export default function
+                </Text>
+                <Text as="span" color="blue.300">
+                  {' '}
+                  App
+                </Text>
+                <Text as="span" color="gray.100">
+                  () {'{'}
+                </Text>
+                <Text ml={4} color="purple.400">
+                  return
+                </Text>
+                <Text as="span" color="gray.100">
+                  {' '}
+                  (
+                </Text>
+                <Text ml={8} color="gray.100">
+                  {'<'}
+                </Text>
+                <Text as="span" color="blue.300">
+                  FathomProvider
+                </Text>
+                <Text as="span" color="cyan.300">
+                  {' '}
+                  siteId
+                </Text>
+                <Text as="span" color="gray.100">
+                  =
+                </Text>
+                <Text as="span" color="green.300">
+                  "ABCDEFGH"
+                </Text>
+                <Text as="span" color="gray.100">
+                  {'>'}
+                </Text>
+                <Text ml={12} color="gray.100">
+                  {'<'}
+                </Text>
+                <Text as="span" color="blue.300">
+                  YourApp
+                </Text>
+                <Text as="span" color="gray.100">
+                  {' '}
+                  /{'>'}
+                </Text>
+                <Text ml={8} color="gray.100">
+                  {'</'}
+                </Text>
+                <Text as="span" color="blue.300">
+                  FathomProvider
+                </Text>
+                <Text as="span" color="gray.100">
+                  {'>'}
+                </Text>
+                <Text ml={4} color="gray.100">
+                  );
+                </Text>
                 <Text color="gray.100">{'}'}</Text>
               </Box>
             </Box>

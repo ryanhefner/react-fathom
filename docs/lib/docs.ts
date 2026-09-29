@@ -95,9 +95,7 @@ function getTitleFromFrontmatter(filePath: string): string | null {
 }
 
 function formatTitle(name: string): string {
-  return name
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase())
+  return name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 function buildNavFromDir(dir: string, basePath: string = ''): NavItem[] {
@@ -144,9 +142,10 @@ function buildNavFromDir(dir: string, basePath: string = ''): NavItem[] {
       const children = buildNavFromDir(dirPath, `${basePath}/${key}`)
 
       // Get title from meta, index frontmatter, or format from name
-      const title = getTitleFromMeta(meta, key)
-        || (hasIndex ? getTitleFromFrontmatter(indexPath) : null)
-        || formatTitle(key)
+      const title =
+        getTitleFromMeta(meta, key) ||
+        (hasIndex ? getTitleFromFrontmatter(indexPath) : null) ||
+        formatTitle(key)
 
       if (hasIndex) {
         // Directory with index - link to index, children are sub-pages
@@ -164,9 +163,10 @@ function buildNavFromDir(dir: string, basePath: string = ''): NavItem[] {
       }
     } else if (isFile && key !== 'index') {
       // Regular file (not index)
-      const title = getTitleFromMeta(meta, key)
-        || getTitleFromFrontmatter(filePath)
-        || formatTitle(key)
+      const title =
+        getTitleFromMeta(meta, key) ||
+        getTitleFromFrontmatter(filePath) ||
+        formatTitle(key)
 
       items.push({
         title,
@@ -284,12 +284,14 @@ export function getAdjacentPages(slug: string[]): AdjacentPages {
 
   flatten(nav)
 
-  const currentHref = slug.length === 0 ? DOCS_BASE_PATH : `${DOCS_BASE_PATH}/${slug.join('/')}`
+  const currentHref =
+    slug.length === 0 ? DOCS_BASE_PATH : `${DOCS_BASE_PATH}/${slug.join('/')}`
   const currentIndex = flatNav.findIndex((item) => item.href === currentHref)
 
   return {
     prev: currentIndex > 0 ? flatNav[currentIndex - 1] : undefined,
-    next: currentIndex < flatNav.length - 1 ? flatNav[currentIndex + 1] : undefined,
+    next:
+      currentIndex < flatNav.length - 1 ? flatNav[currentIndex + 1] : undefined,
   }
 }
 
@@ -308,10 +310,10 @@ export function getLastUpdated(slug: string[]): string | null {
 
   try {
     // Get the last commit date for this file
-    const result = execSync(
-      `git log -1 --format=%cI -- "${filePath}"`,
-      { encoding: 'utf-8', cwd: process.cwd() }
-    ).trim()
+    const result = execSync(`git log -1 --format=%cI -- "${filePath}"`, {
+      encoding: 'utf-8',
+      cwd: process.cwd(),
+    }).trim()
 
     if (!result) return null
 
@@ -327,16 +329,25 @@ export function getBreadcrumbs(slug: string[]): BreadcrumbItem[] {
   }
 
   const nav = getDocsNav()
-  const breadcrumbs: BreadcrumbItem[] = [{ title: 'Docs', href: DOCS_BASE_PATH }]
+  const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Docs', href: DOCS_BASE_PATH },
+  ]
 
   // Find the path through the navigation
-  function findPath(items: NavItem[], targetPath: string, currentPath: BreadcrumbItem[] = []): BreadcrumbItem[] | null {
+  function findPath(
+    items: NavItem[],
+    targetPath: string,
+    currentPath: BreadcrumbItem[] = [],
+  ): BreadcrumbItem[] | null {
     for (const item of items) {
       if (item.href === targetPath) {
         return [...currentPath, { title: item.title, href: item.href }]
       }
       if (item.children) {
-        const result = findPath(item.children, targetPath, [...currentPath, { title: item.title, href: item.href }])
+        const result = findPath(item.children, targetPath, [
+          ...currentPath,
+          { title: item.title, href: item.href },
+        ])
         if (result) return result
       }
     }
@@ -355,7 +366,8 @@ export function getBreadcrumbs(slug: string[]): BreadcrumbItem[] {
   for (const segment of slug) {
     href += `/${segment}`
     breadcrumbs.push({
-      title: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+      title:
+        segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
       href: href,
     })
   }

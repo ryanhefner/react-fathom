@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from 'react-native'
 import { useState } from 'react'
 import { useFathom } from 'react-fathom/native'
 
@@ -52,9 +59,7 @@ export default function Events() {
       {/* Custom Event Name */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Custom Event Name</Text>
-        <Text style={styles.description}>
-          Track any event name you want
-        </Text>
+        <Text style={styles.description}>Track any event name you want</Text>
         <TextInput
           style={styles.input}
           value={customEventName}

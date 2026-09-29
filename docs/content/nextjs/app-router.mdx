@@ -55,14 +55,14 @@ That's it! Pageviews are now tracked automatically on every route change.
 
 ### Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `siteId` | `string` | Your Fathom site ID |
-| `clientOptions` | `LoadOptions` | Options passed to `fathom-client` |
+| Prop                     | Type              | Description                       |
+| ------------------------ | ----------------- | --------------------------------- |
+| `siteId`                 | `string`          | Your Fathom site ID               |
+| `clientOptions`          | `LoadOptions`     | Options passed to `fathom-client` |
 | `defaultPageviewOptions` | `PageViewOptions` | Default options for all pageviews |
-| `defaultEventOptions` | `EventOptions` | Default options for all events |
-| `disableAutoTrack` | `boolean` | Disable automatic route tracking |
-| `children` | `ReactNode` | Your app content |
+| `defaultEventOptions`    | `EventOptions`    | Default options for all events    |
+| `disableAutoTrack`       | `boolean`         | Disable automatic route tracking  |
+| `children`               | `ReactNode`       | Your app content                  |
 
 ## Alternative: Manual Setup
 
@@ -87,7 +87,9 @@ export default function RootLayout({ children }) {
 ```
 
 <Callout type="info">
-  Since `FathomProvider` uses React hooks, you may need to wrap it in your own Client Component when using this approach directly in a Server Component layout.
+  Since `FathomProvider` uses React hooks, you may need to wrap it in your own
+  Client Component when using this approach directly in a Server Component
+  layout.
 </Callout>
 
 ## Custom Client Component Wrapper
@@ -136,11 +138,7 @@ import { useFathom } from 'react-fathom'
 export function SignUpButton() {
   const { trackEvent } = useFathom()
 
-  return (
-    <button onClick={() => trackEvent('signup-click')}>
-      Sign Up
-    </button>
-  )
+  return <button onClick={() => trackEvent('signup-click')}>Sign Up</button>
 }
 ```
 

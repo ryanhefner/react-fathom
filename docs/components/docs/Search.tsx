@@ -1,13 +1,6 @@
 'use client'
 
-import {
-  Box,
-  Flex,
-  Input,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, Flex, Input, Link, Text, VStack } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useFathom } from '@/lib/fathom'
@@ -25,7 +18,9 @@ interface PagefindResult {
 }
 
 interface PagefindUI {
-  search: (query: string) => Promise<{ results: { data: () => Promise<PagefindResult> }[] }>
+  search: (
+    query: string,
+  ) => Promise<{ results: { data: () => Promise<PagefindResult> }[] }>
 }
 
 export function Search() {
@@ -109,7 +104,7 @@ export function Search() {
             title: data.meta?.title || 'Untitled',
             excerpt: data.excerpt,
           }
-        })
+        }),
       )
       setResults(searchResults)
     } catch (e) {
@@ -238,11 +233,7 @@ export function Search() {
                         onClick={() => handleResultClick(result)}
                       >
                         <NextLink href={result.url}>
-                          <Box
-                            px={4}
-                            py={3}
-                            _hover={{ bg: 'bg.muted' }}
-                          >
+                          <Box px={4} py={3} _hover={{ bg: 'bg.muted' }}>
                             <Text fontWeight="medium" mb={1}>
                               {result.title}
                             </Text>
@@ -250,7 +241,9 @@ export function Search() {
                               fontSize="sm"
                               color="fg.muted"
                               lineClamp={2}
-                              dangerouslySetInnerHTML={{ __html: result.excerpt }}
+                              dangerouslySetInnerHTML={{
+                                __html: result.excerpt,
+                              }}
                               css={{
                                 '& mark': {
                                   background: 'yellow.200',

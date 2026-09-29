@@ -12,13 +12,13 @@ The Next.js App Router introduces React Server Components, which require special
 
 ## Features Demonstrated
 
-| Feature | Description |
-|---------|-------------|
-| Automatic Pageview Tracking | Tracks page views on every route change |
-| Manual Event Tracking | Track custom events with `useFathom` hook |
-| Goal Tracking | Track conversions and goals |
-| TypeScript Support | Full type safety throughout |
-| Server Component Compatible | Works in `app/layout.tsx` |
+| Feature                     | Description                               |
+| --------------------------- | ----------------------------------------- |
+| Automatic Pageview Tracking | Tracks page views on every route change   |
+| Manual Event Tracking       | Track custom events with `useFathom` hook |
+| Goal Tracking               | Track conversions and goals               |
+| TypeScript Support          | Full type safety throughout               |
+| Server Component Compatible | Works in `app/layout.tsx`                 |
 
 ## Quick Start
 
@@ -65,6 +65,7 @@ export default function RootLayout({ children }) {
 ```
 
 `NextFathomProviderApp` automatically:
+
 - Loads the Fathom script
 - Tracks pageviews on route changes
 - Provides the `useFathom` hook to all child components
@@ -81,12 +82,8 @@ export default function MyComponent() {
 
   return (
     <>
-      <button onClick={() => trackEvent('button-click')}>
-        Track Event
-      </button>
-      <button onClick={() => trackGoal('SIGNUP', 0)}>
-        Track Goal
-      </button>
+      <button onClick={() => trackEvent('button-click')}>Track Event</button>
+      <button onClick={() => trackGoal('SIGNUP', 0)}>Track Goal</button>
     </>
   )
 }

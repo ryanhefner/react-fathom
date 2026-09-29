@@ -1,6 +1,6 @@
 ---
-title: "Troubleshooting"
-description: "Common issues and solutions for react-fathom."
+title: 'Troubleshooting'
+description: 'Common issues and solutions for react-fathom.'
 ---
 
 # Troubleshooting
@@ -44,11 +44,11 @@ Fathom only tracks events from configured domains. For local development:
 
 Open your browser's Network tab and look for requests to `cdn.usefathom.com`:
 
-| Symptom | Cause |
-|---------|-------|
-| No requests | Script isn't loading—check provider setup |
-| Blocked requests | Ad blocker interference |
-| Failed requests | Check site ID and domain configuration |
+| Symptom          | Cause                                     |
+| ---------------- | ----------------------------------------- |
+| No requests      | Script isn't loading—check provider setup |
+| Blocked requests | Ad blocker interference                   |
+| Failed requests  | Check site ID and domain configuration    |
 
 ---
 
@@ -71,10 +71,7 @@ If you see double pageviews, you have multiple tracking sources:
 Same applies to `NextFathomProviderApp`:
 
 ```tsx
-<NextFathomProviderApp
-  siteId="YOUR_SITE_ID"
-  clientOptions={{ auto: false }}
->
+<NextFathomProviderApp siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
   {children}
 </NextFathomProviderApp>
 ```

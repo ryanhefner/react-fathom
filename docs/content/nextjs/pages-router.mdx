@@ -1,6 +1,6 @@
 ---
-title: "Pages Router"
-description: "Integrate react-fathom with Next.js Pages Router."
+title: 'Pages Router'
+description: 'Integrate react-fathom with Next.js Pages Router.'
 ---
 
 # Pages Router
@@ -57,17 +57,17 @@ export default MyApp
 
 ### FathomProvider Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `siteId` | `string` | Your Fathom site ID |
-| `clientOptions` | `LoadOptions` | Options passed to `fathom-client` |
+| Prop                     | Type              | Description                       |
+| ------------------------ | ----------------- | --------------------------------- |
+| `siteId`                 | `string`          | Your Fathom site ID               |
+| `clientOptions`          | `LoadOptions`     | Options passed to `fathom-client` |
 | `defaultPageviewOptions` | `PageViewOptions` | Default options for all pageviews |
-| `defaultEventOptions` | `EventOptions` | Default options for all events |
+| `defaultEventOptions`    | `EventOptions`    | Default options for all events    |
 
 ### NextFathomTrackViewPages Props
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop               | Type      | Description                      |
+| ------------------ | --------- | -------------------------------- |
 | `disableAutoTrack` | `boolean` | Disable automatic route tracking |
 
 ## Tracking Events
@@ -80,11 +80,7 @@ import { useFathom } from 'react-fathom'
 export function SignUpButton() {
   const { trackEvent } = useFathom()
 
-  return (
-    <button onClick={() => trackEvent('signup-click')}>
-      Sign Up
-    </button>
-  )
+  return <button onClick={() => trackEvent('signup-click')}>Sign Up</button>
 }
 ```
 
@@ -177,10 +173,7 @@ export function CustomTracker() {
 If you see duplicate pageviews, disable `fathom-client`'s built-in auto tracking:
 
 ```tsx
-<FathomProvider
-  siteId="YOUR_SITE_ID"
-  clientOptions={{ auto: false }}
->
+<FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
   <NextFathomTrackViewPages />
   <Component {...pageProps} />
 </FathomProvider>

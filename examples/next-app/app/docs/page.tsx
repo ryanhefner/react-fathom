@@ -3,11 +3,15 @@ export default function Docs() {
     <div>
       <div className="page-header">
         <h1>Documentation</h1>
-        <p>How to integrate react-fathom into your Next.js App Router application</p>
+        <p>
+          How to integrate react-fathom into your Next.js App Router application
+        </p>
       </div>
       <div className="content">
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Installation</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Installation
+          </h2>
           <pre
             style={{
               background: '#1a1a1a',
@@ -24,7 +28,8 @@ export default function Docs() {
         <section>
           <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Setup</h2>
           <p>
-            Wrap your app with <code>NextFathomProviderApp</code> in your root layout:
+            Wrap your app with <code>NextFathomProviderApp</code> in your root
+            layout:
           </p>
           <pre
             style={{
@@ -54,7 +59,9 @@ export default function RootLayout({ children }) {
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Event Tracking</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Event Tracking
+          </h2>
           <p>
             Use the <code>useFathom</code> hook to track custom events:
           </p>
@@ -90,17 +97,22 @@ export default function MyComponent() {
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Automatic Pageview Tracking</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Automatic Pageview Tracking
+          </h2>
           <p>
-            The <code>NextFathomProviderApp</code> component automatically tracks pageviews
-            when the route changes. This is done using Next.js App Router&apos;s{' '}
-            <code>usePathname</code> and <code>useSearchParams</code> hooks.
+            The <code>NextFathomProviderApp</code> component automatically
+            tracks pageviews when the route changes. This is done using Next.js
+            App Router&apos;s <code>usePathname</code> and{' '}
+            <code>useSearchParams</code> hooks.
           </p>
           <p>No additional configuration is needed for pageview tracking.</p>
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Environment Variables</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Environment Variables
+          </h2>
           <p>Store your site ID in an environment variable:</p>
           <pre
             style={{
@@ -131,7 +143,9 @@ NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID`}</code>
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Learn More</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Learn More
+          </h2>
           <ul>
             <li>
               <a

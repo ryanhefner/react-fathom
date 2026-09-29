@@ -15,12 +15,21 @@ interface ChangelogEntryProps {
   repoUrl?: string
 }
 
-export function ChangelogEntry({ version, date, commits, repoUrl = 'https://github.com/ryanhefner/react-fathom' }: ChangelogEntryProps) {
+export function ChangelogEntry({
+  version,
+  date,
+  commits,
+  repoUrl = 'https://github.com/ryanhefner/react-fathom',
+}: ChangelogEntryProps) {
   return (
     <Box mb={8} pb={8} borderBottomWidth="1px">
       <Flex align="baseline" gap={4} mb={4}>
         <Heading as="h2" size="lg">
-          <Link href={`${repoUrl}/releases/tag/${version}`} color="blue.500" _hover={{ textDecoration: 'underline' }}>
+          <Link
+            href={`${repoUrl}/releases/tag/${version}`}
+            color="blue.500"
+            _hover={{ textDecoration: 'underline' }}
+          >
             {version}
           </Link>
         </Heading>

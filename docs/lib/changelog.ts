@@ -39,7 +39,7 @@ export function getChangelog(): ChangelogEntry[] {
       const range = prevTag ? `${prevTag}..${tag}` : tag
       const commitsOutput = execSync(
         `git log ${range} --format="%H|%s|%an" --no-merges`,
-        { encoding: 'utf-8', cwd: process.cwd() }
+        { encoding: 'utf-8', cwd: process.cwd() },
       ).trim()
 
       const commits = commitsOutput

@@ -17,7 +17,14 @@ export function Docs() {
         <Heading as="h2" size="lg" mb={4}>
           Installation
         </Heading>
-        <Box bg="gray.900" p={4} borderRadius="lg" fontFamily="mono" fontSize="sm" color="gray.100">
+        <Box
+          bg="gray.900"
+          p={4}
+          borderRadius="lg"
+          fontFamily="mono"
+          fontSize="sm"
+          color="gray.100"
+        >
           <Text color="fg.muted">$ npm install react-fathom fathom-client</Text>
         </Box>
       </Box>
@@ -30,8 +37,16 @@ export function Docs() {
         <Text mb={4}>
           Wrap your application with <Code>FathomProvider</Code>:
         </Text>
-        <Box bg="gray.900" p={4} borderRadius="lg" fontFamily="mono" fontSize="sm" color="gray.100" whiteSpace="pre">
-{`import { FathomProvider } from 'react-fathom'
+        <Box
+          bg="gray.900"
+          p={4}
+          borderRadius="lg"
+          fontFamily="mono"
+          fontSize="sm"
+          color="gray.100"
+          whiteSpace="pre"
+        >
+          {`import { FathomProvider } from 'react-fathom'
 
 function App() {
   return (
@@ -49,10 +64,19 @@ function App() {
           Pageview Tracking
         </Heading>
         <Text mb={4}>
-          For React Router, track pageviews on route changes using the <Code>useFathom</Code> hook:
+          For React Router, track pageviews on route changes using the{' '}
+          <Code>useFathom</Code> hook:
         </Text>
-        <Box bg="gray.900" p={4} borderRadius="lg" fontFamily="mono" fontSize="sm" color="gray.100" whiteSpace="pre">
-{`import { useLocation } from 'react-router-dom'
+        <Box
+          bg="gray.900"
+          p={4}
+          borderRadius="lg"
+          fontFamily="mono"
+          fontSize="sm"
+          color="gray.100"
+          whiteSpace="pre"
+        >
+          {`import { useLocation } from 'react-router-dom'
 import { useFathom } from 'react-fathom'
 import { useEffect } from 'react'
 
@@ -77,8 +101,16 @@ function Layout() {
         <Text mb={4}>
           Track custom events using the <Code>useFathom</Code> hook:
         </Text>
-        <Box bg="gray.900" p={4} borderRadius="lg" fontFamily="mono" fontSize="sm" color="gray.100" whiteSpace="pre">
-{`import { useFathom } from 'react-fathom'
+        <Box
+          bg="gray.900"
+          p={4}
+          borderRadius="lg"
+          fontFamily="mono"
+          fontSize="sm"
+          color="gray.100"
+          whiteSpace="pre"
+        >
+          {`import { useFathom } from 'react-fathom'
 
 function SignupButton() {
   const { trackEvent } = useFathom()
@@ -100,8 +132,16 @@ function SignupButton() {
         <Text mb={4}>
           Use <Code>{'<TrackClick>'}</Code> for declarative event tracking:
         </Text>
-        <Box bg="gray.900" p={4} borderRadius="lg" fontFamily="mono" fontSize="sm" color="gray.100" whiteSpace="pre">
-{`import { TrackClick } from 'react-fathom'
+        <Box
+          bg="gray.900"
+          p={4}
+          borderRadius="lg"
+          fontFamily="mono"
+          fontSize="sm"
+          color="gray.100"
+          whiteSpace="pre"
+        >
+          {`import { TrackClick } from 'react-fathom'
 
 function CTAButton() {
   return (
@@ -118,15 +158,29 @@ function CTAButton() {
         <Heading as="h2" size="lg" mb={4}>
           Environment Variables
         </Heading>
-        <Text mb={4}>
-          Store your site ID in an environment variable:
-        </Text>
-        <Box bg="gray.900" p={4} borderRadius="lg" fontFamily="mono" fontSize="sm" color="gray.100">
+        <Text mb={4}>Store your site ID in an environment variable:</Text>
+        <Box
+          bg="gray.900"
+          p={4}
+          borderRadius="lg"
+          fontFamily="mono"
+          fontSize="sm"
+          color="gray.100"
+        >
           <Text color="fg.muted"># .env</Text>
           <Text>VITE_FATHOM_SITE_ID=YOUR_SITE_ID</Text>
         </Box>
-        <Box mt={4} bg="gray.900" p={4} borderRadius="lg" fontFamily="mono" fontSize="sm" color="gray.100" whiteSpace="pre">
-{`<FathomProvider siteId={import.meta.env.VITE_FATHOM_SITE_ID}>
+        <Box
+          mt={4}
+          bg="gray.900"
+          p={4}
+          borderRadius="lg"
+          fontFamily="mono"
+          fontSize="sm"
+          color="gray.100"
+          whiteSpace="pre"
+        >
+          {`<FathomProvider siteId={import.meta.env.VITE_FATHOM_SITE_ID}>
   <App />
 </FathomProvider>`}
         </Box>
@@ -144,7 +198,10 @@ function CTAButton() {
           <Link href="https://react-fathom.com/docs/api" color="blue.500">
             API Reference →
           </Link>
-          <Link href="https://github.com/ryanhefner/react-fathom" color="blue.500">
+          <Link
+            href="https://github.com/ryanhefner/react-fathom"
+            color="blue.500"
+          >
             GitHub Repository →
           </Link>
         </VStack>

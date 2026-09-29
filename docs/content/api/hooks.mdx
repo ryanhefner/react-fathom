@@ -1,6 +1,6 @@
 ---
-title: "Hooks"
-description: "API reference for useFathom, useTrackOnMount, useTrackOnClick, and useTrackOnVisible hooks."
+title: 'Hooks'
+description: 'API reference for useFathom, useTrackOnMount, useTrackOnClick, and useTrackOnVisible hooks.'
 ---
 
 # Hooks
@@ -31,19 +31,19 @@ function MyComponent() {
 
 ### Return Value
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `trackPageview` | `(options?) => void` | Track a pageview |
-| `trackEvent` | `(eventName, options?) => void` | Track a custom event |
-| `trackGoal` | `(code, cents) => void` | Track a goal conversion |
-| `load` | `(siteId, options?) => void` | Load Fathom with a site ID |
-| `setSite` | `(siteId) => void` | Change the site ID |
-| `blockTrackingForMe` | `() => void` | Block tracking for current user |
-| `enableTrackingForMe` | `() => void` | Enable tracking for current user |
-| `isTrackingEnabled` | `() => boolean` | Check if tracking is enabled |
-| `client` | `FathomClient` | The underlying client instance |
-| `defaultPageviewOptions` | `PageViewOptions` | Current default pageview options |
-| `defaultEventOptions` | `EventOptions` | Current default event options |
+| Property                 | Type                            | Description                      |
+| ------------------------ | ------------------------------- | -------------------------------- |
+| `trackPageview`          | `(options?) => void`            | Track a pageview                 |
+| `trackEvent`             | `(eventName, options?) => void` | Track a custom event             |
+| `trackGoal`              | `(code, cents) => void`         | Track a goal conversion          |
+| `load`                   | `(siteId, options?) => void`    | Load Fathom with a site ID       |
+| `setSite`                | `(siteId) => void`              | Change the site ID               |
+| `blockTrackingForMe`     | `() => void`                    | Block tracking for current user  |
+| `enableTrackingForMe`    | `() => void`                    | Enable tracking for current user |
+| `isTrackingEnabled`      | `() => boolean`                 | Check if tracking is enabled     |
+| `client`                 | `FathomClient`                  | The underlying client instance   |
+| `defaultPageviewOptions` | `PageViewOptions`               | Current default pageview options |
+| `defaultEventOptions`    | `EventOptions`                  | Current default event options    |
 
 ### trackPageview
 
@@ -62,9 +62,9 @@ trackPageview({ url: '/landing', referrer: 'https://google.com' })
 
 **Options:**
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `url` | `string` | URL to track |
+| Option     | Type     | Description  |
+| ---------- | -------- | ------------ |
+| `url`      | `string` | URL to track |
 | `referrer` | `string` | Referrer URL |
 
 ### trackEvent
@@ -81,9 +81,9 @@ trackEvent('purchase', { _value: 2999 }) // $29.99
 
 **Options:**
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `_value` | `number` | Value in cents |
+| Option     | Type     | Description      |
+| ---------- | -------- | ---------------- |
+| `_value`   | `number` | Value in cents   |
 | `_site_id` | `string` | Override site ID |
 
 ### trackGoal
@@ -92,16 +92,16 @@ trackEvent('purchase', { _value: 2999 }) // $29.99
 const { trackGoal } = useFathom()
 
 // Track a goal conversion
-trackGoal('SIGNUP', 0)        // No value
-trackGoal('PURCHASE', 4999)   // $49.99
+trackGoal('SIGNUP', 0) // No value
+trackGoal('PURCHASE', 4999) // $49.99
 ```
 
 **Parameters:**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `code` | `string` | Goal code from Fathom dashboard |
-| `cents` | `number` | Value in cents |
+| Parameter | Type     | Description                     |
+| --------- | -------- | ------------------------------- |
+| `code`    | `string` | Goal code from Fathom dashboard |
+| `cents`   | `number` | Value in cents                  |
 
 ---
 
@@ -121,9 +121,9 @@ function LandingPage() {
 
 ### Options
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `url` | `string` | URL to track |
+| Option     | Type     | Description  |
+| ---------- | -------- | ------------ |
+| `url`      | `string` | URL to track |
 | `referrer` | `string` | Referrer URL |
 
 All options are passed to `trackPageview`.
@@ -149,12 +149,12 @@ function CTAButton() {
 
 ### Options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `eventName` | `string` | Yes | Event name to track |
-| `preventDefault` | `boolean` | No | Prevent default click behavior |
-| `callback` | `(e?: MouseEvent) => void` | No | Called after tracking |
-| `_value` | `number` | No | Value in cents |
+| Option           | Type                       | Required | Description                    |
+| ---------------- | -------------------------- | -------- | ------------------------------ |
+| `eventName`      | `string`                   | Yes      | Event name to track            |
+| `preventDefault` | `boolean`                  | No       | Prevent default click behavior |
+| `callback`       | `(e?: MouseEvent) => void` | No       | Called after tracking          |
+| `_value`         | `number`                   | No       | Value in cents                 |
 
 ### With Callback
 
@@ -180,7 +180,11 @@ const handleClick = useTrackOnClick({
   },
 })
 
-return <a href="/external-link" onClick={handleClick}>External Link</a>
+return (
+  <a href="/external-link" onClick={handleClick}>
+    External Link
+  </a>
+)
 ```
 
 ---
@@ -207,13 +211,13 @@ function HeroSection() {
 
 ### Options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `eventName` | `string` | Yes | Event name to track |
-| `threshold` | `number` | No | Visibility threshold (0-1, default: `0.1`) |
-| `rootMargin` | `string` | No | IntersectionObserver root margin |
-| `callback` | `(entry: IntersectionObserverEntry) => void` | No | Called when visible |
-| `_value` | `number` | No | Value in cents |
+| Option       | Type                                         | Required | Description                                |
+| ------------ | -------------------------------------------- | -------- | ------------------------------------------ |
+| `eventName`  | `string`                                     | Yes      | Event name to track                        |
+| `threshold`  | `number`                                     | No       | Visibility threshold (0-1, default: `0.1`) |
+| `rootMargin` | `string`                                     | No       | IntersectionObserver root margin           |
+| `callback`   | `(entry: IntersectionObserverEntry) => void` | No       | Called when visible                        |
+| `_value`     | `number`                                     | No       | Value in cents                             |
 
 ### With Threshold
 

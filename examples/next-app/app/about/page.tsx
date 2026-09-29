@@ -16,8 +16,8 @@ export default function About() {
         </h2>
         <p>
           The <code>NextFathomTrackViewApp</code> component in{' '}
-          <code>app/layout.tsx</code> automatically tracks pageviews whenever the
-          route changes. This is done using Next.js App Router&apos;s{' '}
+          <code>app/layout.tsx</code> automatically tracks pageviews whenever
+          the route changes. This is done using Next.js App Router&apos;s{' '}
           <code>usePathname</code> and <code>useSearchParams</code> hooks.
         </p>
         <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>

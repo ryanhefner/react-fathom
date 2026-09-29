@@ -50,7 +50,13 @@ export function Folder({ name, children, defaultOpen = true }: FolderProps) {
         <Text>{name}</Text>
       </Flex>
       {isOpen && children && (
-        <Box pl={6} borderLeftWidth="1px" borderColor="gray.700" _light={{ borderColor: 'gray.200' }} ml={1.5}>
+        <Box
+          pl={6}
+          borderLeftWidth="1px"
+          borderColor="gray.700"
+          _light={{ borderColor: 'gray.200' }}
+          ml={1.5}
+        >
           {children}
         </Box>
       )}
@@ -111,8 +117,16 @@ export function File({ name, highlight, added, removed }: FileProps) {
       <Text>{getIcon(name)}</Text>
       <Text textDecoration={removed ? 'line-through' : undefined}>
         {name}
-        {added && <Text as="span" color="green.400" ml={1}>+</Text>}
-        {removed && <Text as="span" color="red.400" ml={1}>-</Text>}
+        {added && (
+          <Text as="span" color="green.400" ml={1}>
+            +
+          </Text>
+        )}
+        {removed && (
+          <Text as="span" color="red.400" ml={1}>
+            -
+          </Text>
+        )}
       </Text>
     </Flex>
   )

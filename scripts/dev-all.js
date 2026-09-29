@@ -89,7 +89,7 @@ if (useProxy) {
 }
 
 console.log('Sites:')
-sites.forEach(site => {
+sites.forEach((site) => {
   const url = useProxy
     ? `http://${site.name}.localhost:8080`
     : `http://localhost:${site.port}`
@@ -103,7 +103,7 @@ const processes = []
 // Cleanup function
 function cleanup() {
   console.log('\n\nShutting down all servers...')
-  processes.forEach(proc => {
+  processes.forEach((proc) => {
     if (proc && !proc.killed) {
       proc.kill('SIGTERM')
     }
@@ -115,7 +115,7 @@ process.on('SIGINT', cleanup)
 process.on('SIGTERM', cleanup)
 
 // Start each site
-sites.forEach(site => {
+sites.forEach((site) => {
   const cwd = path.join(rootDir, site.dir)
   const proc = spawn(site.command, site.args, {
     cwd,
@@ -127,17 +127,17 @@ sites.forEach(site => {
 
   const prefix = `${site.color}[${site.name}]${reset}`
 
-  proc.stdout.on('data', data => {
+  proc.stdout.on('data', (data) => {
     const lines = data.toString().split('\n').filter(Boolean)
-    lines.forEach(line => console.log(`${prefix} ${line}`))
+    lines.forEach((line) => console.log(`${prefix} ${line}`))
   })
 
-  proc.stderr.on('data', data => {
+  proc.stderr.on('data', (data) => {
     const lines = data.toString().split('\n').filter(Boolean)
-    lines.forEach(line => console.log(`${prefix} ${line}`))
+    lines.forEach((line) => console.log(`${prefix} ${line}`))
   })
 
-  proc.on('error', err => {
+  proc.on('error', (err) => {
     console.error(`${prefix} Failed to start: ${err.message}`)
   })
 
@@ -160,14 +160,14 @@ if (useProxy) {
 
   const prefix = '\x1b[37m[proxy]\x1b[0m'
 
-  proxyProc.stdout.on('data', data => {
+  proxyProc.stdout.on('data', (data) => {
     const lines = data.toString().split('\n').filter(Boolean)
-    lines.forEach(line => console.log(`${prefix} ${line}`))
+    lines.forEach((line) => console.log(`${prefix} ${line}`))
   })
 
-  proxyProc.stderr.on('data', data => {
+  proxyProc.stderr.on('data', (data) => {
     const lines = data.toString().split('\n').filter(Boolean)
-    lines.forEach(line => console.log(`${prefix} ${line}`))
+    lines.forEach((line) => console.log(`${prefix} ${line}`))
   })
 }
 

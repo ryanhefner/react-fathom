@@ -13,21 +13,23 @@ Next.js has two routing systems. Choose the guide that matches your project:
 
 <Cards>
   <Card title="App Router" href="/docs/nextjs/app-router">
-    Next.js 13.4+ with the `app/` directory. Uses Server Components and the new routing system.
+    Next.js 13.4+ with the `app/` directory. Uses Server Components and the new
+    routing system.
   </Card>
   <Card title="Pages Router" href="/docs/nextjs/pages-router">
-    Traditional Next.js with the `pages/` directory. Works with all Next.js versions.
+    Traditional Next.js with the `pages/` directory. Works with all Next.js
+    versions.
   </Card>
 </Cards>
 
 ## Quick Comparison
 
-| Feature | App Router | Pages Router |
-|---------|-----------|--------------|
-| Provider | `NextFathomProviderApp` | `FathomProvider` |
-| Route tracking | `NextFathomTrackViewApp` (included) | `NextFathomTrackViewPages` |
-| Setup location | `app/layout.tsx` | `pages/_app.tsx` |
-| Server Components | Yes (provider is a Client Component) | N/A |
+| Feature           | App Router                           | Pages Router               |
+| ----------------- | ------------------------------------ | -------------------------- |
+| Provider          | `NextFathomProviderApp`              | `FathomProvider`           |
+| Route tracking    | `NextFathomTrackViewApp` (included)  | `NextFathomTrackViewPages` |
+| Setup location    | `app/layout.tsx`                     | `pages/_app.tsx`           |
+| Server Components | Yes (provider is a Client Component) | N/A                        |
 
 ## Import Path
 
@@ -60,5 +62,6 @@ NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID
 ```
 
 <Callout type="warning">
-  Environment variables must be prefixed with `NEXT_PUBLIC_` to be available on the client side.
+  Environment variables must be prefixed with `NEXT_PUBLIC_` to be available on
+  the client side.
 </Callout>

@@ -18,5 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </FathomProvider>
       </BrowserRouter>
     </ExampleProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 )

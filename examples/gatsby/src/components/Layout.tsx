@@ -1,6 +1,15 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { ChakraProvider, defaultSystem, Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
+import {
+  ChakraProvider,
+  defaultSystem,
+  Box,
+  Container,
+  Flex,
+  HStack,
+  Link,
+  Text,
+} from '@chakra-ui/react'
 import { FathomProvider } from 'react-fathom'
 import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
 
@@ -39,7 +48,11 @@ export function Layout({ children }: LayoutProps) {
               {children}
             </Container>
           </Box>
-          <Box borderTopWidth="1px" borderColor="border.muted" py={{ base: 6, md: 8 }}>
+          <Box
+            borderTopWidth="1px"
+            borderColor="border.muted"
+            py={{ base: 6, md: 8 }}
+          >
             <Container maxW="640px" px={{ base: 5, md: 6 }}>
               <Flex
                 justify="space-between"

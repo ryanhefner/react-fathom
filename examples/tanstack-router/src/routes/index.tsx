@@ -54,7 +54,9 @@ function HomePage() {
           Features
         </Heading>
         <VStack align="start" gap={3}>
-          <Text color="fg.muted">— Automatic pageview tracking on route changes</Text>
+          <Text color="fg.muted">
+            — Automatic pageview tracking on route changes
+          </Text>
           <Text color="fg.muted">— Custom event tracking</Text>
           <Text color="fg.muted">— Goal conversion tracking</Text>
           <Text color="fg.muted">— Debug mode with event visualization</Text>

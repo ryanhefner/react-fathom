@@ -241,7 +241,8 @@ describe('ReactRouterFathomTrackView', () => {
       isTrackingEnabled: vi.fn(() => true),
     }
 
-    const transformUrl = (url: string) => url.replace('/test-page', '/transformed')
+    const transformUrl = (url: string) =>
+      url.replace('/test-page', '/transformed')
 
     render(
       <MemoryRouter initialEntries={['/test-page']}>

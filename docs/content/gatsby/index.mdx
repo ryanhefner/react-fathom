@@ -1,6 +1,6 @@
 ---
-title: "Gatsby"
-description: "Integrate react-fathom with Gatsby for automatic pageview tracking."
+title: 'Gatsby'
+description: 'Integrate react-fathom with Gatsby for automatic pageview tracking.'
 ---
 
 # Gatsby Integration
@@ -130,12 +130,12 @@ export const onRouteUpdate = ({ location }) => {
 
 ## GatsbyFathomTrackView Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `disableAutoTrack` | `boolean` | `false` | Disable automatic pageview tracking |
-| `includeSearchParams` | `boolean` | `true` | Include query parameters in tracked URLs |
-| `includeHash` | `boolean` | `false` | Include URL hash in tracked URLs |
-| `transformUrl` | `(url: string) => string \| null` | — | Transform URL before tracking; return `null` to skip |
+| Prop                  | Type                              | Default | Description                                          |
+| --------------------- | --------------------------------- | ------- | ---------------------------------------------------- |
+| `disableAutoTrack`    | `boolean`                         | `false` | Disable automatic pageview tracking                  |
+| `includeSearchParams` | `boolean`                         | `true`  | Include query parameters in tracked URLs             |
+| `includeHash`         | `boolean`                         | `false` | Include URL hash in tracked URLs                     |
+| `transformUrl`        | `(url: string) => string \| null` | —       | Transform URL before tracking; return `null` to skip |
 
 ## Tracking Custom Events
 
@@ -263,10 +263,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <FathomProvider
       siteId={process.env.GATSBY_FATHOM_SITE_ID!}
       clientOptions={{
-        includedDomains: [
-          'localhost',
-          'yourdomain.com',
-        ],
+        includedDomains: ['localhost', 'yourdomain.com'],
       }}
     >
       <GatsbyFathomTrackView
@@ -295,9 +292,7 @@ export default function HomePage() {
   return (
     <Layout>
       <h1>Welcome</h1>
-      <button onClick={() => trackEvent('cta-click')}>
-        Get Started
-      </button>
+      <button onClick={() => trackEvent('cta-click')}>Get Started</button>
     </Layout>
   )
 }

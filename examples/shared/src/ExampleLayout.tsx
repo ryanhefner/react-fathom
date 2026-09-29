@@ -16,7 +16,11 @@ export interface ExampleLayoutProps {
    * The Link component to use for navigation.
    * Pass Next.js Link or React Router Link component.
    */
-  linkComponent: ComponentType<{ href: string; children: ReactNode; className?: string }>
+  linkComponent: ComponentType<{
+    href: string
+    children: ReactNode
+    className?: string
+  }>
   /**
    * Navigation links to display in the header.
    */
@@ -93,7 +97,10 @@ export function ExampleLayout({
                     color="fg.muted"
                     _hover={{ color: 'fg' }}
                     fontSize="sm"
-                    display={{ base: link.href === '/' ? 'none' : 'block', md: 'block' }}
+                    display={{
+                      base: link.href === '/' ? 'none' : 'block',
+                      md: 'block',
+                    }}
                   >
                     <LinkComponent href={link.href}>{link.label}</LinkComponent>
                   </Link>
@@ -112,7 +119,11 @@ export function ExampleLayout({
         </Box>
 
         {/* Footer */}
-        <Box borderTopWidth="1px" borderColor="border.muted" py={{ base: 6, md: 8 }}>
+        <Box
+          borderTopWidth="1px"
+          borderColor="border.muted"
+          py={{ base: 6, md: 8 }}
+        >
           <Container maxW="640px" px={{ base: 5, md: 6 }}>
             <Flex
               justify="space-between"

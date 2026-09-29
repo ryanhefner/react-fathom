@@ -50,10 +50,14 @@ export function Callout({ type = 'info', title, children }: CalloutProps) {
       _dark={styles._dark}
     >
       <Flex gap={3}>
-        <Text fontSize="lg" flexShrink={0}>{styles.icon}</Text>
+        <Text fontSize="lg" flexShrink={0}>
+          {styles.icon}
+        </Text>
         <Box>
           {title && (
-            <Text fontWeight="semibold" mb={1}>{title}</Text>
+            <Text fontWeight="semibold" mb={1}>
+              {title}
+            </Text>
           )}
           <Box fontSize="sm" css={{ '& p': { margin: 0 } }}>
             {children}

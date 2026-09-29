@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  Box,
-  IconButton,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, IconButton, Link, Text, VStack } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -65,7 +59,12 @@ interface MobileNavItemProps {
   depth?: number
 }
 
-function MobileNavItem({ item, pathname, onClose, depth = 0 }: MobileNavItemProps) {
+function MobileNavItem({
+  item,
+  pathname,
+  onClose,
+  depth = 0,
+}: MobileNavItemProps) {
   const isActive = pathname === item.href
   const hasChildren = item.children && item.children.length > 0
 

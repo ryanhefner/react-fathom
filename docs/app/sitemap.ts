@@ -18,7 +18,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Documentation pages under /docs
   const docPages = slugs.map((slug) => ({
-    url: slug.length === 0 ? `${SITE_URL}/docs` : `${SITE_URL}/docs/${slug.join('/')}`,
+    url:
+      slug.length === 0
+        ? `${SITE_URL}/docs`
+        : `${SITE_URL}/docs/${slug.join('/')}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: slug.length === 0 ? 0.9 : 0.8,

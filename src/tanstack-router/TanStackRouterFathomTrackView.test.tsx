@@ -49,7 +49,9 @@ const createMockClient = () => ({
 function createTestRouter(
   initialPath: string = '/',
   client: ReturnType<typeof createMockClient>,
-  trackViewProps: React.ComponentProps<typeof TanStackRouterFathomTrackView> = {},
+  trackViewProps: React.ComponentProps<
+    typeof TanStackRouterFathomTrackView
+  > = {},
 ) {
   const rootRoute = createRootRoute({
     component: () => (
@@ -142,7 +144,9 @@ describe('TanStackRouterFathomTrackView', () => {
 
   it('should not track when disableAutoTrack is true', async () => {
     const client = createMockClient()
-    const router = createTestRouter('/test-page', client, { disableAutoTrack: true })
+    const router = createTestRouter('/test-page', client, {
+      disableAutoTrack: true,
+    })
 
     render(<RouterProvider router={router} />)
 
@@ -171,7 +175,9 @@ describe('TanStackRouterFathomTrackView', () => {
 
   it('should exclude search params when includeSearchParams is false', async () => {
     const client = createMockClient()
-    const router = createTestRouter('/test-page?foo=bar', client, { includeSearchParams: false })
+    const router = createTestRouter('/test-page?foo=bar', client, {
+      includeSearchParams: false,
+    })
 
     render(<RouterProvider router={router} />)
 
@@ -186,7 +192,9 @@ describe('TanStackRouterFathomTrackView', () => {
 
   it('should include hash when includeHash is true', async () => {
     const client = createMockClient()
-    const router = createTestRouter('/test-page#section', client, { includeHash: true })
+    const router = createTestRouter('/test-page#section', client, {
+      includeHash: true,
+    })
 
     render(<RouterProvider router={router} />)
 
@@ -201,7 +209,8 @@ describe('TanStackRouterFathomTrackView', () => {
 
   it('should transform URL when transformUrl is provided', async () => {
     const client = createMockClient()
-    const transformUrl = (url: string) => url.replace('/test-page', '/transformed')
+    const transformUrl = (url: string) =>
+      url.replace('/test-page', '/transformed')
     const router = createTestRouter('/test-page', client, { transformUrl })
 
     render(<RouterProvider router={router} />)

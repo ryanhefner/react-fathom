@@ -1,6 +1,6 @@
 ---
-title: "Default Options"
-description: "Set app-wide defaults that automatically merge into all tracking calls."
+title: 'Default Options'
+description: 'Set app-wide defaults that automatically merge into all tracking calls.'
 ---
 
 # Default Options
@@ -93,9 +93,7 @@ Track which tenant generated each event:
 ```tsx
 function TenantProvider({ tenantId, children }) {
   return (
-    <FathomProvider
-      defaultEventOptions={{ _site_id: tenantId }}
-    >
+    <FathomProvider defaultEventOptions={{ _site_id: tenantId }}>
       {children}
     </FathomProvider>
   )
@@ -109,9 +107,7 @@ Include experiment variant in all events:
 ```tsx
 function ExperimentProvider({ variant, children }) {
   return (
-    <FathomProvider
-      defaultEventOptions={{ _variant: variant }}
-    >
+    <FathomProvider defaultEventOptions={{ _variant: variant }}>
       {children}
     </FathomProvider>
   )

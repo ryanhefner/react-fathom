@@ -12,13 +12,13 @@ The Pages Router is the traditional Next.js routing system using the `pages/` di
 
 ## Features Demonstrated
 
-| Feature | Description |
-|---------|-------------|
-| Automatic Pageview Tracking | Tracks page views on every route change |
-| Manual Event Tracking | Track custom events with `useFathom` hook |
-| Goal Tracking | Track conversions and goals |
-| TypeScript Support | Full type safety throughout |
-| Router Event Integration | Uses Next.js router events for tracking |
+| Feature                     | Description                               |
+| --------------------------- | ----------------------------------------- |
+| Automatic Pageview Tracking | Tracks page views on every route change   |
+| Manual Event Tracking       | Track custom events with `useFathom` hook |
+| Goal Tracking               | Track conversions and goals               |
+| TypeScript Support          | Full type safety throughout               |
+| Router Event Integration    | Uses Next.js router events for tracking   |
 
 ## Quick Start
 
@@ -63,6 +63,7 @@ export default function App({ Component, pageProps }) {
 ```
 
 This setup:
+
 - `FathomProvider` - Initializes Fathom and provides context to all pages
 - `NextFathomTrackViewPages` - Listens to Next.js router events and tracks pageviews automatically
 
@@ -76,12 +77,8 @@ export default function MyPage() {
 
   return (
     <>
-      <button onClick={() => trackEvent('button-click')}>
-        Track Event
-      </button>
-      <button onClick={() => trackGoal('SIGNUP', 0)}>
-        Track Goal
-      </button>
+      <button onClick={() => trackEvent('button-click')}>Track Event</button>
+      <button onClick={() => trackGoal('SIGNUP', 0)}>Track Goal</button>
     </>
   )
 }

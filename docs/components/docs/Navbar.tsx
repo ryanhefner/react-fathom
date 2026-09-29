@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  Box,
-  Container,
-  Flex,
-  HStack,
-  Link,
-} from '@chakra-ui/react'
+import { Box, Container, Flex, HStack, Link } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { ColorModeButton } from './ColorModeButton'
 import { MobileNav } from './MobileNav'
@@ -31,7 +25,12 @@ export function Navbar({ nav }: NavbarProps) {
       <Container maxW="container.xl" py={3}>
         <Flex justify="space-between" align="center">
           <HStack gap={8}>
-            <Link asChild fontWeight="bold" fontSize="lg" _hover={{ textDecoration: 'none' }}>
+            <Link
+              asChild
+              fontWeight="bold"
+              fontSize="lg"
+              _hover={{ textDecoration: 'none' }}
+            >
               <NextLink href="/">react-fathom</NextLink>
             </Link>
             <HStack as="nav" gap={6} display={{ base: 'none', md: 'flex' }}>

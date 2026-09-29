@@ -6,23 +6,23 @@ This directory contains example applications demonstrating how to integrate `rea
 
 Each example is hosted as a subdomain of react-fathom.com:
 
-| Example | Live Demo | Description |
-|---------|-----------|-------------|
-| React | [react.react-fathom.com](https://react.react-fathom.com) | Standard React with Vite and React Router |
-| Next.js App Router | [next-app.react-fathom.com](https://next-app.react-fathom.com) | Modern Next.js with Server Components |
-| Next.js Pages Router | [next-pages.react-fathom.com](https://next-pages.react-fathom.com) | Traditional Next.js routing |
-| TanStack Router | [tanstack.react-fathom.com](https://tanstack.react-fathom.com) | TanStack Router with file-based routing |
-| Gatsby | [gatsby.react-fathom.com](https://gatsby.react-fathom.com) | Gatsby static site generator |
+| Example              | Live Demo                                                          | Description                               |
+| -------------------- | ------------------------------------------------------------------ | ----------------------------------------- |
+| React                | [react.react-fathom.com](https://react.react-fathom.com)           | Standard React with Vite and React Router |
+| Next.js App Router   | [next-app.react-fathom.com](https://next-app.react-fathom.com)     | Modern Next.js with Server Components     |
+| Next.js Pages Router | [next-pages.react-fathom.com](https://next-pages.react-fathom.com) | Traditional Next.js routing               |
+| TanStack Router      | [tanstack.react-fathom.com](https://tanstack.react-fathom.com)     | TanStack Router with file-based routing   |
+| Gatsby               | [gatsby.react-fathom.com](https://gatsby.react-fathom.com)         | Gatsby static site generator              |
 
 ## Available Examples
 
-| Example | Framework | Router | Description |
-|---------|-----------|--------|-------------|
-| [react](./react/) | React + Vite | React Router | Standard React SPA |
-| [next-app](./next-app/) | Next.js 13+ | App Router | Modern Next.js with React Server Components |
-| [next-pages](./next-pages/) | Next.js | Pages Router | Traditional Next.js routing |
-| [tanstack-router](./tanstack-router/) | React + Vite | TanStack Router | Type-safe file-based routing |
-| [gatsby](./gatsby/) | Gatsby | @reach/router | Static site generation |
+| Example                               | Framework    | Router          | Description                                 |
+| ------------------------------------- | ------------ | --------------- | ------------------------------------------- |
+| [react](./react/)                     | React + Vite | React Router    | Standard React SPA                          |
+| [next-app](./next-app/)               | Next.js 13+  | App Router      | Modern Next.js with React Server Components |
+| [next-pages](./next-pages/)           | Next.js      | Pages Router    | Traditional Next.js routing                 |
+| [tanstack-router](./tanstack-router/) | React + Vite | TanStack Router | Type-safe file-based routing                |
+| [gatsby](./gatsby/)                   | Gatsby       | @reach/router   | Static site generation                      |
 
 ## Which Example Should I Use?
 

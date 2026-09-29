@@ -8,7 +8,10 @@ interface KeyboardShortcutsProps {
   nextHref?: string
 }
 
-export function KeyboardShortcuts({ prevHref, nextHref }: KeyboardShortcutsProps) {
+export function KeyboardShortcuts({
+  prevHref,
+  nextHref,
+}: KeyboardShortcutsProps) {
   const router = useRouter()
 
   useEffect(() => {

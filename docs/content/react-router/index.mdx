@@ -1,6 +1,6 @@
 ---
-title: "React Router"
-description: "Using react-fathom with React Router and Remix for automatic pageview tracking."
+title: 'React Router'
+description: 'Using react-fathom with React Router and Remix for automatic pageview tracking.'
 ---
 
 # React Router
@@ -41,6 +41,7 @@ function App() {
 ```
 
 The component will automatically track:
+
 - Initial pageview on app load
 - Subsequent pageviews on every route change
 
@@ -75,12 +76,12 @@ export default function App() {
 
 ## Component Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `disableAutoTrack` | `boolean` | `false` | Disable automatic pageview tracking |
-| `includeSearchParams` | `boolean` | `true` | Include query parameters in tracked URL |
-| `includeHash` | `boolean` | `false` | Include hash fragment in tracked URL |
-| `transformUrl` | `(url: string) => string \| null` | — | Transform URL before tracking |
+| Prop                  | Type                              | Default | Description                             |
+| --------------------- | --------------------------------- | ------- | --------------------------------------- |
+| `disableAutoTrack`    | `boolean`                         | `false` | Disable automatic pageview tracking     |
+| `includeSearchParams` | `boolean`                         | `true`  | Include query parameters in tracked URL |
+| `includeHash`         | `boolean`                         | `false` | Include hash fragment in tracked URL    |
+| `transformUrl`        | `(url: string) => string \| null` | —       | Transform URL before tracking           |
 
 ## Configuration Options
 
@@ -102,6 +103,7 @@ By default, search parameters are included but hash fragments are not:
 ### URL Transformation
 
 Use `transformUrl` to modify URLs before tracking. This is useful for:
+
 - Removing sensitive parameters (tokens, session IDs)
 - Normalizing URLs
 - Skipping certain routes

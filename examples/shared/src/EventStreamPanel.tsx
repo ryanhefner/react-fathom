@@ -40,7 +40,9 @@ function EventCard({ event }: EventCardProps) {
   switch (event.type) {
     case 'pageview':
       title = 'Pageview'
-      subtitle = event.url || (typeof window !== 'undefined' ? window.location.pathname : '')
+      subtitle =
+        event.url ||
+        (typeof window !== 'undefined' ? window.location.pathname : '')
       break
     case 'event':
       title = 'Event'
@@ -105,7 +107,9 @@ export function EventStreamPanel({
 }: EventStreamPanelProps = {}) {
   const [isVisible, setIsVisible] = useState(defaultVisible)
   const [isHydrated, setIsHydrated] = useState(false)
-  const { events, debugEnabled, clearEvents } = useDebugSubscription({ maxEvents })
+  const { events, debugEnabled, clearEvents } = useDebugSubscription({
+    maxEvents,
+  })
 
   useEffect(() => {
     setIsHydrated(true)
@@ -178,7 +182,11 @@ export function EventStreamPanel({
           zIndex={999}
           display="flex"
           flexDirection="column"
-          boxShadow={isRight ? '-4px 0 12px rgba(0,0,0,0.1)' : '4px 0 12px rgba(0,0,0,0.1)'}
+          boxShadow={
+            isRight
+              ? '-4px 0 12px rgba(0,0,0,0.1)'
+              : '4px 0 12px rgba(0,0,0,0.1)'
+          }
         >
           {/* Header */}
           <Flex
@@ -225,15 +233,11 @@ export function EventStreamPanel({
             textAlign="center"
           >
             <HStack justify="center" gap={1}>
-              <Text>{events.length} event{events.length !== 1 ? 's' : ''}</Text>
+              <Text>
+                {events.length} event{events.length !== 1 ? 's' : ''}
+              </Text>
               <Text>•</Text>
-              <Text
-                as="kbd"
-                bg="bg"
-                px={1}
-                borderRadius="sm"
-                fontFamily="mono"
-              >
+              <Text as="kbd" bg="bg" px={1} borderRadius="sm" fontFamily="mono">
                 ⌘.
               </Text>
               <Text>to toggle</Text>

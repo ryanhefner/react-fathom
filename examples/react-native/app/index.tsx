@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native'
 import { Link } from 'expo-router'
 
 export default function Home() {
@@ -8,7 +14,8 @@ export default function Home() {
         <Text style={styles.title}>react-fathom</Text>
         <Text style={styles.subtitle}>React Native Example</Text>
         <Text style={styles.description}>
-          Privacy-focused analytics for React Native with offline support and navigation tracking.
+          Privacy-focused analytics for React Native with offline support and
+          navigation tracking.
         </Text>
       </View>
 

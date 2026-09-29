@@ -3,11 +3,16 @@ export default function Docs() {
     <div>
       <div className="page-header">
         <h1>Documentation</h1>
-        <p>How to integrate react-fathom into your Next.js Pages Router application</p>
+        <p>
+          How to integrate react-fathom into your Next.js Pages Router
+          application
+        </p>
       </div>
       <div className="content">
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Installation</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Installation
+          </h2>
           <pre
             style={{
               background: '#1a1a1a',
@@ -53,7 +58,9 @@ export default function App({ Component, pageProps }) {
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Event Tracking</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Event Tracking
+          </h2>
           <p>
             Use the <code>useFathom</code> hook to track custom events:
           </p>
@@ -87,11 +94,13 @@ export default function MyComponent() {
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Automatic Pageview Tracking</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Automatic Pageview Tracking
+          </h2>
           <p>
-            The <code>NextFathomTrackViewPages</code> component automatically tracks
-            pageviews when the route changes. It listens to Next.js Router events to
-            detect navigation.
+            The <code>NextFathomTrackViewPages</code> component automatically
+            tracks pageviews when the route changes. It listens to Next.js
+            Router events to detect navigation.
           </p>
           <p>No additional configuration is needed for pageview tracking.</p>
         </section>
@@ -103,22 +112,25 @@ export default function MyComponent() {
           <p>The Pages Router setup differs from App Router in a few ways:</p>
           <ul style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
             <li>
-              <strong>Provider:</strong> Use <code>FathomProvider</code> instead of{' '}
-              <code>NextFathomProviderApp</code>
+              <strong>Provider:</strong> Use <code>FathomProvider</code> instead
+              of <code>NextFathomProviderApp</code>
             </li>
             <li>
-              <strong>Pageview tracking:</strong> Use <code>NextFathomTrackViewPages</code>{' '}
-              instead of the built-in tracking in <code>NextFathomProviderApp</code>
+              <strong>Pageview tracking:</strong> Use{' '}
+              <code>NextFathomTrackViewPages</code> instead of the built-in
+              tracking in <code>NextFathomProviderApp</code>
             </li>
             <li>
-              <strong>Location:</strong> Setup in <code>pages/_app.tsx</code> instead of{' '}
-              <code>app/layout.tsx</code>
+              <strong>Location:</strong> Setup in <code>pages/_app.tsx</code>{' '}
+              instead of <code>app/layout.tsx</code>
             </li>
           </ul>
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Environment Variables</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Environment Variables
+          </h2>
           <p>Store your site ID in an environment variable:</p>
           <pre
             style={{
@@ -149,7 +161,9 @@ NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID`}</code>
         </section>
 
         <section>
-          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Learn More</h2>
+          <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+            Learn More
+          </h2>
           <ul>
             <li>
               <a

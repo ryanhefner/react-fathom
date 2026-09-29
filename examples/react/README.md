@@ -16,23 +16,27 @@ Visit [react.react-fathom.com](https://react.react-fathom.com) to see this examp
 ## Getting Started
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/ryanhefner/react-fathom.git
    cd react-fathom/examples/react
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Create a `.env` file with your Fathom site ID:
+
    ```bash
    cp .env.example .env
    # Edit .env and add your site ID
    ```
 
 4. Start the development server:
+
    ```bash
    npm run dev
    ```

@@ -59,7 +59,7 @@ describe('useDebugSubscription', () => {
         const debug = useDebugSubscription()
         return { fathom, debug }
       },
-      { wrapper }
+      { wrapper },
     )
 
     act(() => {
@@ -87,7 +87,7 @@ describe('useDebugSubscription', () => {
         const debug = useDebugSubscription()
         return { fathom, debug }
       },
-      { wrapper }
+      { wrapper },
     )
 
     act(() => {
@@ -115,7 +115,7 @@ describe('useDebugSubscription', () => {
         const debug = useDebugSubscription()
         return { fathom, debug }
       },
-      { wrapper }
+      { wrapper },
     )
 
     act(() => {
@@ -144,7 +144,7 @@ describe('useDebugSubscription', () => {
         const debug = useDebugSubscription({ maxEvents: 3 })
         return { fathom, debug }
       },
-      { wrapper }
+      { wrapper },
     )
 
     act(() => {
@@ -179,7 +179,7 @@ describe('useDebugSubscription', () => {
         const debug = useDebugSubscription({ onEvent: onEventSpy })
         return { fathom, debug }
       },
-      { wrapper }
+      { wrapper },
     )
 
     act(() => {
@@ -194,7 +194,7 @@ describe('useDebugSubscription', () => {
       expect.objectContaining({
         type: 'event',
         eventName: 'test-event',
-      })
+      }),
     )
   })
 
@@ -211,7 +211,7 @@ describe('useDebugSubscription', () => {
         const debug = useDebugSubscription()
         return { fathom, debug }
       },
-      { wrapper }
+      { wrapper },
     )
 
     act(() => {
@@ -241,7 +241,7 @@ describe('useDebugSubscription', () => {
         const debug = useDebugSubscription()
         return { fathom, debug }
       },
-      { wrapper }
+      { wrapper },
     )
 
     expect(result.current.debug.debugEnabled).toBe(true)

@@ -45,12 +45,12 @@ Pageviews are tracked automatically.
 
 The official `fathom-client` works, but:
 
-| Problem | react-fathom solution |
-|---------|----------------------|
-| Web only—no React Native | **Full React Native support** with offline event queuing |
-| Next.js App Router requires boilerplate | **`NextFathomProviderApp`** works directly in Server Component layouts |
-| Imperative API only | **Hooks** (`useFathom`, `useTrackOnMount`, `useTrackOnVisible`) and **declarative components** (`<TrackClick>`, `<TrackVisible>`) |
-| No tree-shaking | **Fully tree-shakeable**—bundle only what you use |
+| Problem                                 | react-fathom solution                                                                                                             |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Web only—no React Native                | **Full React Native support** with offline event queuing                                                                          |
+| Next.js App Router requires boilerplate | **`NextFathomProviderApp`** works directly in Server Component layouts                                                            |
+| Imperative API only                     | **Hooks** (`useFathom`, `useTrackOnMount`, `useTrackOnVisible`) and **declarative components** (`<TrackClick>`, `<TrackVisible>`) |
+| No tree-shaking                         | **Fully tree-shakeable**—bundle only what you use                                                                                 |
 
 **New to Fathom?** Get a **$10 credit** with [this referral link](https://usefathom.com/ref/EKONBS).
 
@@ -170,7 +170,12 @@ export const Route = createRootRoute({
 ### Hooks
 
 ```tsx
-import { useFathom, useTrackOnMount, useTrackOnClick, useTrackOnVisible } from 'react-fathom'
+import {
+  useFathom,
+  useTrackOnMount,
+  useTrackOnClick,
+  useTrackOnVisible,
+} from 'react-fathom'
 
 function MyComponent() {
   const { trackEvent, trackGoal } = useFathom()
@@ -231,11 +236,7 @@ import { NativeFathomProvider } from 'react-fathom/native'
 
 function App() {
   return (
-    <NativeFathomProvider
-      siteId="YOUR_SITE_ID"
-      debug={__DEV__}
-      trackAppState
-    >
+    <NativeFathomProvider siteId="YOUR_SITE_ID" debug={__DEV__} trackAppState>
       <YourApp />
     </NativeFathomProvider>
   )
@@ -277,44 +278,46 @@ Debug mode does not block actual tracking—events are still sent to Fathom.
 
 ### Providers
 
-| Component | Use case |
-|-----------|----------|
-| `FathomProvider` | Basic React apps |
-| `NextFathomProviderApp` | Next.js App Router |
-| `NextFathomTrackViewPages` | Next.js Pages Router (add inside `FathomProvider`) |
-| `ReactRouterFathomTrackView` | React Router v6+ / Remix (add inside `FathomProvider`) |
-| `GatsbyFathomTrackView` | Gatsby (add inside `FathomProvider`) |
-| `TanStackRouterFathomTrackView` | TanStack Router (add inside `FathomProvider`) |
-| `NativeFathomProvider` | React Native |
+| Component                       | Use case                                               |
+| ------------------------------- | ------------------------------------------------------ |
+| `FathomProvider`                | Basic React apps                                       |
+| `NextFathomProviderApp`         | Next.js App Router                                     |
+| `NextFathomTrackViewPages`      | Next.js Pages Router (add inside `FathomProvider`)     |
+| `ReactRouterFathomTrackView`    | React Router v6+ / Remix (add inside `FathomProvider`) |
+| `GatsbyFathomTrackView`         | Gatsby (add inside `FathomProvider`)                   |
+| `TanStackRouterFathomTrackView` | TanStack Router (add inside `FathomProvider`)          |
+| `NativeFathomProvider`          | React Native                                           |
 
 ### Hooks
 
-| Hook | Description |
-|------|-------------|
-| `useFathom()` | Returns `trackPageview`, `trackEvent`, `trackGoal`, and more |
-| `useTrackOnMount(opts?)` | Track pageview when component mounts |
-| `useTrackOnClick(opts)` | Returns click handler that tracks event |
-| `useTrackOnVisible(opts)` | Returns ref; tracks when element becomes visible |
-| `useDebugSubscription(opts?)` | Subscribe to debug events for custom UI |
+| Hook                          | Description                                                  |
+| ----------------------------- | ------------------------------------------------------------ |
+| `useFathom()`                 | Returns `trackPageview`, `trackEvent`, `trackGoal`, and more |
+| `useTrackOnMount(opts?)`      | Track pageview when component mounts                         |
+| `useTrackOnClick(opts)`       | Returns click handler that tracks event                      |
+| `useTrackOnVisible(opts)`     | Returns ref; tracks when element becomes visible             |
+| `useDebugSubscription(opts?)` | Subscribe to debug events for custom UI                      |
 
 ### Components
 
-| Component | Description |
-|-----------|-------------|
-| `<TrackPageview>` | Track pageview on mount |
-| `<TrackClick>` | Track event on click |
-| `<TrackVisible>` | Track when visible (IntersectionObserver) |
+| Component         | Description                               |
+| ----------------- | ----------------------------------------- |
+| `<TrackPageview>` | Track pageview on mount                   |
+| `<TrackClick>`    | Track event on click                      |
+| `<TrackVisible>`  | Track when visible (IntersectionObserver) |
 
 📖 [Full API Reference](https://react-fathom.com/api/providers)
 
 ## Common Issues
 
 **Events not appearing?**
+
 1. Verify site ID matches your [Fathom dashboard](https://app.usefathom.com)
 2. Check for ad blockers (test in incognito)
 3. Add `{ includedDomains: ['localhost'] }` to `clientOptions`
 
 **Duplicate pageviews?**
+
 ```tsx
 // Disable fathom-client's auto tracking when using NextFathomTrackViewApp
 <FathomProvider siteId="..." clientOptions={{ auto: false }}>

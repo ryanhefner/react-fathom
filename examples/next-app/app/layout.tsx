@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { NextFathomProviderApp } from 'react-fathom/next'
-import { ExampleProviderNext, ExampleLayout } from '@react-fathom/example-ui/next'
+import {
+  ExampleProviderNext,
+  ExampleLayout,
+} from '@react-fathom/example-ui/next'
 
 import './globals.css'
 

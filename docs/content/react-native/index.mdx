@@ -8,7 +8,8 @@ description: Full React Native support with offline event queuing
 react-fathom provides full React Native support with a hidden WebView that loads Fathom's official tracking script, ensuring compatibility with Fathom Analytics.
 
 <Callout>
-  React Native support uses a WebView-based approach. Events are queued until the WebView is ready, then sent automatically.
+  React Native support uses a WebView-based approach. Events are queued until
+  the WebView is ready, then sent automatically.
 </Callout>
 
 ## Installation
@@ -78,18 +79,18 @@ function PurchaseButton({ price }) {
 
 ## Provider Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `siteId` | `string` | Your Fathom site ID (required) |
-| `debug` | `boolean` | Enable debug logging |
-| `trackAppState` | `boolean` | Auto-track app foreground/background |
-| `loadOptions` | `LoadOptions` | Options passed to `fathom.load()` |
-| `scriptDomain` | `string` | Custom domain (default: `cdn.usefathom.com`) |
-| `defaultPageviewOptions` | `PageViewOptions` | Default pageview options |
-| `defaultEventOptions` | `EventOptions` | Default event options |
-| `onReady` | `() => void` | Called when Fathom script loads |
-| `onError` | `(error: string) => void` | Called on script load error |
-| `clientRef` | `MutableRefObject` | Ref for direct client access |
+| Prop                     | Type                      | Description                                  |
+| ------------------------ | ------------------------- | -------------------------------------------- |
+| `siteId`                 | `string`                  | Your Fathom site ID (required)               |
+| `debug`                  | `boolean`                 | Enable debug logging                         |
+| `trackAppState`          | `boolean`                 | Auto-track app foreground/background         |
+| `loadOptions`            | `LoadOptions`             | Options passed to `fathom.load()`            |
+| `scriptDomain`           | `string`                  | Custom domain (default: `cdn.usefathom.com`) |
+| `defaultPageviewOptions` | `PageViewOptions`         | Default pageview options                     |
+| `defaultEventOptions`    | `EventOptions`            | Default event options                        |
+| `onReady`                | `() => void`              | Called when Fathom script loads              |
+| `onError`                | `(error: string) => void` | Called on script load error                  |
+| `clientRef`              | `MutableRefObject`        | Ref for direct client access                 |
 
 ## Next Steps
 

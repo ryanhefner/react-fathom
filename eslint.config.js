@@ -10,7 +10,16 @@ import pluginJs from '@eslint/js'
 export default [
   // Ignore patterns
   {
-    ignores: ['dist/**'],
+    ignores: [
+      '**/node_modules/**',
+      '**/.next/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/coverage/**',
+      '**/out/**',
+      'types/**',
+      'docs/public/pagefind/**',
+    ],
   },
 
   // Base JavaScript recommended config
@@ -126,6 +135,17 @@ export default [
           varsIgnorePattern: '^_',
         },
       ],
+    },
+  },
+
+  // Test doubles intentionally use loose boundary types and anonymous mock
+  // components that are not part of the published API.
+  {
+    files: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react/display-name': 'off',
+      'react-hooks/globals': 'off',
     },
   },
 ]

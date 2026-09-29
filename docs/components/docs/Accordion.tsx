@@ -9,7 +9,11 @@ interface AccordionItemProps {
   defaultOpen?: boolean
 }
 
-export function AccordionItem({ title, children, defaultOpen = false }: AccordionItemProps) {
+export function AccordionItem({
+  title,
+  children,
+  defaultOpen = false,
+}: AccordionItemProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
   return (
@@ -65,7 +69,11 @@ interface CollapsibleProps {
   defaultOpen?: boolean
 }
 
-export function Collapsible({ title, children, defaultOpen = false }: CollapsibleProps) {
+export function Collapsible({
+  title,
+  children,
+  defaultOpen = false,
+}: CollapsibleProps) {
   return (
     <Box my={4}>
       <AccordionItem title={title} defaultOpen={defaultOpen}>

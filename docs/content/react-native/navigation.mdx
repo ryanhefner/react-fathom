@@ -1,6 +1,6 @@
 ---
-title: "Navigation Tracking"
-description: "Track React Navigation screen changes as pageviews in React Native."
+title: 'Navigation Tracking'
+description: 'Track React Navigation screen changes as pageviews in React Native.'
 ---
 
 # Navigation Tracking
@@ -10,8 +10,14 @@ Track React Navigation screen changes as pageviews.
 ## Setup
 
 ```tsx
-import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native'
-import { NativeFathomProvider, useNavigationTracking } from 'react-fathom/native'
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native'
+import {
+  NativeFathomProvider,
+  useNavigationTracking,
+} from 'react-fathom/native'
 
 function App() {
   const navigationRef = useNavigationContainerRef()
@@ -53,12 +59,12 @@ useNavigationTracking({
 
 ### Option Reference
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `navigationRef` | `RefObject` | React Navigation container ref (required) |
-| `transformRouteName` | `(name: string) => string` | Transform route names before tracking |
-| `shouldTrackRoute` | `(name: string, params?: object) => boolean` | Filter which routes to track |
-| `includeParams` | `boolean` | Include route params in URL (default: `false`) |
+| Option               | Type                                         | Description                                    |
+| -------------------- | -------------------------------------------- | ---------------------------------------------- |
+| `navigationRef`      | `RefObject`                                  | React Navigation container ref (required)      |
+| `transformRouteName` | `(name: string) => string`                   | Transform route names before tracking          |
+| `shouldTrackRoute`   | `(name: string, params?: object) => boolean` | Filter which routes to track                   |
+| `includeParams`      | `boolean`                                    | Include route params in URL (default: `false`) |
 
 ## Transform Examples
 
@@ -75,9 +81,7 @@ transformRouteName: (name) => `/myapp/${name}`
 
 ```tsx
 transformRouteName: (name) => {
-  return '/' + name
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase()
+  return '/' + name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
 // "UserProfile" → "/user-profile"
@@ -125,9 +129,15 @@ shouldTrackRoute: (name, params) => {
 ## Full Example
 
 ```tsx
-import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native'
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NativeFathomProvider, useNavigationTracking } from 'react-fathom/native'
+import {
+  NativeFathomProvider,
+  useNavigationTracking,
+} from 'react-fathom/native'
 
 const Stack = createNativeStackNavigator()
 
@@ -148,10 +158,7 @@ export default function App() {
   const navigationRef = useNavigationContainerRef()
 
   return (
-    <NativeFathomProvider
-      siteId="YOUR_SITE_ID"
-      debug={__DEV__}
-    >
+    <NativeFathomProvider siteId="YOUR_SITE_ID" debug={__DEV__}>
       <NavigationContainer ref={navigationRef}>
         <NavigationTracker navigationRef={navigationRef} />
         <Stack.Navigator>

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Code,
-  Heading,
-  Link,
-  List,
-  Table,
-  Text,
-} from '@chakra-ui/react'
+import { Box, Code, Heading, Link, List, Table, Text } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import type { MDXComponents as MDXComponentsType } from 'mdx/types'
 import { Accordion, AccordionItem, Collapsible } from './Accordion'
@@ -30,9 +22,7 @@ export function getMDXComponents(): MDXComponentsType {
 }
 
 export const MDXComponents: MDXComponentsType = {
-  h1: (props) => (
-    <Heading as="h1" size="2xl" mt={8} mb={4} {...props} />
-  ),
+  h1: (props) => <Heading as="h1" size="2xl" mt={8} mb={4} {...props} />,
   h2: (props) => {
     const id = props.children ? slugify(String(props.children)) : undefined
     return (
@@ -95,12 +85,8 @@ export const MDXComponents: MDXComponentsType = {
       </Heading>
     )
   },
-  h4: (props) => (
-    <Heading as="h4" size="md" mt={6} mb={2} {...props} />
-  ),
-  p: (props) => (
-    <Text my={4} lineHeight="tall" {...props} />
-  ),
+  h4: (props) => <Heading as="h4" size="md" mt={6} mb={2} {...props} />,
+  p: (props) => <Text my={4} lineHeight="tall" {...props} />,
   a: ({ href, ...props }) => {
     const isExternal = href?.startsWith('http')
     if (isExternal) {
@@ -114,45 +100,37 @@ export const MDXComponents: MDXComponentsType = {
       )
     }
     return (
-      <Link
-        asChild
-        color="blue.500"
-        _hover={{ textDecoration: 'underline' }}
-      >
+      <Link asChild color="blue.500" _hover={{ textDecoration: 'underline' }}>
         <NextLink href={href || '#'} {...props} />
       </Link>
     )
   },
-  ul: (props) => (
-    <List.Root as="ul" my={4} pl={4} gap={2} {...props} />
-  ),
-  ol: (props) => (
-    <List.Root as="ol" my={4} pl={4} gap={2} {...props} />
-  ),
-  li: (props) => (
-    <List.Item {...props} />
-  ),
+  ul: (props) => <List.Root as="ul" my={4} pl={4} gap={2} {...props} />,
+  ol: (props) => <List.Root as="ol" my={4} pl={4} gap={2} {...props} />,
+  li: (props) => <List.Item {...props} />,
   code: ({ children, className, ...props }) => {
     // If it has data-theme, it's from rehype-pretty-code - pass through
     if ('data-theme' in props || 'data-language' in props) {
-      return <code className={className} {...props}>{children}</code>
+      return (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      )
     }
     // If it's inline code (no className), render as inline
     if (!className) {
       return (
-        <Code
-          px={1.5}
-          py={0.5}
-          borderRadius="md"
-          fontSize="0.9em"
-          {...props}
-        >
+        <Code px={1.5} py={0.5} borderRadius="md" fontSize="0.9em" {...props}>
           {children}
         </Code>
       )
     }
     // Block code without highlighting
-    return <code className={className} {...props}>{children}</code>
+    return (
+      <code className={className} {...props}>
+        {children}
+      </code>
+    )
   },
   pre: Pre,
   figure: Figure,
@@ -166,11 +144,7 @@ export const MDXComponents: MDXComponentsType = {
   tbody: Table.Body,
   tr: Table.Row,
   th: (props) => (
-    <Table.ColumnHeader
-      fontWeight="semibold"
-      textAlign="left"
-      {...props}
-    />
+    <Table.ColumnHeader fontWeight="semibold" textAlign="left" {...props} />
   ),
   td: Table.Cell,
   blockquote: (props) => (

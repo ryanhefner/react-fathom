@@ -148,7 +148,8 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
       setEvents((prev) => [e.detail, ...prev].slice(0, 20))
     }
     window.addEventListener('react-fathom:debug' as any, handleDebugEvent)
-    return () => window.removeEventListener('react-fathom:debug' as any, handleDebugEvent)
+    return () =>
+      window.removeEventListener('react-fathom:debug' as any, handleDebugEvent)
   }, [])
 
   const clearEvents = () => setEvents([])
@@ -262,7 +263,14 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
           >
             <Text fontSize="xs" color="gray.500" textAlign="center">
               {events.length} event{events.length !== 1 ? 's' : ''} • Press{' '}
-              <Text as="span" fontFamily="mono" bg="gray.200" _dark={{ bg: 'gray.700' }} px={1} borderRadius="sm">
+              <Text
+                as="span"
+                fontFamily="mono"
+                bg="gray.200"
+                _dark={{ bg: 'gray.700' }}
+                px={1}
+                borderRadius="sm"
+              >
                 ⌘.
               </Text>{' '}
               to toggle

@@ -152,5 +152,8 @@ export interface FathomProviderProps extends PropsWithChildren {
    * />
    * ```
    */
-  onError?: (error: unknown, context: { method: string; args?: unknown[] }) => void
+  onError?: (
+    error: unknown,
+    context: { method: string; args?: unknown[] },
+  ) => void
 }

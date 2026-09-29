@@ -1,6 +1,6 @@
 ---
-title: "TanStack Router"
-description: "Integrate react-fathom with TanStack Router for automatic pageview tracking."
+title: 'TanStack Router'
+description: 'Integrate react-fathom with TanStack Router for automatic pageview tracking.'
 ---
 
 # TanStack Router Integration
@@ -72,12 +72,12 @@ export function App() {
 
 ## TanStackRouterFathomTrackView Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `disableAutoTrack` | `boolean` | `false` | Disable automatic pageview tracking |
-| `includeSearchParams` | `boolean` | `true` | Include query parameters in tracked URLs |
-| `includeHash` | `boolean` | `false` | Include URL hash in tracked URLs |
-| `transformUrl` | `(url: string) => string \| null` | — | Transform URL before tracking; return `null` to skip |
+| Prop                  | Type                              | Default | Description                                          |
+| --------------------- | --------------------------------- | ------- | ---------------------------------------------------- |
+| `disableAutoTrack`    | `boolean`                         | `false` | Disable automatic pageview tracking                  |
+| `includeSearchParams` | `boolean`                         | `true`  | Include query parameters in tracked URLs             |
+| `includeHash`         | `boolean`                         | `false` | Include URL hash in tracked URLs                     |
+| `transformUrl`        | `(url: string) => string \| null` | —       | Transform URL before tracking; return `null` to skip |
 
 ## Tracking Custom Events
 
@@ -240,9 +240,7 @@ function HomePage() {
   return (
     <div>
       <h1>Welcome</h1>
-      <button onClick={() => trackEvent('cta-click')}>
-        Get Started
-      </button>
+      <button onClick={() => trackEvent('cta-click')}>Get Started</button>
     </div>
   )
 }

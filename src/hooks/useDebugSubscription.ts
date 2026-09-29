@@ -56,7 +56,7 @@ export interface UseDebugSubscriptionResult {
  * ```
  */
 export function useDebugSubscription(
-  options: UseDebugSubscriptionOptions = {}
+  options: UseDebugSubscriptionOptions = {},
 ): UseDebugSubscriptionResult {
   const { maxEvents = 50, onEvent } = options
   const { subscribeToDebug, debugEnabled = false } = useContext(FathomContext)

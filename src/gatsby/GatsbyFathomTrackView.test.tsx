@@ -8,11 +8,21 @@ import { FathomProvider } from '../FathomProvider'
 import { GatsbyFathomTrackView } from './GatsbyFathomTrackView'
 
 // Mock @reach/router's globalHistory
-const mockListeners: Array<(args: { location: { pathname: string; search: string; hash: string }; action: string }) => void> = []
+const mockListeners: Array<
+  (args: {
+    location: { pathname: string; search: string; hash: string }
+    action: string
+  }) => void
+> = []
 
 vi.mock('@reach/router', () => ({
   globalHistory: {
-    listen: (callback: (args: { location: { pathname: string; search: string; hash: string }; action: string }) => void) => {
+    listen: (
+      callback: (args: {
+        location: { pathname: string; search: string; hash: string }
+        action: string
+      }) => void,
+    ) => {
       mockListeners.push(callback)
       return () => {
         const index = mockListeners.indexOf(callback)
@@ -43,7 +53,12 @@ vi.mock('fathom-client', () => {
 })
 
 // Helper to simulate route changes
-function simulateRouteChange(pathname: string, search = '', hash = '', action = 'PUSH') {
+function simulateRouteChange(
+  pathname: string,
+  search = '',
+  hash = '',
+  action = 'PUSH',
+) {
   mockListeners.forEach((listener) => {
     listener({
       location: { pathname, search, hash },
@@ -265,7 +280,8 @@ describe('GatsbyFathomTrackView', () => {
       isTrackingEnabled: vi.fn(() => true),
     }
 
-    const transformUrl = (url: string) => url.replace('/test-page', '/transformed')
+    const transformUrl = (url: string) =>
+      url.replace('/test-page', '/transformed')
 
     render(
       <FathomProvider client={client} siteId="TEST_SITE_ID">

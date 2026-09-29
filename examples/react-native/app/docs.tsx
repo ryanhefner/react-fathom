@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Linking,
+  TouchableOpacity,
+} from 'react-native'
 
 export default function Docs() {
   return (
@@ -94,8 +101,9 @@ function App() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Offline Support</Text>
         <Text style={styles.description}>
-          react-fathom automatically queues events when the device is offline and
-          sends them when connectivity is restored. No additional configuration needed.
+          react-fathom automatically queues events when the device is offline
+          and sends them when connectivity is restored. No additional
+          configuration needed.
         </Text>
       </View>
 
@@ -117,17 +125,23 @@ function App() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Learn More</Text>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://react-fathom.com/docs/react-native')}
+          onPress={() =>
+            Linking.openURL('https://react-fathom.com/docs/react-native')
+          }
         >
           <Text style={styles.link}>Full Documentation →</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://react-fathom.com/docs/api/native')}
+          onPress={() =>
+            Linking.openURL('https://react-fathom.com/docs/api/native')
+          }
         >
           <Text style={styles.link}>API Reference →</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://github.com/ryanhefner/react-fathom')}
+          onPress={() =>
+            Linking.openURL('https://github.com/ryanhefner/react-fathom')
+          }
         >
           <Text style={styles.link}>GitHub Repository →</Text>
         </TouchableOpacity>

@@ -322,7 +322,8 @@ describe('NativeFathomProvider', () => {
     })
 
     it('should allow parent to call client methods via clientRef', async () => {
-      const clientRef = React.createRef<WebViewFathomClient>() as React.MutableRefObject<WebViewFathomClient | null>
+      const clientRef =
+        React.createRef<WebViewFathomClient>() as React.MutableRefObject<WebViewFathomClient | null>
       clientRef.current = null
 
       render(
@@ -344,7 +345,8 @@ describe('NativeFathomProvider', () => {
     })
 
     it('should allow parent to check queue status via clientRef', async () => {
-      const clientRef = React.createRef<WebViewFathomClient>() as React.MutableRefObject<WebViewFathomClient | null>
+      const clientRef =
+        React.createRef<WebViewFathomClient>() as React.MutableRefObject<WebViewFathomClient | null>
       clientRef.current = null
 
       render(

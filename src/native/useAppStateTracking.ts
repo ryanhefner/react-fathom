@@ -42,12 +42,18 @@ export function useAppStateTracking(options: UseAppStateTrackingOptions = {}) {
       const previousState = appStateRef.current
 
       // Track when app comes to foreground
-      if (previousState.match(/inactive|background/) && nextAppState === 'active') {
+      if (
+        previousState.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
         trackEvent?.(foregroundEventName, eventOptions)
       }
 
       // Track when app goes to background
-      if (previousState === 'active' && nextAppState.match(/inactive|background/)) {
+      if (
+        previousState === 'active' &&
+        nextAppState.match(/inactive|background/)
+      ) {
         trackEvent?.(backgroundEventName, eventOptions)
       }
 
@@ -57,10 +63,19 @@ export function useAppStateTracking(options: UseAppStateTrackingOptions = {}) {
       appStateRef.current = nextAppState
     }
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange)
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    )
 
     return () => {
       subscription.remove()
     }
-  }, [trackEvent, foregroundEventName, backgroundEventName, eventOptions, onStateChange])
+  }, [
+    trackEvent,
+    foregroundEventName,
+    backgroundEventName,
+    eventOptions,
+    onStateChange,
+  ])
 }

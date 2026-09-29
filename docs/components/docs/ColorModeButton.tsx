@@ -13,7 +13,9 @@ export function ColorModeButton() {
   }, [])
 
   if (!mounted) {
-    return <IconButton aria-label="Toggle color mode" variant="ghost" size="sm" />
+    return (
+      <IconButton aria-label="Toggle color mode" variant="ghost" size="sm" />
+    )
   }
 
   return (

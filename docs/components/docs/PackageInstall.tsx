@@ -23,7 +23,9 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
 
   const packageList = Array.isArray(packages) ? packages.join(' ') : packages
   const { install, devFlag } = commands[manager]
-  const command = dev ? `${install} ${devFlag} ${packageList}` : `${install} ${packageList}`
+  const command = dev
+    ? `${install} ${devFlag} ${packageList}`
+    : `${install} ${packageList}`
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(command)
@@ -34,7 +36,13 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
 
   return (
-    <Box my={4} borderRadius="lg" overflow="hidden" bg="gray.900" _light={{ bg: 'gray.50' }}>
+    <Box
+      my={4}
+      borderRadius="lg"
+      overflow="hidden"
+      bg="gray.900"
+      _light={{ bg: 'gray.50' }}
+    >
       {/* Tab header */}
       <Flex
         borderBottomWidth="1px"
@@ -150,7 +158,13 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
 
   return (
-    <Box my={4} borderRadius="lg" overflow="hidden" bg="gray.900" _light={{ bg: 'gray.50' }}>
+    <Box
+      my={4}
+      borderRadius="lg"
+      overflow="hidden"
+      bg="gray.900"
+      _light={{ bg: 'gray.50' }}
+    >
       <Flex
         borderBottomWidth="1px"
         borderColor="gray.700"

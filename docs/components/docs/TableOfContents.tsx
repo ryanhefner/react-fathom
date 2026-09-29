@@ -20,7 +20,7 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
           }
         })
       },
-      { rootMargin: '-80px 0px -80% 0px' }
+      { rootMargin: '-80px 0px -80% 0px' },
     )
 
     const headings = document.querySelectorAll('h2, h3')
@@ -46,7 +46,14 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
       width="200px"
       flexShrink={0}
     >
-      <Text fontSize="xs" fontWeight="semibold" textTransform="uppercase" letterSpacing="wider" color="fg.muted" mb={3}>
+      <Text
+        fontSize="xs"
+        fontWeight="semibold"
+        textTransform="uppercase"
+        letterSpacing="wider"
+        color="fg.muted"
+        mb={3}
+      >
         On this page
       </Text>
       <VStack align="stretch" gap={1}>

@@ -1,4 +1,13 @@
-import { Box, Button, Heading, Text, VStack, HStack, Code, Input } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Code,
+  Input,
+} from '@chakra-ui/react'
 import { useState } from 'react'
 import { useFathom, TrackClick } from 'react-fathom'
 
@@ -19,7 +28,8 @@ export function Events() {
           Event Tracking Demo
         </Heading>
         <Text color="fg.muted">
-          This page demonstrates different ways to track custom events with react-fathom.
+          This page demonstrates different ways to track custom events with
+          react-fathom.
         </Text>
         <Text fontSize="sm" color="fg.muted" mt={2}>
           Events tracked this session: <strong>{eventCount}</strong>
@@ -48,12 +58,38 @@ export function Events() {
             Track "signup-intent"
           </Button>
         </HStack>
-        <Box mt={4} bg="gray.900" p={3} borderRadius="md" fontSize="sm" fontFamily="mono" color="gray.100">
+        <Box
+          mt={4}
+          bg="gray.900"
+          p={3}
+          borderRadius="md"
+          fontSize="sm"
+          fontFamily="mono"
+          color="gray.100"
+        >
           <Text color="purple.400">const</Text>
-          <Text as="span"> {'{ '}<Text as="span" color="yellow.300">trackEvent</Text>{' }'} = </Text>
-          <Text as="span" color="blue.300">useFathom</Text>
+          <Text as="span">
+            {' '}
+            {'{ '}
+            <Text as="span" color="yellow.300">
+              trackEvent
+            </Text>
+            {' }'} ={' '}
+          </Text>
+          <Text as="span" color="blue.300">
+            useFathom
+          </Text>
           <Text as="span">()</Text>
-          <Text mt={2}><Text as="span" color="blue.300">trackEvent</Text>(<Text as="span" color="green.300">'button-click'</Text>)</Text>
+          <Text mt={2}>
+            <Text as="span" color="blue.300">
+              trackEvent
+            </Text>
+            (
+            <Text as="span" color="green.300">
+              'button-click'
+            </Text>
+            )
+          </Text>
         </Box>
       </Box>
 
@@ -66,23 +102,62 @@ export function Events() {
           Wrap any clickable element to track clicks declaratively.
         </Text>
         <HStack gap={4}>
-          <TrackClick eventName="cta-click" onTrack={() => setEventCount((c) => c + 1)}>
-            <Button colorPalette="green">
-              Tracked CTA Button
-            </Button>
+          <TrackClick
+            eventName="cta-click"
+            onTrack={() => setEventCount((c) => c + 1)}
+          >
+            <Button colorPalette="green">Tracked CTA Button</Button>
           </TrackClick>
-          <TrackClick eventName="link-click" onTrack={() => setEventCount((c) => c + 1)}>
-            <Button variant="outline">
-              Tracked Link Button
-            </Button>
+          <TrackClick
+            eventName="link-click"
+            onTrack={() => setEventCount((c) => c + 1)}
+          >
+            <Button variant="outline">Tracked Link Button</Button>
           </TrackClick>
         </HStack>
-        <Box mt={4} bg="gray.900" p={3} borderRadius="md" fontSize="sm" fontFamily="mono" color="gray.100">
-          <Text>{'<'}<Text as="span" color="blue.300">TrackClick</Text></Text>
-          <Text ml={4}><Text as="span" color="cyan.300">eventName</Text>=<Text as="span" color="green.300">"cta-click"</Text></Text>
+        <Box
+          mt={4}
+          bg="gray.900"
+          p={3}
+          borderRadius="md"
+          fontSize="sm"
+          fontFamily="mono"
+          color="gray.100"
+        >
+          <Text>
+            {'<'}
+            <Text as="span" color="blue.300">
+              TrackClick
+            </Text>
+          </Text>
+          <Text ml={4}>
+            <Text as="span" color="cyan.300">
+              eventName
+            </Text>
+            =
+            <Text as="span" color="green.300">
+              "cta-click"
+            </Text>
+          </Text>
           <Text>{'>'}</Text>
-          <Text ml={4}>{'<'}<Text as="span" color="blue.300">Button</Text>{'>'}Click Me{'</'}<Text as="span" color="blue.300">Button</Text>{'>'}</Text>
-          <Text>{'</'}<Text as="span" color="blue.300">TrackClick</Text>{'>'}</Text>
+          <Text ml={4}>
+            {'<'}
+            <Text as="span" color="blue.300">
+              Button
+            </Text>
+            {'>'}Click Me{'</'}
+            <Text as="span" color="blue.300">
+              Button
+            </Text>
+            {'>'}
+          </Text>
+          <Text>
+            {'</'}
+            <Text as="span" color="blue.300">
+              TrackClick
+            </Text>
+            {'>'}
+          </Text>
         </Box>
       </Box>
 
@@ -138,10 +213,38 @@ export function Events() {
             Track Subscription ($99)
           </Button>
         </HStack>
-        <Box mt={4} bg="gray.900" p={3} borderRadius="md" fontSize="sm" fontFamily="mono" color="gray.100">
-          <Text><Text as="span" color="blue.300">trackEvent</Text>(</Text>
-          <Text ml={4}><Text as="span" color="green.300">'purchase'</Text>,</Text>
-          <Text ml={4}>{'{ '}<Text as="span" color="cyan.300">_value</Text>: <Text as="span" color="orange.300">1999</Text>{' }'}</Text>
+        <Box
+          mt={4}
+          bg="gray.900"
+          p={3}
+          borderRadius="md"
+          fontSize="sm"
+          fontFamily="mono"
+          color="gray.100"
+        >
+          <Text>
+            <Text as="span" color="blue.300">
+              trackEvent
+            </Text>
+            (
+          </Text>
+          <Text ml={4}>
+            <Text as="span" color="green.300">
+              'purchase'
+            </Text>
+            ,
+          </Text>
+          <Text ml={4}>
+            {'{ '}
+            <Text as="span" color="cyan.300">
+              _value
+            </Text>
+            :{' '}
+            <Text as="span" color="orange.300">
+              1999
+            </Text>
+            {' }'}
+          </Text>
           <Text>)</Text>
         </Box>
       </Box>

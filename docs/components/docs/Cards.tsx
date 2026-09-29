@@ -38,9 +38,13 @@ export function Card({ title, href, children }: CardProps) {
       _hover={{ borderColor: 'blue.500', shadow: 'sm' }}
       transition="all 0.2s"
     >
-      <Text fontWeight="semibold" mb={1}>{title}</Text>
+      <Text fontWeight="semibold" mb={1}>
+        {title}
+      </Text>
       {children && (
-        <Text fontSize="sm" color="fg.muted">{children}</Text>
+        <Text fontSize="sm" color="fg.muted">
+          {children}
+        </Text>
       )}
     </Box>
   )

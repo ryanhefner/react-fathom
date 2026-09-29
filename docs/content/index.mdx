@@ -1,6 +1,6 @@
 ---
-title: "react-fathom"
-description: "Privacy-focused analytics for React, Next.js, and React Native."
+title: 'react-fathom'
+description: 'Privacy-focused analytics for React, Next.js, and React Native.'
 ---
 
 # react-fathom
@@ -24,12 +24,12 @@ Easily integrate [Fathom Analytics](https://usefathom.com/ref/EKONBS) into your 
 
 The official `fathom-client` works, but react-fathom provides a better developer experience:
 
-| Problem | react-fathom solution |
-|---------|----------------------|
-| Web only—no React Native | **Full React Native support** with offline event queuing |
-| Next.js App Router requires boilerplate | **`NextFathomProviderApp`** works directly in Server Component layouts |
-| Imperative API only | **Hooks** (`useFathom`, `useTrackOnMount`, `useTrackOnVisible`) and **declarative components** (`<TrackClick>`, `<TrackVisible>`) |
-| No tree-shaking | **Fully tree-shakeable**—bundle only what you use |
+| Problem                                 | react-fathom solution                                                                                                             |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Web only—no React Native                | **Full React Native support** with offline event queuing                                                                          |
+| Next.js App Router requires boilerplate | **`NextFathomProviderApp`** works directly in Server Component layouts                                                            |
+| Imperative API only                     | **Hooks** (`useFathom`, `useTrackOnMount`, `useTrackOnVisible`) and **declarative components** (`<TrackClick>`, `<TrackVisible>`) |
+| No tree-shaking                         | **Fully tree-shakeable**—bundle only what you use                                                                                 |
 
 ## Features
 
@@ -65,11 +65,7 @@ import { useFathom } from 'react-fathom'
 function MyComponent() {
   const { trackEvent } = useFathom()
 
-  return (
-    <button onClick={() => trackEvent('button-click')}>
-      Click me
-    </button>
-  )
+  return <button onClick={() => trackEvent('button-click')}>Click me</button>
 }
 ```
 

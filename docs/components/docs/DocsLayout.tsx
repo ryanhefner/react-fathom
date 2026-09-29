@@ -8,7 +8,13 @@ import { Sidebar } from './Sidebar'
 import { TableOfContents } from './TableOfContents'
 import { Breadcrumbs } from './Breadcrumbs'
 import { KeyboardShortcuts } from './KeyboardShortcuts'
-import type { NavItem, TOCItem, Frontmatter, AdjacentPages, BreadcrumbItem } from '@/lib/docs'
+import type {
+  NavItem,
+  TOCItem,
+  Frontmatter,
+  AdjacentPages,
+  BreadcrumbItem,
+} from '@/lib/docs'
 
 const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
 const DOCS_PATH = 'docs/content'
@@ -79,13 +85,7 @@ export function DocsLayout({
       <Container maxW="container.xl">
         <Flex>
           <Sidebar nav={nav} />
-          <Box
-            as="main"
-            flex={1}
-            minW={0}
-            py={8}
-            px={{ base: 4, lg: 8 }}
-          >
+          <Box as="main" flex={1} minW={0} py={8} px={{ base: 4, lg: 8 }}>
             <Box maxW="container.md">
               {breadcrumbs && breadcrumbs.length > 1 && (
                 <Breadcrumbs items={breadcrumbs} />
@@ -103,7 +103,15 @@ export function DocsLayout({
               <Box className="mdx-content" data-pagefind-body>
                 {children}
               </Box>
-              <Flex mt={8} pt={4} borderTopWidth="1px" justify="space-between" align="center" flexWrap="wrap" gap={2}>
+              <Flex
+                mt={8}
+                pt={4}
+                borderTopWidth="1px"
+                justify="space-between"
+                align="center"
+                flexWrap="wrap"
+                gap={2}
+              >
                 {lastUpdated && (
                   <Text fontSize="sm" color="fg.muted">
                     Last updated: {formatDate(lastUpdated)}
@@ -136,12 +144,18 @@ export function DocsLayout({
                           borderRadius="lg"
                           _hover={{ borderColor: 'blue.500' }}
                         >
-                          <Text fontSize="sm" color="fg.muted">← Previous</Text>
-                          <Text fontWeight="medium">{adjacentPages.prev.title}</Text>
+                          <Text fontSize="sm" color="fg.muted">
+                            ← Previous
+                          </Text>
+                          <Text fontWeight="medium">
+                            {adjacentPages.prev.title}
+                          </Text>
                         </Box>
                       </NextLink>
                     </Link>
-                  ) : <Box flex={1} />}
+                  ) : (
+                    <Box flex={1} />
+                  )}
                   {adjacentPages.next ? (
                     <Link asChild flex={1} _hover={{ textDecoration: 'none' }}>
                       <NextLink href={adjacentPages.next.href}>
@@ -152,12 +166,18 @@ export function DocsLayout({
                           textAlign="right"
                           _hover={{ borderColor: 'blue.500' }}
                         >
-                          <Text fontSize="sm" color="fg.muted">Next →</Text>
-                          <Text fontWeight="medium">{adjacentPages.next.title}</Text>
+                          <Text fontSize="sm" color="fg.muted">
+                            Next →
+                          </Text>
+                          <Text fontWeight="medium">
+                            {adjacentPages.next.title}
+                          </Text>
                         </Box>
                       </NextLink>
                     </Link>
-                  ) : <Box flex={1} />}
+                  ) : (
+                    <Box flex={1} />
+                  )}
                 </Flex>
               )}
               <Box as="footer" mt={12} pt={6} borderTopWidth="1px">
