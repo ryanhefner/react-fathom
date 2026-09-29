@@ -1,11 +1,12 @@
 import React, { useRef } from 'react'
 
 import { describe, expect, it, vi, beforeEach } from 'vitest'
+
 import { render, screen, waitFor } from '@testing-library/react'
 
-import { useFathom } from '../hooks/useFathom'
-import { NativeFathomProvider } from './NativeFathomProvider'
 import type { WebViewFathomClient } from './createWebViewClient'
+import { NativeFathomProvider } from './NativeFathomProvider'
+import { useFathom } from '../hooks/useFathom'
 
 // Mock the FathomWebView component
 vi.mock('./FathomWebView', () => ({
@@ -199,8 +200,6 @@ describe('NativeFathomProvider', () => {
 
   describe('trackAppState prop', () => {
     it('should not render AppStateTracker when trackAppState is false', async () => {
-      const reactNative = await import('react-native')
-
       render(
         <NativeFathomProvider siteId="TEST_SITE" trackAppState={false}>
           <div>Test</div>
@@ -231,8 +230,6 @@ describe('NativeFathomProvider', () => {
 
   describe('client methods', () => {
     it('should provide a working trackEvent method', () => {
-      const trackEventCalls: any[] = []
-
       const TestChild = () => {
         const { trackEvent } = useFathom()
         React.useEffect(() => {

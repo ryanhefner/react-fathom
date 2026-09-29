@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { NextFathomProviderApp } from 'react-fathom/next'
+
 import {
   ExampleProviderNext,
   ExampleLayout,

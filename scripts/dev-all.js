@@ -17,8 +17,8 @@
  */
 
 import { spawn } from 'child_process'
-import { fileURLToPath } from 'url'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
@@ -141,7 +141,7 @@ sites.forEach((site) => {
     console.error(`${prefix} Failed to start: ${err.message}`)
   })
 
-  proc.on('exit', (code, signal) => {
+  proc.on('exit', (code, _signal) => {
     if (code !== null && code !== 0) {
       console.log(`${prefix} Exited with code ${code}`)
     }

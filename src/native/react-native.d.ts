@@ -38,7 +38,7 @@ declare module 'react-native' {
 }
 
 declare module 'react-native-webview' {
-  import type { Ref, RefObject, Component } from 'react'
+  import type { Component } from 'react'
 
   export interface WebViewMessageEvent {
     nativeEvent: {

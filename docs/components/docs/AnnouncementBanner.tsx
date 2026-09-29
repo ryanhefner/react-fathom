@@ -1,7 +1,8 @@
 'use client'
 
-import { Box, CloseButton, Flex, Link, Text } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
+
+import { Box, CloseButton, Flex, Link, Text } from '@chakra-ui/react'
 
 interface AnnouncementBannerProps {
   id: string
@@ -39,9 +40,16 @@ export function AnnouncementBanner({
   const storageKey = `announcement-dismissed-${id}`
 
   useEffect(() => {
-    // Check localStorage after mount
-    const dismissed = localStorage.getItem(storageKey)
-    setIsDismissed(dismissed === 'true')
+    const timeoutId = window.setTimeout(() => {
+      try {
+        const dismissed = localStorage.getItem(storageKey)
+        setIsDismissed(dismissed === 'true')
+      } catch {
+        setIsDismissed(false)
+      }
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
   }, [storageKey])
 
   const handleDismiss = () => {

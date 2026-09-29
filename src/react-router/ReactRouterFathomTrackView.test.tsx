@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { MemoryRouter, useNavigate } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { render, waitFor } from '@testing-library/react'
-import { MemoryRouter, useNavigate } from 'react-router-dom'
 
 import { FathomProvider } from '../FathomProvider'
 import { ReactRouterFathomTrackView } from './ReactRouterFathomTrackView'

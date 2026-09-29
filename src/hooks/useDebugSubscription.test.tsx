@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, renderHook, waitFor } from '@testing-library/react'
 
 import { FathomProvider } from '../FathomProvider'
-import { useFathom } from './useFathom'
 import { useDebugSubscription } from './useDebugSubscription'
+import { useFathom } from './useFathom'
 
 // Mock fathom-client
 vi.mock('fathom-client', () => ({

@@ -1,5 +1,7 @@
 import React from 'react'
+
 import type { HeadFC, PageProps } from 'gatsby'
+
 import { Box, Heading, Text, VStack } from '@chakra-ui/react'
 
 import { Layout } from '../components/Layout'

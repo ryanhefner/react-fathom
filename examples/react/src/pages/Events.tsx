@@ -1,3 +1,7 @@
+import { useState } from 'react'
+
+import { useFathom, TrackClick } from 'react-fathom'
+
 import {
   Box,
   Button,
@@ -8,8 +12,6 @@ import {
   Code,
   Input,
 } from '@chakra-ui/react'
-import { useState } from 'react'
-import { useFathom, TrackClick } from 'react-fathom'
 
 export function Events() {
   const { trackEvent } = useFathom()

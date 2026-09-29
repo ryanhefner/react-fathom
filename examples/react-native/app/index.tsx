@@ -1,3 +1,4 @@
+import { Link } from 'expo-router'
 import {
   View,
   Text,
@@ -5,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
-import { Link } from 'expo-router'
 
 export default function Home() {
   return (

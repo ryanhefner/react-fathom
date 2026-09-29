@@ -1,9 +1,10 @@
 import { Routes, Route } from 'react-router-dom'
+
 import { Layout } from './components/Layout'
-import { Home } from './pages/Home'
 import { About } from './pages/About'
 import { Docs } from './pages/Docs'
 import { Events } from './pages/Events'
+import { Home } from './pages/Home'
 
 export default function App() {
   return (

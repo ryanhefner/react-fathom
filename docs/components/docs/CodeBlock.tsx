@@ -1,8 +1,9 @@
 'use client'
 
-import { Box, IconButton } from '@chakra-ui/react'
-import { useState, useRef, type ReactNode, type ComponentProps } from 'react'
+import { useRef, useState, type ComponentProps } from 'react'
+
 import { useFathom } from '@/lib/fathom'
+import { Box, IconButton } from '@chakra-ui/react'
 
 // Pre component for rehype-pretty-code
 export function Pre({ children, ...props }: ComponentProps<'pre'>) {

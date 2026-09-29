@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
+
 import { AppState, type AppStateStatus } from 'react-native'
 
-import { useFathom } from '../hooks/useFathom'
 import type { UseAppStateTrackingOptions } from './types'
+import { useFathom } from '../hooks/useFathom'
 
 /**
  * Hook that tracks app state changes (foreground/background) as Fathom events.

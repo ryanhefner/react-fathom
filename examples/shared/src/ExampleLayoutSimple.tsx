@@ -1,9 +1,11 @@
 'use client'
 
-import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
-import { EventStreamPanel } from './EventStreamPanel'
 import type { ComponentType, ReactNode } from 'react'
+
+import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
+
 import { ColorModeButtonSimple } from './ColorModeButtonSimple'
+import { EventStreamPanel } from './EventStreamPanel'
 
 export interface NavLink {
   href: string

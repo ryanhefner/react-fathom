@@ -1,3 +1,6 @@
+import { useState } from 'react'
+
+import { useFathom } from 'react-fathom/native'
 import {
   View,
   Text,
@@ -6,8 +9,6 @@ import {
   ScrollView,
   TextInput,
 } from 'react-native'
-import { useState } from 'react'
-import { useFathom } from 'react-fathom/native'
 
 export default function Events() {
   const { trackEvent } = useFathom()

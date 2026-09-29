@@ -1,7 +1,8 @@
 'use client'
 
-import { Box, Flex, Text } from '@chakra-ui/react'
 import { useState, type ReactNode } from 'react'
+
+import { Box, Flex, Text } from '@chakra-ui/react'
 
 interface FileTreeProps {
   children: ReactNode

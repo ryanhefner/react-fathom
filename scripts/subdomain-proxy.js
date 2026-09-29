@@ -15,7 +15,6 @@
  */
 
 import http from 'http'
-import { URL } from 'url'
 
 const PROXY_PORT = 8080
 
@@ -41,8 +40,6 @@ function getSubdomain(host) {
 
 // Proxy request to target server
 function proxyRequest(req, res, targetPort) {
-  const targetUrl = new URL(req.url, `http://localhost:${targetPort}`)
-
   const proxyReq = http.request(
     {
       hostname: 'localhost',
@@ -90,6 +87,12 @@ function handleUpgrade(req, socket, head, targetPort) {
           .join('\r\n') +
         '\r\n\r\n',
     )
+    if (proxyHead.length > 0) {
+      socket.write(proxyHead)
+    }
+    if (head.length > 0) {
+      proxySocket.write(head)
+    }
     proxySocket.pipe(socket)
     socket.pipe(proxySocket)
   })

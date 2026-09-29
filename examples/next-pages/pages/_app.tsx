@@ -1,9 +1,9 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import Link from 'next/link'
-
 import { FathomProvider } from 'react-fathom'
 import { NextFathomTrackViewPages } from 'react-fathom/next'
+
 import {
   ExampleProviderNext,
   ExampleLayout,

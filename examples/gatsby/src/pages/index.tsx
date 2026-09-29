@@ -1,7 +1,9 @@
 import React from 'react'
+
 import type { HeadFC, PageProps } from 'gatsby'
-import { Box, Heading, Text, VStack, Button, HStack } from '@chakra-ui/react'
 import { useFathom } from 'react-fathom'
+
+import { Box, Heading, Text, VStack, Button, HStack } from '@chakra-ui/react'
 
 import { Layout } from '../components/Layout'
 

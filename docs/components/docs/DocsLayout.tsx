@@ -1,13 +1,7 @@
 'use client'
 
-import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
 import NextLink from 'next/link'
-import { AnnouncementBanner } from './AnnouncementBanner'
-import { Navbar } from './Navbar'
-import { Sidebar } from './Sidebar'
-import { TableOfContents } from './TableOfContents'
-import { Breadcrumbs } from './Breadcrumbs'
-import { KeyboardShortcuts } from './KeyboardShortcuts'
+
 import type {
   NavItem,
   TOCItem,
@@ -15,6 +9,14 @@ import type {
   AdjacentPages,
   BreadcrumbItem,
 } from '@/lib/docs'
+import { Box, Container, Flex, Link, Text } from '@chakra-ui/react'
+
+import { AnnouncementBanner } from './AnnouncementBanner'
+import { Breadcrumbs } from './Breadcrumbs'
+import { KeyboardShortcuts } from './KeyboardShortcuts'
+import { Navbar } from './Navbar'
+import { Sidebar } from './Sidebar'
+import { TableOfContents } from './TableOfContents'
 
 const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
 const DOCS_PATH = 'docs/content'

@@ -1,7 +1,8 @@
 'use client'
 
-import { Box, Flex } from '@chakra-ui/react'
 import { useState, createContext, useContext, type ReactNode } from 'react'
+
+import { Box, Flex } from '@chakra-ui/react'
 
 interface TabsContextValue {
   activeTab: string

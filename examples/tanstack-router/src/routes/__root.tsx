@@ -1,7 +1,8 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { FathomProvider } from 'react-fathom'
 import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
+
 import { ExampleLayoutSimple } from '@react-fathom/example-ui'
+import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 
 const siteId = import.meta.env.VITE_FATHOM_SITE_ID || 'DEMO'
 

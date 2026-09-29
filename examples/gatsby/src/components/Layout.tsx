@@ -1,5 +1,9 @@
 import React from 'react'
+
+import { FathomProvider } from 'react-fathom'
+import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
 import { Helmet } from 'react-helmet'
+
 import {
   ChakraProvider,
   defaultSystem,
@@ -10,8 +14,6 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react'
-import { FathomProvider } from 'react-fathom'
-import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
 
 import { Navbar } from './Navbar'
 

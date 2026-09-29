@@ -1,5 +1,10 @@
 'use client'
 
+import { useState } from 'react'
+
+import NextLink from 'next/link'
+
+import { ColorModeButton } from '@/components/docs/ColorModeButton'
 import {
   Box,
   Container,
@@ -12,10 +17,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import NextLink from 'next/link'
-import { Navbar } from '@/components/docs/Navbar'
-import { ColorModeButton } from '@/components/docs/ColorModeButton'
-import { useState } from 'react'
 
 const frameworks = [
   {

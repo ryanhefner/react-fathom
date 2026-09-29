@@ -1,7 +1,8 @@
 'use client'
 
-import { Flex, Link, Text } from '@chakra-ui/react'
 import NextLink from 'next/link'
+
+import { Flex, Link, Text } from '@chakra-ui/react'
 
 interface BreadcrumbItem {
   title: string

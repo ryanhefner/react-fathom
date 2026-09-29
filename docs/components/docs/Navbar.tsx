@@ -1,11 +1,13 @@
 'use client'
 
-import { Box, Container, Flex, HStack, Link } from '@chakra-ui/react'
 import NextLink from 'next/link'
+
+import type { NavItem } from '@/lib/docs'
+import { Box, Container, Flex, HStack, Link } from '@chakra-ui/react'
+
 import { ColorModeButton } from './ColorModeButton'
 import { MobileNav } from './MobileNav'
 import { Search } from './Search'
-import type { NavItem } from '@/lib/docs'
 
 interface NavbarProps {
   nav: NavItem[]

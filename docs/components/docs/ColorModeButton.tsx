@@ -1,15 +1,18 @@
 'use client'
 
-import { IconButton } from '@chakra-ui/react'
-import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+
+import { useTheme } from 'next-themes'
+
+import { IconButton } from '@chakra-ui/react'
 
 export function ColorModeButton() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    const timeoutId = window.setTimeout(() => setMounted(true), 0)
+    return () => window.clearTimeout(timeoutId)
   }, [])
 
   if (!mounted) {

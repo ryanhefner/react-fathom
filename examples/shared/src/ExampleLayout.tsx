@@ -1,7 +1,9 @@
 'use client'
 
-import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
 import type { ComponentType, ReactNode } from 'react'
+
+import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
+
 import { ColorModeButton } from './ColorModeButton'
 import { EventStreamPanel } from './EventStreamPanel'
 

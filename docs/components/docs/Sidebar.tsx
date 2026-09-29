@@ -1,9 +1,10 @@
 'use client'
 
-import { Box, Link, Text, VStack } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { usePathname } from 'next/navigation'
+
 import type { NavItem } from '@/lib/docs'
+import { Box, Link, Text, VStack } from '@chakra-ui/react'
 
 interface SidebarProps {
   nav: NavItem[]

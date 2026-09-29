@@ -1,5 +1,6 @@
-import { useFathom } from 'react-fathom'
 import { useState } from 'react'
+
+import { useFathom } from 'react-fathom'
 
 type TrackedEvent = {
   id: number

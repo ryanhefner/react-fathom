@@ -1,8 +1,10 @@
 'use client'
 
-import { Box, Grid, Link, Text } from '@chakra-ui/react'
-import NextLink from 'next/link'
 import type { ReactNode } from 'react'
+
+import NextLink from 'next/link'
+
+import { Box, Grid, Link, Text } from '@chakra-ui/react'
 
 interface CardsProps {
   children: ReactNode

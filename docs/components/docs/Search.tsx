@@ -1,9 +1,11 @@
 'use client'
 
-import { Box, Flex, Input, Link, Text, VStack } from '@chakra-ui/react'
-import NextLink from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
+import NextLink from 'next/link'
+
 import { useFathom } from '@/lib/fathom'
+import { Box, Flex, Input, Link, Text, VStack } from '@chakra-ui/react'
 
 interface SearchResult {
   url: string
@@ -42,7 +44,7 @@ export function Search() {
           const pagefind = await import(/* webpackIgnore: true */ pagefindPath)
           await pagefind.init()
           pagefindRef.current = pagefind
-        } catch (e) {
+        } catch {
           console.warn('Pagefind not available (run `npm run build` first)')
         }
       }
@@ -115,7 +117,7 @@ export function Search() {
     }
   }, [])
 
-  const handleResultClick = (result: SearchResult) => {
+  const handleResultClick = () => {
     trackEvent('search-result-click')
     setIsOpen(false)
     setQuery('')
@@ -230,7 +232,7 @@ export function Search() {
                         key={i}
                         asChild
                         _hover={{ textDecoration: 'none' }}
-                        onClick={() => handleResultClick(result)}
+                        onClick={handleResultClick}
                       >
                         <NextLink href={result.url}>
                           <Box px={4} py={3} _hover={{ bg: 'bg.muted' }}>

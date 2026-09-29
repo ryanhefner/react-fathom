@@ -44,8 +44,12 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    setColorMode(getInitialColorMode())
+    const timeoutId = window.setTimeout(() => {
+      setColorMode(getInitialColorMode())
+      setMounted(true)
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
   }, [])
 
   useEffect(() => {

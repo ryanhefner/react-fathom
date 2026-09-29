@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { Box, Heading, Text, VStack } from '@chakra-ui/react'
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/about')({
   component: AboutPage,

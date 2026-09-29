@@ -1,6 +1,7 @@
 import React, { createRef, act } from 'react'
 
 import { describe, expect, it, vi, beforeEach } from 'vitest'
+
 import { render } from '@testing-library/react'
 
 import { FathomWebView, type FathomWebViewRef } from './FathomWebView'

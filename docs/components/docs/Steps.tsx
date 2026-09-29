@@ -1,7 +1,8 @@
 'use client'
 
-import { Box, Flex, Text } from '@chakra-ui/react'
 import type { ReactNode } from 'react'
+
+import { Box, Text } from '@chakra-ui/react'
 
 interface StepsProps {
   children: ReactNode

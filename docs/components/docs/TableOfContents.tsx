@@ -1,8 +1,9 @@
 'use client'
 
-import { Box, Link, Text, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+
 import type { TOCItem } from '@/lib/docs'
+import { Box, Link, Text, VStack } from '@chakra-ui/react'
 
 interface TableOfContentsProps {
   toc: TOCItem[]

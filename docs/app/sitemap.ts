@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+
 import { getAllDocSlugs } from '@/lib/docs'
 
 export const dynamic = 'force-static'

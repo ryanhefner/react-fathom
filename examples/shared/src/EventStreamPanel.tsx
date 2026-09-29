@@ -1,5 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+
+import { useDebugSubscription, type DebugEvent } from 'react-fathom/debug'
+
 import {
   Box,
   Button,
@@ -10,8 +14,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { useDebugSubscription, type DebugEvent } from 'react-fathom/debug'
-import { useState, useEffect } from 'react'
 
 const STORAGE_KEY = 'react-fathom-event-stream-visible'
 
@@ -112,8 +114,9 @@ export function EventStreamPanel({
   })
 
   useEffect(() => {
-    setIsHydrated(true)
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return
+
+    const timeoutId = window.setTimeout(() => {
       try {
         const stored = localStorage.getItem(STORAGE_KEY)
         if (stored !== null) {
@@ -122,7 +125,11 @@ export function EventStreamPanel({
       } catch {
         // localStorage unavailable
       }
-    }
+
+      setIsHydrated(true)
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
   }, [])
 
   useEffect(() => {

@@ -1,8 +1,10 @@
 'use client'
 
-import { IconButton } from '@chakra-ui/react'
-import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+
+import { useTheme } from 'next-themes'
+
+import { IconButton } from '@chakra-ui/react'
 
 /**
  * A button that toggles between light and dark mode.
@@ -13,7 +15,8 @@ export function ColorModeButton() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    const timeoutId = window.setTimeout(() => setMounted(true), 0)
+    return () => window.clearTimeout(timeoutId)
   }, [])
 
   if (!mounted) {

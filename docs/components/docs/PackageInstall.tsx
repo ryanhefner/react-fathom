@@ -1,7 +1,8 @@
 'use client'
 
-import { Box, Flex, IconButton } from '@chakra-ui/react'
 import { useState } from 'react'
+
+import { Box, Flex, IconButton } from '@chakra-ui/react'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
 

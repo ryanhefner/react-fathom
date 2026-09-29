@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Box, Button, Flex, IconButton, Text, VStack } from '@chakra-ui/react'
+
 import { type DebugEvent } from '@/lib/fathom'
+import { Box, Button, Flex, IconButton, Text, VStack } from '@chakra-ui/react'
 
 const STORAGE_KEY = 'react-fathom-event-stream-visible'
 
@@ -108,15 +109,20 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
 
   // Load visibility state from localStorage on mount
   useEffect(() => {
-    setIsHydrated(true)
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored !== null) {
-        setIsVisible(stored === 'true')
+    const timeoutId = window.setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY)
+        if (stored !== null) {
+          setIsVisible(stored === 'true')
+        }
+      } catch {
+        // localStorage not available (private browsing, etc.)
       }
-    } catch {
-      // localStorage not available (private browsing, etc.)
-    }
+
+      setIsHydrated(true)
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
   }, [])
 
   // Keyboard shortcut (Cmd/Ctrl + .) to toggle
@@ -144,12 +150,13 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
 
   // Subscribe to global debug events via custom event
   useEffect(() => {
-    const handleDebugEvent = (e: CustomEvent<DebugEvent>) => {
-      setEvents((prev) => [e.detail, ...prev].slice(0, 20))
+    const handleDebugEvent = (event: Event) => {
+      const debugEvent = (event as CustomEvent<DebugEvent>).detail
+      setEvents((prev) => [debugEvent, ...prev].slice(0, 20))
     }
-    window.addEventListener('react-fathom:debug' as any, handleDebugEvent)
+    window.addEventListener('react-fathom:debug', handleDebugEvent)
     return () =>
-      window.removeEventListener('react-fathom:debug' as any, handleDebugEvent)
+      window.removeEventListener('react-fathom:debug', handleDebugEvent)
   }, [])
 
   const clearEvents = () => setEvents([])

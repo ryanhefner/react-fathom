@@ -1,5 +1,9 @@
 'use client'
 
+import NextLink from 'next/link'
+
+import { ColorModeButton } from '@/components/docs/ColorModeButton'
+import { Search } from '@/components/docs/Search'
 import {
   Box,
   Container,
@@ -10,9 +14,6 @@ import {
   Flex,
   HStack,
 } from '@chakra-ui/react'
-import NextLink from 'next/link'
-import { Search } from '@/components/docs/Search'
-import { ColorModeButton } from '@/components/docs/ColorModeButton'
 
 const popularPages = [
   { title: 'Getting Started', href: '/docs/getting-started' },

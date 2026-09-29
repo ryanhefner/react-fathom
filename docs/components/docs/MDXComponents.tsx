@@ -1,14 +1,16 @@
-import { Box, Code, Heading, Link, List, Table, Text } from '@chakra-ui/react'
-import NextLink from 'next/link'
 import type { MDXComponents as MDXComponentsType } from 'mdx/types'
+import NextLink from 'next/link'
+
+import { Box, Code, Heading, Link, List, Table, Text } from '@chakra-ui/react'
+
 import { Accordion, AccordionItem, Collapsible } from './Accordion'
 import { Callout } from './Callout'
+import { Cards, Card } from './Cards'
 import { Pre, Figure, Figcaption } from './CodeBlock'
 import { FileTree, Folder, File } from './FileTree'
+import { PackageInstall, NpmToYarn } from './PackageInstall'
 import { Steps } from './Steps'
 import { Tabs, Tab } from './Tabs'
-import { Cards, Card } from './Cards'
-import { PackageInstall, NpmToYarn } from './PackageInstall'
 
 function slugify(text: string): string {
   return text

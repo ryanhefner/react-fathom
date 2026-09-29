@@ -148,4 +148,13 @@ export default [
       'react-hooks/globals': 'off',
     },
   },
+
+  // Apostrophes and quotation marks in documentation/example prose are
+  // intentional text, not unsafe HTML interpolation.
+  {
+    files: ['docs/**/*.{js,jsx,ts,tsx}', 'examples/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'react/no-unescaped-entities': 'off',
+    },
+  },
 ]

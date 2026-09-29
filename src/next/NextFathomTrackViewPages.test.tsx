@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { FathomProvider } from '../FathomProvider'
-import { useFathom } from '../hooks/useFathom'
 import { NextFathomTrackViewPages } from './NextFathomTrackViewPages'
+import { useFathom } from '../hooks/useFathom'
 
 // Mock Next.js Pages Router hook
 const mockRouter = {

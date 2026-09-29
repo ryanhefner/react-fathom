@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Link } from 'gatsby'
+
 import { Box, Flex, Text, HStack, Link as ChakraLink } from '@chakra-ui/react'
 
 export function Navbar() {

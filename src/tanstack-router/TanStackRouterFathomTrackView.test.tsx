@@ -2,7 +2,6 @@ import React from 'react'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { act, render, waitFor } from '@testing-library/react'
 import {
   createMemoryHistory,
   createRootRoute,
@@ -11,6 +10,7 @@ import {
   Outlet,
   RouterProvider,
 } from '@tanstack/react-router'
+import { act, render, waitFor } from '@testing-library/react'
 
 import { FathomProvider } from '../FathomProvider'
 import { TanStackRouterFathomTrackView } from './TanStackRouterFathomTrackView'

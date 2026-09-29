@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import rehypePrettyCode from 'rehype-pretty-code'
+
 import { DocsLayout } from '@/components/docs'
+import { getMDXComponents } from '@/components/docs/MDXComponents'
 import {
   getDocBySlug,
   getAllDocSlugs,
@@ -11,7 +13,6 @@ import {
   getBreadcrumbs,
   getLastUpdated,
 } from '@/lib/docs'
-import { getMDXComponents } from '@/components/docs/MDXComponents'
 
 export async function generateStaticParams() {
   const slugs = getAllDocSlugs()

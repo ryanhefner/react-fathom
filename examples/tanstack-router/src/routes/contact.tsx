@@ -1,6 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Box, Heading, Text, VStack, Input, Button } from '@chakra-ui/react'
 import { useFathom } from 'react-fathom'
+
+import { Box, Heading, Text, VStack, Input, Button } from '@chakra-ui/react'
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/contact')({
   component: ContactPage,

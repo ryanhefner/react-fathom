@@ -1,4 +1,5 @@
 import { Link as RouterLink, Outlet } from 'react-router-dom'
+
 import { ExampleLayoutSimple } from '@react-fathom/example-ui'
 
 const navLinks = [
