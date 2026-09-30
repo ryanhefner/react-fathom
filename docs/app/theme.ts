@@ -1,3 +1,4 @@
+import { chakraDocsSlotRecipes } from '@chakra-docs/chakra/theme'
 import { defineConfig, defineRecipe, defineSlotRecipe } from '@chakra-ui/react'
 
 export const siteThemeConfig = defineConfig({
@@ -102,6 +103,22 @@ export const siteThemeConfig = defineConfig({
       }),
     },
     slotRecipes: {
+      chakraDocsPageActions: defineSlotRecipe({
+        slots: [...chakraDocsSlotRecipes.chakraDocsPageActions.slots],
+        variants: {
+          size: {
+            sm: {
+              root: {
+                '--chakra-docs-page-actions-height': {
+                  base: 'sizes.11',
+                  md: 'sizes.8',
+                },
+              },
+              menuTrigger: { minW: { base: 11, md: 8 } },
+            },
+          },
+        },
+      }),
       chakraDocsSearch: defineSlotRecipe({
         slots: [
           'trigger',

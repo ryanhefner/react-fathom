@@ -145,6 +145,7 @@ export function DocsLayout({
                     <DocsPageActions.Root
                       editUrl={editUrl}
                       page={page}
+                      size="sm"
                       variant="split"
                     />
                   </Box>
