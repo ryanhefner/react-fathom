@@ -1,54 +1,38 @@
 'use client'
 
-import NextLink from 'next/link'
+import type { ReactNode } from 'react'
 
-import type {
-  NavItem,
-  TOCItem,
-  Frontmatter,
-  AdjacentPages,
-  BreadcrumbItem,
-} from '@/lib/docs'
-import { Box, Container, Flex, Link, Text } from '@chakra-ui/react'
+import {
+  DocsArticle,
+  DocsBreadcrumbs,
+  DocsLayout as ChakraDocsLayout,
+  DocsPageActions,
+  DocsPagination,
+} from '@chakra-docs/chakra'
+import type { DocsNavItem, DocsPage, DocsSearchRecord } from '@chakra-docs/core'
+import { Box, Flex, Text } from '@chakra-ui/react'
 
-import { AnnouncementBanner } from './AnnouncementBanner'
-import { Breadcrumbs } from './Breadcrumbs'
-import { KeyboardShortcuts } from './KeyboardShortcuts'
+import { DocsSiteSearch } from './DocsSiteSearch'
 import { Navbar } from './Navbar'
-import { Sidebar } from './Sidebar'
-import { TableOfContents } from './TableOfContents'
 
 const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
 const DOCS_PATH = 'docs/content'
 
-interface Announcement {
-  id: string
-  message: string
-  linkText?: string
-  linkHref?: string
-  variant?: 'info' | 'warning' | 'success'
-}
-
 interface DocsLayoutProps {
-  children: React.ReactNode
-  nav: NavItem[]
-  toc: TOCItem[]
-  frontmatter: Frontmatter
-  adjacentPages?: AdjacentPages
-  slug?: string[]
-  breadcrumbs?: BreadcrumbItem[]
+  children: ReactNode
   lastUpdated?: string | null
-  announcement?: Announcement
+  nav: DocsNavItem[]
+  page: DocsPage
+  searchRecords: readonly DocsSearchRecord[]
 }
 
-function getEditUrl(slug: string[]): string {
-  const filePath = slug.length === 0 ? 'index' : slug.join('/')
+function getEditUrl(page: DocsPage): string {
+  const filePath = page.slug.length === 0 ? 'index' : page.slug.join('/')
   return `${GITHUB_REPO}/edit/main/${DOCS_PATH}/${filePath}.mdx`
 }
 
 function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
+  return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -57,141 +41,68 @@ function formatDate(dateString: string): string {
 
 export function DocsLayout({
   children,
-  nav,
-  toc,
-  frontmatter,
-  adjacentPages,
-  slug = [],
-  breadcrumbs,
   lastUpdated,
-  announcement,
+  nav,
+  page,
+  searchRecords,
 }: DocsLayoutProps) {
-  const editUrl = getEditUrl(slug)
+  const editUrl = getEditUrl(page)
 
   return (
     <Box minH="100vh">
-      <KeyboardShortcuts
-        prevHref={adjacentPages?.prev?.href}
-        nextHref={adjacentPages?.next?.href}
-      />
-      {announcement && (
-        <AnnouncementBanner
-          id={announcement.id}
-          message={announcement.message}
-          linkText={announcement.linkText}
-          linkHref={announcement.linkHref}
-          variant={announcement.variant}
-        />
-      )}
-      <Navbar nav={nav} />
-      <Container maxW="container.xl">
-        <Flex>
-          <Sidebar nav={nav} />
-          <Box as="main" flex={1} minW={0} py={8} px={{ base: 4, lg: 8 }}>
-            <Box maxW="container.md">
-              {breadcrumbs && breadcrumbs.length > 1 && (
-                <Breadcrumbs items={breadcrumbs} />
-              )}
-              {frontmatter.title && (
-                <Text as="h1" fontSize="4xl" fontWeight="bold" mb={2}>
-                  {frontmatter.title}
-                </Text>
-              )}
-              {frontmatter.description && (
-                <Text fontSize="xl" color="fg.muted" mb={8}>
-                  {frontmatter.description}
-                </Text>
-              )}
-              <Box className="mdx-content" data-pagefind-body>
-                {children}
-              </Box>
-              <Flex
-                mt={8}
-                pt={4}
-                borderTopWidth="1px"
-                justify="space-between"
-                align="center"
-                flexWrap="wrap"
-                gap={2}
-              >
-                {lastUpdated && (
-                  <Text fontSize="sm" color="fg.muted">
-                    Last updated: {formatDate(lastUpdated)}
-                  </Text>
-                )}
-                <Link
-                  href={editUrl}
-                  fontSize="sm"
-                  color="fg.muted"
-                  _hover={{ color: 'fg' }}
-                  ml="auto"
-                >
-                  Edit this page on GitHub →
-                </Link>
-              </Flex>
-              {adjacentPages && (
-                <Flex
-                  mt={8}
-                  pt={6}
-                  borderTopWidth="1px"
-                  justify="space-between"
-                  gap={4}
-                >
-                  {adjacentPages.prev ? (
-                    <Link asChild flex={1} _hover={{ textDecoration: 'none' }}>
-                      <NextLink href={adjacentPages.prev.href}>
-                        <Box
-                          p={4}
-                          borderWidth="1px"
-                          borderRadius="lg"
-                          _hover={{ borderColor: 'blue.500' }}
-                        >
-                          <Text fontSize="sm" color="fg.muted">
-                            ← Previous
-                          </Text>
-                          <Text fontWeight="medium">
-                            {adjacentPages.prev.title}
-                          </Text>
-                        </Box>
-                      </NextLink>
-                    </Link>
-                  ) : (
-                    <Box flex={1} />
-                  )}
-                  {adjacentPages.next ? (
-                    <Link asChild flex={1} _hover={{ textDecoration: 'none' }}>
-                      <NextLink href={adjacentPages.next.href}>
-                        <Box
-                          p={4}
-                          borderWidth="1px"
-                          borderRadius="lg"
-                          textAlign="right"
-                          _hover={{ borderColor: 'blue.500' }}
-                        >
-                          <Text fontSize="sm" color="fg.muted">
-                            Next →
-                          </Text>
-                          <Text fontWeight="medium">
-                            {adjacentPages.next.title}
-                          </Text>
-                        </Box>
-                      </NextLink>
-                    </Link>
-                  ) : (
-                    <Box flex={1} />
-                  )}
-                </Flex>
-              )}
-              <Box as="footer" mt={12} pt={6} borderTopWidth="1px">
-                <Text fontSize="sm" color="fg.muted">
-                  MIT {new Date().getFullYear()} © Ryan Hefner
-                </Text>
-              </Box>
-            </Box>
+      <Navbar searchRecords={searchRecords} />
+      <ChakraDocsLayout
+        headings={page.headings}
+        mobileNavigationProps={{
+          search: <DocsSiteSearch records={searchRecords} />,
+          title: 'Browse documentation',
+        }}
+        nav={nav}
+        page={page}
+        sidebarCollapsible
+        sidebarDefaultExpanded="active"
+      >
+        <DocsArticle
+          actions={
+            <DocsPageActions.Root
+              editUrl={editUrl}
+              page={page}
+              variant="split"
+            />
+          }
+          breadcrumbs={
+            <DocsBreadcrumbs
+              homeHref="/"
+              homeLabel="Home"
+              nav={nav}
+              page={page}
+            />
+          }
+          headings={page.headings}
+          page={page}
+        >
+          <Box className="mdx-content">{children}</Box>
+          {lastUpdated ? (
+            <Flex
+              align="center"
+              borderTopWidth="1px"
+              justify="space-between"
+              mt={8}
+              pt={4}
+            >
+              <Text color="fg.muted" fontSize="sm">
+                Last updated: {formatDate(lastUpdated)}
+              </Text>
+            </Flex>
+          ) : null}
+          <DocsPagination nav={nav} page={page} />
+          <Box as="footer" borderTopWidth="1px" mt={12} pt={6}>
+            <Text color="fg.muted" fontSize="sm">
+              MIT {new Date().getFullYear()} © Ryan Hefner
+            </Text>
           </Box>
-          <TableOfContents toc={toc} />
-        </Flex>
-      </Container>
+        </DocsArticle>
+      </ChakraDocsLayout>
     </Box>
   )
 }

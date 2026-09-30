@@ -38,9 +38,7 @@ function toDocsNav(items: NavItem[], parentId = 'docs'): DocsNavItem[] {
             .split('/')
             .filter(Boolean)
         : undefined,
-      children: item.children
-        ? toDocsNav(item.children, id)
-        : undefined,
+      children: item.children ? toDocsNav(item.children, id) : undefined,
     }
   })
 }

@@ -1,9 +1,8 @@
-'use client'
-
 import NextLink from 'next/link'
 
 import { ColorModeButton } from '@/components/docs/ColorModeButton'
-import { Search } from '@/components/docs/Search'
+import { DocsSiteSearch } from '@/components/docs/DocsSiteSearch'
+import { getDocsManifest } from '@/lib/chakra-docs'
 import {
   Box,
   Container,
@@ -55,7 +54,9 @@ function SimpleNavbar() {
   )
 }
 
-export default function NotFound() {
+export default async function NotFound() {
+  const manifest = await getDocsManifest()
+
   return (
     <>
       <SimpleNavbar />
@@ -82,7 +83,7 @@ export default function NotFound() {
             <Text fontWeight="medium" mb={3}>
               Try searching for what you need:
             </Text>
-            <Search />
+            <DocsSiteSearch records={manifest.search} />
           </Box>
 
           <Box>

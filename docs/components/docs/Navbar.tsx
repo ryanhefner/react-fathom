@@ -2,18 +2,17 @@
 
 import NextLink from 'next/link'
 
-import type { NavItem } from '@/lib/docs'
+import type { DocsSearchRecord } from '@chakra-docs/core'
 import { Box, Container, Flex, HStack, Link } from '@chakra-ui/react'
 
 import { ColorModeButton } from './ColorModeButton'
-import { MobileNav } from './MobileNav'
-import { Search } from './Search'
+import { DocsSiteSearch } from './DocsSiteSearch'
 
 interface NavbarProps {
-  nav: NavItem[]
+  searchRecords: readonly DocsSearchRecord[]
 }
 
-export function Navbar({ nav }: NavbarProps) {
+export function Navbar({ searchRecords }: NavbarProps) {
   return (
     <Box
       as="header"
@@ -52,9 +51,8 @@ export function Navbar({ nav }: NavbarProps) {
             </HStack>
           </HStack>
           <HStack gap={2}>
-            <Search />
+            <DocsSiteSearch records={searchRecords} />
             <ColorModeButton />
-            <MobileNav nav={nav} />
           </HStack>
         </Flex>
       </Container>

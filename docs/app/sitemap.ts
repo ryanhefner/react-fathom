@@ -1,13 +1,13 @@
 import { MetadataRoute } from 'next'
 
-import { getAllDocSlugs } from '@/lib/docs'
+import { getDocsManifest } from '@/lib/chakra-docs'
 
 export const dynamic = 'force-static'
 
 const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const slugs = getAllDocSlugs()
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const manifest = await getDocsManifest()
 
   // Landing page
   const landingPage = {
@@ -18,14 +18,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   // Documentation pages under /docs
-  const docPages = slugs.map((slug) => ({
-    url:
-      slug.length === 0
-        ? `${SITE_URL}/docs`
-        : `${SITE_URL}/docs/${slug.join('/')}`,
-    lastModified: new Date(),
+  const docPages = manifest.sitemap.map((entry) => ({
+    url: new URL(entry.url, SITE_URL).toString(),
+    lastModified: entry.lastModified ?? new Date(),
     changeFrequency: 'weekly' as const,
-    priority: slug.length === 0 ? 0.9 : 0.8,
+    priority: entry.url === '/docs' ? 0.9 : 0.8,
   }))
 
   return [landingPage, ...docPages]

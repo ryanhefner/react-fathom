@@ -1,22 +1,20 @@
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import rehypePrettyCode from 'rehype-pretty-code'
+import remarkGfm from 'remark-gfm'
 
 import { DocsLayout } from '@/components/docs'
 import { getMDXComponents } from '@/components/docs/MDXComponents'
+import { getDocsManifest } from '@/lib/chakra-docs'
+import { getLastUpdated } from '@/lib/docs'
 import {
-  getDocBySlug,
-  getAllDocSlugs,
-  getDocsNav,
-  extractTOC,
-  getAdjacentPages,
-  getBreadcrumbs,
-  getLastUpdated,
-} from '@/lib/docs'
+  createGenerateStaticParams,
+  getAppRouterDoc,
+} from '@chakra-docs/next/app'
 
 export async function generateStaticParams() {
-  const slugs = getAllDocSlugs()
-  return slugs.map((slug) => ({ slug }))
+  const manifest = await getDocsManifest()
+  return createGenerateStaticParams({ manifest, basePath: '/docs' })()
 }
 
 export async function generateMetadata({
@@ -25,15 +23,17 @@ export async function generateMetadata({
   params: Promise<{ slug?: string[] }>
 }) {
   const { slug = [] } = await params
-  const doc = getDocBySlug(slug)
+  const manifest = await getDocsManifest()
+  const route = slug.length === 0 ? '/docs' : `/docs/${slug.join('/')}`
+  const page = getAppRouterDoc({ manifest, basePath: '/docs' }, route)
 
-  if (!doc) {
+  if (!page) {
     return { title: 'Not Found' }
   }
 
   return {
-    title: doc.frontmatter.title,
-    description: doc.frontmatter.description,
+    title: page.title,
+    description: page.description,
   }
 }
 
@@ -52,34 +52,30 @@ export default async function DocPage({
   params: Promise<{ slug?: string[] }>
 }) {
   const { slug = [] } = await params
-  const doc = getDocBySlug(slug)
+  const manifest = await getDocsManifest()
+  const route = slug.length === 0 ? '/docs' : `/docs/${slug.join('/')}`
+  const page = getAppRouterDoc({ manifest, basePath: '/docs' }, route)
 
-  if (!doc) {
+  if (!page) {
     notFound()
   }
 
-  const nav = getDocsNav()
-  const toc = extractTOC(doc.content)
-  const adjacentPages = getAdjacentPages(slug)
-  const breadcrumbs = getBreadcrumbs(slug)
-  const lastUpdated = getLastUpdated(slug)
+  const lastUpdated = getLastUpdated(page.slug)
 
   return (
     <DocsLayout
-      nav={nav}
-      toc={toc}
-      frontmatter={doc.frontmatter}
-      adjacentPages={adjacentPages}
-      slug={slug}
-      breadcrumbs={breadcrumbs}
       lastUpdated={lastUpdated}
+      nav={manifest.nav}
+      page={page}
+      searchRecords={manifest.search}
     >
       <MDXRemote
-        source={doc.content}
+        source={page.body ?? ''}
         components={getMDXComponents()}
         options={{
           mdxOptions: {
             rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
+            remarkPlugins: [remarkGfm],
           },
         }}
       />
