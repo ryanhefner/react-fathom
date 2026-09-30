@@ -38,10 +38,7 @@ export async function generateMetadata({
 }
 
 const rehypePrettyCodeOptions = {
-  theme: {
-    dark: 'github-dark',
-    light: 'github-light',
-  },
+  theme: 'github-dark',
   keepBackground: false,
   defaultLang: 'plaintext',
 }

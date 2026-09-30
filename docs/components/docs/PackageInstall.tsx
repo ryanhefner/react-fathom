@@ -4,6 +4,8 @@ import { useState } from 'react'
 
 import { Box, Flex, IconButton } from '@chakra-ui/react'
 
+import { CopyCompleteIcon, CopyStackIcon } from './CopyIcons'
+
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
 
 interface PackageInstallProps {
@@ -37,19 +39,9 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
 
   return (
-    <Box
-      my={4}
-      borderRadius="lg"
-      overflow="hidden"
-      bg="gray.900"
-      _light={{ bg: 'gray.50' }}
-    >
+    <Box my={4} borderRadius="lg" overflow="hidden" bg="black">
       {/* Tab header */}
-      <Flex
-        borderBottomWidth="1px"
-        borderColor="gray.700"
-        _light={{ borderColor: 'gray.200' }}
-      >
+      <Flex borderBottomWidth="1px" borderColor="gray.700">
         {managers.map((m) => (
           <Box
             key={m}
@@ -60,10 +52,6 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
             fontWeight={manager === m ? 'semibold' : 'normal'}
             color={manager === m ? 'white' : 'gray.400'}
             bg={manager === m ? 'gray.800' : 'transparent'}
-            _light={{
-              color: manager === m ? 'gray.900' : 'gray.500',
-              bg: manager === m ? 'gray.100' : 'transparent',
-            }}
             borderBottomWidth="2px"
             borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
             _hover={{ color: manager === m ? undefined : 'gray.200' }}
@@ -74,7 +62,7 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
         ))}
         <Box flex={1} />
         <IconButton
-          aria-label="Copy command"
+          aria-label={copied ? 'Command copied' : 'Copy command'}
           size="xs"
           variant="ghost"
           color="gray.400"
@@ -82,7 +70,7 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
           m={2}
           onClick={handleCopy}
         >
-          {copied ? '✓' : '📋'}
+          {copied ? <CopyCompleteIcon /> : <CopyStackIcon />}
         </IconButton>
       </Flex>
 
@@ -94,7 +82,6 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
         lineHeight="tall"
         overflowX="auto"
         color="gray.100"
-        _light={{ color: 'gray.800' }}
         fontFamily="mono"
       >
         <code>{command}</code>
@@ -159,18 +146,8 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
 
   return (
-    <Box
-      my={4}
-      borderRadius="lg"
-      overflow="hidden"
-      bg="gray.900"
-      _light={{ bg: 'gray.50' }}
-    >
-      <Flex
-        borderBottomWidth="1px"
-        borderColor="gray.700"
-        _light={{ borderColor: 'gray.200' }}
-      >
+    <Box my={4} borderRadius="lg" overflow="hidden" bg="black">
+      <Flex borderBottomWidth="1px" borderColor="gray.700">
         {managers.map((m) => (
           <Box
             key={m}
@@ -181,10 +158,6 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
             fontWeight={manager === m ? 'semibold' : 'normal'}
             color={manager === m ? 'white' : 'gray.400'}
             bg={manager === m ? 'gray.800' : 'transparent'}
-            _light={{
-              color: manager === m ? 'gray.900' : 'gray.500',
-              bg: manager === m ? 'gray.100' : 'transparent',
-            }}
             borderBottomWidth="2px"
             borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
             _hover={{ color: manager === m ? undefined : 'gray.200' }}
@@ -195,7 +168,7 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
         ))}
         <Box flex={1} />
         <IconButton
-          aria-label="Copy command"
+          aria-label={copied ? 'Command copied' : 'Copy command'}
           size="xs"
           variant="ghost"
           color="gray.400"
@@ -203,7 +176,7 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
           m={2}
           onClick={handleCopy}
         >
-          {copied ? '✓' : '📋'}
+          {copied ? <CopyCompleteIcon /> : <CopyStackIcon />}
         </IconButton>
       </Flex>
       <Box
@@ -213,7 +186,6 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
         lineHeight="tall"
         overflowX="auto"
         color="gray.100"
-        _light={{ color: 'gray.800' }}
         fontFamily="mono"
       >
         <code>{command}</code>

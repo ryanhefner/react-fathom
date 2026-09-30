@@ -27,7 +27,7 @@ export function Navbar({ searchRecords }: NavbarProps) {
           <HStack gap={8}>
             <SiteLink
               href="/"
-              fontWeight="bold"
+              fontWeight={500}
               fontSize="lg"
               _hover={{ textDecoration: 'none' }}
             >

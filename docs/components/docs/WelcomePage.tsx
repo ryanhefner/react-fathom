@@ -49,11 +49,12 @@ export function WelcomePage() {
         </Text>
         <Box
           as="pre"
-          bg="bg.subtle"
+          bg="black"
           borderRadius="md"
           borderWidth="1px"
           fontFamily="mono"
           fontSize="sm"
+          color="gray.100"
           maxW="full"
           overflowX="auto"
           px={4}

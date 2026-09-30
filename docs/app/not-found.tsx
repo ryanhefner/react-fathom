@@ -34,7 +34,7 @@ function SimpleNavbar() {
         <Flex justify="space-between" align="center">
           <SiteLink
             href="/"
-            fontWeight="bold"
+            fontWeight={500}
             fontSize="lg"
             _hover={{ textDecoration: 'none' }}
           >

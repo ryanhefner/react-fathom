@@ -5,6 +5,8 @@ import { useRef, useState, type ComponentProps } from 'react'
 import { useFathom } from '@/lib/fathom'
 import { Box, chakra, IconButton } from '@chakra-ui/react'
 
+import { CopyCompleteIcon, CopyStackIcon } from './CopyIcons'
+
 // Pre component for rehype-pretty-code
 export function Pre({ children, ...props }: ComponentProps<'pre'>) {
   const [copied, setCopied] = useState(false)
@@ -22,7 +24,7 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
   return (
     <Box position="relative">
       <IconButton
-        aria-label="Copy code"
+        aria-label={copied ? 'Code copied' : 'Copy code'}
         size="xs"
         variant="ghost"
         color="gray.400"
@@ -33,11 +35,13 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
         zIndex={1}
         onClick={handleCopy}
       >
-        {copied ? '✓' : '📋'}
+        {copied ? <CopyCompleteIcon /> : <CopyStackIcon />}
       </IconButton>
       <chakra.pre
         ref={preRef}
+        bg="black"
         borderRadius="lg"
+        color="gray.100"
         fontSize="sm"
         lineHeight="1.625"
         overflowX="auto"
@@ -55,10 +59,10 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
             px: 4,
           },
           '& [data-highlighted-line]': {
-            bg: 'bg.emphasized',
+            bg: 'whiteAlpha.100',
           },
           '& [data-highlighted-chars]': {
-            bg: 'bg.muted',
+            bg: 'whiteAlpha.200',
             borderRadius: 'sm',
             px: 1,
             py: 0.5,
@@ -67,21 +71,13 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
             counterReset: 'line',
           },
           '& [data-line-numbers] > [data-line]::before': {
-            color: 'fg.subtle',
+            color: 'gray.500',
             content: 'counter(line)',
             counterIncrement: 'line',
             display: 'inline-block',
             mr: 6,
             textAlign: 'right',
             w: 4,
-          },
-          '& [data-theme] span': {
-            color: 'var(--shiki-light)',
-          },
-          _dark: {
-            '& [data-theme] span': {
-              color: 'var(--shiki-dark)',
-            },
           },
         }}
         {...props}
@@ -102,7 +98,7 @@ export function Figure({ children, ...props }: ComponentProps<'figure'>) {
 
   return (
     <chakra.figure
-      bg="bg.subtle"
+      bg="black"
       borderRadius="lg"
       my={4}
       overflow="hidden"
@@ -126,10 +122,10 @@ export function Figcaption({
 
   return (
     <chakra.figcaption
-      bg="bg.muted"
-      borderBottomColor="border"
+      bg="gray.950"
+      borderBottomColor="gray.800"
       borderBottomWidth="1px"
-      color="fg.muted"
+      color="gray.400"
       display="flex"
       fontFamily="mono"
       fontSize="sm"
