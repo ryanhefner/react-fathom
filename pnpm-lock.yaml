@@ -498,6 +498,12 @@ importers:
 
   examples/react:
     dependencies:
+      '@chakra-ui/react':
+        specifier: ^3.2.0
+        version: 3.37.0(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@emotion/react':
+        specifier: ^11.13.0
+        version: 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@react-fathom/example-ui':
         specifier: workspace:*
         version: link:../shared
@@ -617,6 +623,12 @@ importers:
 
   examples/tanstack-router:
     dependencies:
+      '@chakra-ui/react':
+        specifier: ^3.2.0
+        version: 3.37.0(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@emotion/react':
+        specifier: ^11.13.0
+        version: 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@react-fathom/example-ui':
         specifier: workspace:*
         version: link:../shared
