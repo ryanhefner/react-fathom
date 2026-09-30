@@ -43,7 +43,10 @@ export interface DocPage {
 type MetaValue = string | { title: string; [key: string]: unknown }
 type MetaFile = Record<string, MetaValue>
 
-const CONTENT_DIR = path.join(process.cwd(), 'content')
+export const DOCS_ROOT = fs.existsSync(path.join(process.cwd(), 'content'))
+  ? process.cwd()
+  : path.join(process.cwd(), 'docs')
+const CONTENT_DIR = path.join(DOCS_ROOT, 'content')
 const DOCS_BASE_PATH = '/docs'
 
 function loadMeta(dir: string): MetaFile | null {
@@ -313,7 +316,7 @@ export function getLastUpdated(slug: string[]): string | null {
     // Get the last commit date for this file
     const result = execSync(`git log -1 --format=%cI -- "${filePath}"`, {
       encoding: 'utf-8',
-      cwd: process.cwd(),
+      cwd: DOCS_ROOT,
     }).trim()
 
     if (!result) return null
