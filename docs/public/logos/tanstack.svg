@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 633 633">
+  <defs>
+    <linearGradient id="tanstack-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6BDAFF"/>
+      <stop offset="50%" style="stop-color:#F9FFB5"/>
+      <stop offset="100%" style="stop-color:#FFA5BA"/>
+    </linearGradient>
+  </defs>
+  <circle cx="316.5" cy="316.5" r="316.5" fill="url(#tanstack-gradient)"/>
+  <path d="M197.5 319.5C197.5 247.6 255.6 189.5 327.5 189.5C399.4 189.5 457.5 247.6 457.5 319.5C457.5 391.4 399.4 449.5 327.5 449.5" stroke="#23272F" stroke-width="40" fill="none" stroke-linecap="round"/>
+  <circle cx="327.5" cy="189.5" r="32" fill="#23272F"/>
+  <circle cx="197.5" cy="319.5" r="32" fill="#23272F"/>
+  <circle cx="327.5" cy="449.5" r="32" fill="#23272F"/>
+</svg>

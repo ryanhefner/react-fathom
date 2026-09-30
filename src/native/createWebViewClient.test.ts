@@ -31,6 +31,7 @@ describe('createWebViewClient', () => {
       expect(client.isTrackingEnabled).toBeDefined()
       expect(client.processQueue).toBeDefined()
       expect(client.getQueueLength).toBeDefined()
+      expect(client.setWebViewRef).toBeDefined()
       expect(client.setWebViewReady).toBeDefined()
     })
 
@@ -42,6 +43,25 @@ describe('createWebViewClient', () => {
     it('should start with empty queue', () => {
       const client = createWebViewClient(() => null)
       expect(client.getQueueLength()).toBe(0)
+    })
+
+    it('should accept a React-style ref object', () => {
+      const mockRef = createMockWebViewRef(true)
+      const client = createWebViewClient({ current: mockRef })
+
+      client.trackEvent('button-click')
+
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', undefined)
+    })
+
+    it('should allow attaching a WebView after client creation', () => {
+      const mockRef = createMockWebViewRef(true)
+      const client = createWebViewClient(() => null)
+
+      client.setWebViewRef(mockRef)
+      client.trackEvent('button-click')
+
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', undefined)
     })
   })
 
@@ -61,7 +81,9 @@ describe('createWebViewClient', () => {
 
       client.trackEvent('button-click', { _value: 100 })
 
-      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', { _value: 100 })
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', {
+        _value: 100,
+      })
     })
 
     it('should call trackGoal on WebView immediately', () => {
@@ -148,7 +170,9 @@ describe('createWebViewClient', () => {
       client.setWebViewReady()
 
       expect(mockRef.trackPageview).toHaveBeenCalledWith({ url: '/test' })
-      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', { _value: 100 })
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', {
+        _value: 100,
+      })
       expect(client.getQueueLength()).toBe(0)
     })
 
@@ -200,6 +224,22 @@ describe('createWebViewClient', () => {
       expect(mockRef.trackEvent).toHaveBeenCalledTimes(2)
       expect(mockRef.trackEvent).toHaveBeenCalledWith('event2', undefined)
       expect(mockRef.trackEvent).toHaveBeenCalledWith('event3', undefined)
+    })
+
+    it('should disable queuing when maxQueueSize is zero or negative', () => {
+      const mockRef = createMockWebViewRef(false)
+      const zeroQueueClient = createWebViewClient(() => mockRef, {
+        maxQueueSize: 0,
+      })
+      const negativeQueueClient = createWebViewClient(() => mockRef, {
+        maxQueueSize: -1,
+      })
+
+      zeroQueueClient.trackEvent('event1')
+      negativeQueueClient.trackEvent('event2')
+
+      expect(zeroQueueClient.getQueueLength()).toBe(0)
+      expect(negativeQueueClient.getQueueLength()).toBe(0)
     })
   })
 

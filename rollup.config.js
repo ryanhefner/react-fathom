@@ -1,11 +1,10 @@
 import { createRequire } from 'module'
 
-import { terser } from 'rollup-plugin-terser'
-
 import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import nodeResolve from '@rollup/plugin-node-resolve'
+import terser from '@rollup/plugin-terser'
 
 const require = createRequire(import.meta.url)
 const pkg = require('./package.json')
@@ -17,7 +16,7 @@ const defaultOutputOptions = {
     'fathom-client': 'Fathom',
     react: 'React',
   },
-  banner: `/*! ${pkg.name} - ${pkg.version} !*/`,
+  banner: `'use client';\n/*! ${pkg.name} - ${pkg.version} !*/`,
   footer: `/* Copyright ${new Date().getFullYear()} - ${pkg.author} */`,
   sourcemap: true,
 }
@@ -25,9 +24,8 @@ const defaultOutputOptions = {
 // Babel configuration inline (replaces .babelrc)
 const getBabelConfig = () => {
   const plugins = [
-    '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-proposal-object-rest-spread',
-    '@babel/plugin-syntax-import-assertions',
+    '@babel/plugin-transform-class-properties',
+    '@babel/plugin-transform-object-rest-spread',
     '@babel/plugin-transform-runtime',
   ]
 
@@ -116,7 +114,11 @@ const makeExternal = (baseExternals) => (id) => {
     return true
   }
   // Check if it's in the base externals list
-  if (baseExternals.includes(id)) {
+  if (
+    baseExternals.some(
+      (packageName) => id === packageName || id.startsWith(`${packageName}/`),
+    )
+  ) {
     return true
   }
   // Check if it's a path to a Node.js built-in (e.g., 'node:fs')
@@ -130,18 +132,38 @@ const makeExternal = (baseExternals) => (id) => {
 }
 
 const external = ['fathom-client', 'react']
-const nextExternal = [
-  'fathom-client',
-  'react',
-  'next/router',
-  'next/compat/router',
-  'next/navigation',
-]
-const nativeExternal = ['react', 'react-native']
+const packageExternal = Object.keys(pkg.peerDependencies)
 
 const input = 'src/index.ts'
+const debugInput = 'src/debug/index.ts'
 const nextInput = 'src/next/index.ts'
 const nativeInput = 'src/native/index.ts'
+const reactRouterInput = 'src/react-router/index.ts'
+const gatsbyInput = 'src/gatsby/index.ts'
+const tanstackRouterInput = 'src/tanstack-router/index.ts'
+
+const packageInputs = {
+  index: input,
+  'debug/index': debugInput,
+  'next/index': nextInput,
+  'native/index': nativeInput,
+  'react-router/index': reactRouterInput,
+  'gatsby/index': gatsbyInput,
+  'tanstack-router/index': tanstackRouterInput,
+}
+
+const onwarn = (warning, warn) => {
+  // Source directives are intentionally replaced by the output banner so the
+  // published ESM and CJS entrypoints both retain the client boundary.
+  if (
+    warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
+    warning.message.includes('use client')
+  ) {
+    return
+  }
+
+  warn(warning)
+}
 
 export default [
   // UMD - Minified
@@ -166,76 +188,31 @@ export default [
     external: makeExternal(external),
     plugins: [...defaultPlugins],
   },
-  // ES - index
+  // ES modules are emitted together so every public entrypoint imports the
+  // same shared context/runtime chunks.
   {
-    input,
+    input: packageInputs,
     output: {
       ...defaultOutputOptions,
       dir: 'dist/es',
       format: 'esm',
       entryFileNames: '[name].js',
+      chunkFileNames: '_chunks/[name]-[hash].js',
     },
-    external: makeExternal(external),
+    external: makeExternal(packageExternal),
     plugins: defaultPlugins,
   },
-  // CJS - index
+  // CommonJS modules share the same runtime for require() consumers as well.
   {
-    input,
+    input: packageInputs,
     output: {
       ...defaultOutputOptions,
       dir: 'dist/cjs',
       format: 'cjs',
       entryFileNames: '[name].cjs',
+      chunkFileNames: '_chunks/[name]-[hash].cjs',
     },
-    external: makeExternal(external),
+    external: makeExternal(packageExternal),
     plugins: defaultPlugins,
   },
-  // ES - next
-  {
-    input: nextInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/next',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(nextExternal),
-    plugins: defaultPlugins,
-  },
-  // CJS - next
-  {
-    input: nextInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/next',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(nextExternal),
-    plugins: defaultPlugins,
-  },
-  // ES - native
-  {
-    input: nativeInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/native',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(nativeExternal),
-    plugins: defaultPlugins,
-  },
-  // CJS - native
-  {
-    input: nativeInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/native',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(nativeExternal),
-    plugins: defaultPlugins,
-  },
-]
+].map((config) => ({ ...config, onwarn }))

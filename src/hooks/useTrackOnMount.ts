@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import type { PageViewOptions } from 'fathom-client'
 
-import { useFathom } from './useFathom'
+import { useFathom } from './useFathom.js'
 
 /**
  * Hook to track a pageview when a component mounts

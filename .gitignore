@@ -5,6 +5,7 @@ node_modules
 coverage
 dist
 types
+*.tsbuildinfo
 
 # Include Rollup config
 !rollup.config.js

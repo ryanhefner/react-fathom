@@ -1,10 +1,10 @@
 import React from 'react'
 import type { ComponentType } from 'react'
 
-import { FathomProvider } from '../../FathomProvider'
-import type { FathomProviderProps } from '../../types'
-import { NextFathomTrackViewApp } from '../NextFathomTrackViewApp'
-import type { NextFathomProviderProps } from '../types'
+import { FathomProvider } from '../../FathomProvider.js'
+import type { FathomProviderProps } from '../../types.js'
+import { NextFathomTrackViewApp } from '../NextFathomTrackViewApp.js'
+import type { NextFathomProviderProps } from '../types.js'
 
 /**
  * Higher-order component that wraps your Next.js App Router app with FathomProvider

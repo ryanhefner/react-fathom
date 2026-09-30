@@ -1,0 +1,37 @@
+packages:
+  - docs
+  - examples/*
+autoInstallPeers: false
+overrides:
+  '@types/react': 19.3.0
+  '@types/react-dom': 19.2.3
+  js-yaml: 3.15.2
+  'babel-plugin-macros>yaml': 1.10.3
+  'vfile-matter>yaml': 2.8.3
+packageExtensions:
+  'expo-router@4':
+    peerDependencies:
+      react: '*'
+      react-dom: '*'
+minimumReleaseAgeExclude:
+  - '@next/env@16.3.7'
+  - '@next/swc-darwin-arm64@16.3.7'
+  - '@next/swc-darwin-x64@16.3.7'
+  - '@next/swc-linux-arm64-gnu@16.3.7'
+  - '@next/swc-linux-arm64-musl@16.3.7'
+  - '@next/swc-linux-x64-gnu@16.3.7'
+  - '@next/swc-linux-x64-musl@16.3.7'
+  - '@next/swc-win32-arm64-msvc@16.3.7'
+  - '@next/swc-win32-x64-msvc@16.3.7'
+  - next@16.3.7
+allowBuilds:
+  '@parcel/watcher': true
+  core-js: true
+  core-js-pure: true
+  es5-ext: true
+  esbuild: true
+  gatsby: true
+  gatsby-cli: true
+  lmdb: true
+  msgpackr-extract: true
+  sharp: true

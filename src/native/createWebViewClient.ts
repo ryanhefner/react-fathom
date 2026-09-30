@@ -1,5 +1,10 @@
-import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from '../types'
-import type { FathomWebViewRef } from './FathomWebView'
+import type {
+  EventOptions,
+  FathomClient,
+  LoadOptions,
+  PageViewOptions,
+} from '../types.js'
+import type { FathomWebViewRef } from './FathomWebView.js'
 
 export interface WebViewClientOptions {
   /**
@@ -55,18 +60,31 @@ interface QueuedCommand {
 export interface WebViewFathomClient extends FathomClient {
   processQueue: () => number
   getQueueLength: () => number
+  setWebViewRef: (webViewRef: FathomWebViewRef | null) => void
   setWebViewReady: () => void
 }
 
+export type WebViewRefSource =
+  | (() => FathomWebViewRef | null | undefined)
+  | { readonly current: FathomWebViewRef | null | undefined }
+
 export function createWebViewClient(
-  getWebViewRef: () => FathomWebViewRef | null | undefined,
+  webViewRefSource: WebViewRefSource,
   options: WebViewClientOptions = {},
 ): WebViewFathomClient {
   const { debug = false, enableQueue = true, maxQueueSize = 100 } = options
+  const queueLimit = Number.isFinite(maxQueueSize)
+    ? Math.max(0, Math.floor(maxQueueSize))
+    : 100
 
   let isTrackingBlocked = false
-  let currentSiteId: string | undefined
-  let isLoaded = false
+  let attachedWebViewRef: FathomWebViewRef | null | undefined
+
+  const getWebViewRef = () =>
+    attachedWebViewRef ??
+    (typeof webViewRefSource === 'function'
+      ? webViewRefSource()
+      : webViewRefSource.current)
 
   // Queue for commands sent before WebView is ready
   const commandQueue: QueuedCommand[] = []
@@ -87,12 +105,12 @@ export function createWebViewClient(
    * Queue a command for later execution
    */
   const queueCommand = (type: QueuedCommand['type'], args: unknown[]) => {
-    if (!enableQueue) {
+    if (!enableQueue || queueLimit === 0) {
       warn('Queue disabled, dropping command:', type)
       return
     }
 
-    if (commandQueue.length >= maxQueueSize) {
+    if (commandQueue.length >= queueLimit) {
       commandQueue.shift()
       log('Queue full, removed oldest command')
     }
@@ -103,7 +121,7 @@ export function createWebViewClient(
       timestamp: Date.now(),
     })
 
-    log(`Command queued (${commandQueue.length}/${maxQueueSize}):`, type)
+    log(`Command queued (${commandQueue.length}/${queueLimit}):`, type)
   }
 
   /**
@@ -167,10 +185,8 @@ export function createWebViewClient(
   }
 
   const client: WebViewFathomClient = {
-    load: (siteId: string, opts?: LoadOptions) => {
-      currentSiteId = siteId
-      isLoaded = true
-      log('Client loaded with site ID:', siteId)
+    load: (siteId: string, loadOptions?: LoadOptions) => {
+      log('Client loaded with site ID:', siteId, loadOptions)
 
       // Process any queued commands now that we're "loaded"
       // (actual WebView readiness is separate)
@@ -217,7 +233,6 @@ export function createWebViewClient(
     },
 
     setSite: (id: string) => {
-      currentSiteId = id
       log('Site ID changed to:', id)
       // Note: The WebView loads with a specific site ID, so changing it
       // at runtime would require reloading the WebView
@@ -256,6 +271,10 @@ export function createWebViewClient(
     processQueue,
 
     getQueueLength: () => commandQueue.length,
+
+    setWebViewRef: (webViewRef) => {
+      attachedWebViewRef = webViewRef
+    },
 
     /**
      * Call this when the WebView signals it's ready.

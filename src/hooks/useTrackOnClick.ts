@@ -3,7 +3,7 @@ import type { MouseEvent } from 'react'
 
 import type { EventOptions } from 'fathom-client'
 
-import { useFathom } from './useFathom'
+import { useFathom } from './useFathom.js'
 
 export interface UseTrackOnClickOptions extends EventOptions {
   /**

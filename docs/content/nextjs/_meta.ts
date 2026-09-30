@@ -1,0 +1,5 @@
+export default {
+  index: 'Overview',
+  'app-router': 'App Router',
+  'pages-router': 'Pages Router',
+}

@@ -1,0 +1,181 @@
+task = []
+
+[workspace]
+name = "react-fathom"
+tld = "test"
+root_domain = "react-fathom"
+
+[workspace.service_defaults]
+package_manager = "pnpm"
+mode = "lazy"
+
+[workspace.service_defaults.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"
+
+[derive]
+
+[worktree]
+copy = []
+link = []
+setup = []
+
+[tasks]
+
+[[unit]]
+name = "react-fathom-docs"
+working_dir = "docs"
+command = "pnpm dev"
+package_manager = "pnpm"
+port = 4810
+hostnames = ["react-fathom.test"]
+mode = "lazy"
+subtype = "app"
+role = "site"
+source = "byo"
+enabled = true
+id = "unt_wks_workspace_users_ryanhefner_code_open_source_react_fathom_react_fathom_docs"
+
+[unit.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"
+
+[unit.launch]
+application = "react-fathom-docs"
+target = "server"
+surface = "web"
+framework = "nextjs"
+
+[[unit]]
+name = "react-fathom-react-native-example-web"
+working_dir = "examples/react-native"
+command = "pnpm web -- --port $PORT"
+package_manager = "pnpm"
+port = 4816
+hostnames = ["native.react-fathom.test"]
+mode = "lazy"
+subtype = "app"
+role = "site"
+source = "byo"
+enabled = true
+id = "unt_wks_workspace_users_ryanhefner_code_open_source_react_fathom_react_fathom_react_native_example_web"
+
+[unit.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"
+
+[unit.launch]
+application = "react-fathom-react-native-example"
+target = "web"
+surface = "web"
+framework = "expo"
+
+[[unit]]
+name = "next-app-example"
+working_dir = "examples/next-app"
+command = "pnpm dev"
+package_manager = "pnpm"
+port = 4811
+hostnames = ["next-app.react-fathom.test"]
+mode = "lazy"
+subtype = "app"
+role = "site"
+source = "byo"
+enabled = true
+id = "unt_wks_workspace_users_ryanhefner_code_open_source_react_fathom_next_app_example"
+
+[unit.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"
+
+[unit.launch]
+application = "next-app-example"
+target = "server"
+surface = "web"
+framework = "nextjs"
+
+[[unit]]
+name = "next-pages-example"
+working_dir = "examples/next-pages"
+command = "pnpm dev"
+package_manager = "pnpm"
+port = 4812
+hostnames = ["next-pages.react-fathom.test"]
+mode = "lazy"
+subtype = "app"
+role = "site"
+source = "byo"
+enabled = true
+id = "unt_wks_workspace_users_ryanhefner_code_open_source_react_fathom_next_pages_example"
+
+[unit.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"
+
+[unit.launch]
+application = "next-pages-example"
+target = "server"
+surface = "web"
+framework = "nextjs"
+
+[[unit]]
+name = "react-fathom-gatsby-example"
+working_dir = "examples/gatsby"
+command = "pnpm develop -- --host 0.0.0.0 --port $PORT"
+package_manager = "pnpm"
+port = 4815
+hostnames = ["gatsby.react-fathom.test"]
+mode = "lazy"
+subtype = "app"
+role = "site"
+source = "byo"
+enabled = true
+id = "unt_wks_workspace_users_ryanhefner_code_open_source_react_fathom_react_fathom_gatsby_example"
+
+[unit.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"
+
+[[unit]]
+name = "react-fathom-tanstack-router-example"
+working_dir = "examples/tanstack-router"
+command = "pnpm dev -- --host 0.0.0.0 --port $PORT"
+package_manager = "pnpm"
+port = 4814
+hostnames = ["tanstack.react-fathom.test"]
+mode = "lazy"
+subtype = "app"
+role = "site"
+source = "byo"
+enabled = true
+id = "unt_wks_workspace_users_ryanhefner_code_open_source_react_fathom_react_fathom_tanstack_router_example"
+
+[unit.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"
+
+[[unit]]
+name = "react-fathom-react-example"
+working_dir = "examples/react"
+command = "pnpm dev -- --host 0.0.0.0 --port $PORT"
+package_manager = "pnpm"
+port = 4813
+hostnames = ["react.react-fathom.test"]
+mode = "lazy"
+subtype = "app"
+role = "site"
+source = "byo"
+enabled = true
+id = "unt_wks_workspace_users_ryanhefner_code_open_source_react_fathom_react_fathom_react_example"
+
+[unit.runtime]
+kind = "node"
+version = "24.21.0"
+manager = "nvm"

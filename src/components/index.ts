@@ -1,3 +1,3 @@
-export * from './TrackClick'
-export * from './TrackPageview'
-export * from './TrackVisible'
+export * from './TrackClick.js'
+export * from './TrackPageview.js'
+export * from './TrackVisible.js'

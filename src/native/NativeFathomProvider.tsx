@@ -1,10 +1,13 @@
-import React, { useMemo, useRef, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 
-import { FathomProvider } from '../FathomProvider'
-import { FathomWebView, type FathomWebViewRef } from './FathomWebView'
-import { createWebViewClient, type WebViewFathomClient } from './createWebViewClient'
-import { useAppStateTracking } from './useAppStateTracking'
-import type { NativeFathomProviderProps } from './types'
+import { FathomProvider } from '../FathomProvider.js'
+import {
+  createWebViewClient,
+  type WebViewFathomClient,
+} from './createWebViewClient.js'
+import { FathomWebView, type FathomWebViewRef } from './FathomWebView.js'
+import type { NativeFathomProviderProps } from './types.js'
+import { useAppStateTracking } from './useAppStateTracking.js'
 
 /**
  * Internal component that handles app state tracking
@@ -63,12 +66,10 @@ export const NativeFathomProvider: React.FC<NativeFathomProviderProps> = ({
   clientRef,
   children,
 }) => {
-  const webViewRef = useRef<FathomWebViewRef>(null)
-
   // Create the WebView-based client
   const client = useMemo(
     (): WebViewFathomClient =>
-      createWebViewClient(() => webViewRef.current, {
+      createWebViewClient(() => null, {
         debug,
         enableQueue: true,
         maxQueueSize: 100,
@@ -76,10 +77,23 @@ export const NativeFathomProvider: React.FC<NativeFathomProviderProps> = ({
     [debug],
   )
 
+  const setWebViewRef = useCallback(
+    (instance: FathomWebViewRef | null) => {
+      client.setWebViewRef(instance)
+    },
+    [client],
+  )
+
   // Populate the clientRef so the parent component can access the client
   useEffect(() => {
     if (clientRef) {
       clientRef.current = client
+
+      return () => {
+        if (clientRef.current === client) {
+          clientRef.current = null
+        }
+      }
     }
   }, [client, clientRef])
 
@@ -90,15 +104,24 @@ export const NativeFathomProvider: React.FC<NativeFathomProviderProps> = ({
     onReady?.()
   }, [client, onReady])
 
+  const handleClientError = useCallback(
+    (error: unknown) => {
+      onError?.(error instanceof Error ? error.message : String(error))
+    },
+    [onError],
+  )
+
   return (
     <FathomProvider
       client={client}
       siteId={siteId}
+      clientOptions={loadOptions}
       defaultPageviewOptions={defaultPageviewOptions}
       defaultEventOptions={defaultEventOptions}
+      onError={handleClientError}
     >
       <FathomWebView
-        ref={webViewRef}
+        ref={setWebViewRef}
         siteId={siteId}
         loadOptions={loadOptions}
         scriptDomain={scriptDomain}

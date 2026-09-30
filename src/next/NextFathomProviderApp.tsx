@@ -1,10 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { Suspense } from 'react'
 
-import { FathomProvider } from '../FathomProvider'
-import type { FathomProviderProps } from '../types'
-import { NextFathomTrackViewApp } from './NextFathomTrackViewApp'
+import { FathomProvider } from '../FathomProvider.js'
+import type { FathomProviderProps } from '../types.js'
+import { NextFathomTrackViewApp } from './NextFathomTrackViewApp.js'
 
 export interface NextFathomProviderAppProps extends Omit<
   FathomProviderProps,
@@ -53,7 +53,9 @@ export const NextFathomProviderApp: React.FC<NextFathomProviderAppProps> = ({
 }) => {
   return (
     <FathomProvider {...fathomProviderProps}>
-      <NextFathomTrackViewApp disableAutoTrack={disableAutoTrack} />
+      <Suspense fallback={null}>
+        <NextFathomTrackViewApp disableAutoTrack={disableAutoTrack} />
+      </Suspense>
       {children}
     </FathomProvider>
   )
