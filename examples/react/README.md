@@ -25,7 +25,7 @@ Visit [react.react-fathom.com](https://react.react-fathom.com) to see this examp
 2. Install dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Create a `.env` file with your Fathom site ID:
@@ -38,7 +38,7 @@ Visit [react.react-fathom.com](https://react.react-fathom.com) to see this examp
 4. Start the development server:
 
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 5. Open [http://localhost:5173](http://localhost:5173)

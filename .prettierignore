@@ -12,3 +12,4 @@ examples/gatsby/public
 **/routeTree.gen.ts
 *.min.js
 *.lock
+pnpm-lock.yaml

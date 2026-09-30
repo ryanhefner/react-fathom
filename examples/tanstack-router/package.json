@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-fathom/example-ui": "file:../shared",
+    "@react-fathom/example-ui": "workspace:*",
     "@tanstack/react-router": "^1.120.3",
     "fathom-client": "^3.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-fathom": "link:../.."
+    "react-fathom": "workspace:*"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.120.3",

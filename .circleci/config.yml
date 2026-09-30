@@ -7,57 +7,47 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-            - v2-root-dependencies-{{ checksum "yarn.lock" }}
-            - v2-root-dependencies-
-
       - run:
-          name: Install package dependencies
-          command: yarn install --frozen-lockfile
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v2-root-dependencies-{{ checksum "yarn.lock" }}
+          name: Enable pnpm
+          command: corepack enable
 
       - restore_cache:
           keys:
-            - v2-docs-dependencies-{{ checksum "docs/yarn.lock" }}
-            - v2-docs-dependencies-
+            - v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
+            - v3-pnpm-dependencies-
 
       - run:
-          name: Install docs dependencies
-          command: yarn --cwd docs install --frozen-lockfile
+          name: Install workspace dependencies
+          command: pnpm install --frozen-lockfile
 
       - save_cache:
           paths:
-            - docs/node_modules
-          key: v2-docs-dependencies-{{ checksum "docs/yarn.lock" }}
+            - ~/.local/share/pnpm/store
+          key: v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
 
       - run:
           name: Audit dependencies
-          command: yarn security:audit
+          command: pnpm security:audit
 
       - run:
           name: Check formatting
-          command: yarn format:check
+          command: pnpm format:check
 
       - run:
           name: Lint
-          command: yarn lint
+          command: pnpm lint
 
       - run:
           name: Test with coverage
-          command: yarn test:ci
+          command: pnpm test:ci
 
       - run:
           name: Verify packed package
-          command: yarn release:smoke
+          command: pnpm release:smoke
 
       - run:
           name: Build documentation
-          command: yarn --cwd docs build
+          command: pnpm --dir docs build
 
   build-examples:
     docker:
@@ -65,51 +55,48 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Enable pnpm
+          command: corepack enable
+
       - restore_cache:
           keys:
-            - v2-root-dependencies-{{ checksum "yarn.lock" }}
-            - v2-root-dependencies-
+            - v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
+            - v3-pnpm-dependencies-
 
       - run:
-          name: Install package dependencies
-          command: yarn install --frozen-lockfile
+          name: Install workspace dependencies
+          command: pnpm install --frozen-lockfile
 
       - save_cache:
           paths:
-            - node_modules
-          key: v2-root-dependencies-{{ checksum "yarn.lock" }}
+            - ~/.local/share/pnpm/store
+          key: v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
 
       - run:
           name: Build package
-          command: yarn build
-
-      - run:
-          name: Install example dependencies
-          command: |
-            for example in next-app next-pages react tanstack-router gatsby react-native; do
-              yarn --cwd "examples/${example}" install --no-lockfile
-            done
+          command: pnpm build
 
       - run:
           name: Build browser examples
           command: |
-            yarn --cwd examples/next-app build
-            yarn --cwd examples/next-pages build
-            yarn --cwd examples/react build
-            yarn --cwd examples/tanstack-router build
+            pnpm --dir examples/next-app build
+            pnpm --dir examples/next-pages build
+            pnpm --dir examples/react build
+            pnpm --dir examples/tanstack-router build
 
       - run:
           name: Build Gatsby example
           command: |
             GATSBY_TELEMETRY_DISABLED=1 \
               XDG_CONFIG_HOME=/tmp/react-fathom-gatsby-config \
-              yarn --cwd examples/gatsby build
+              pnpm --dir examples/gatsby build
 
       - run:
           name: Validate Expo example
           command: |
-            yarn --cwd examples/react-native typecheck
-            EXPO_NO_TELEMETRY=1 yarn --cwd examples/react-native build:web
+            pnpm --dir examples/react-native typecheck
+            EXPO_NO_TELEMETRY=1 pnpm --dir examples/react-native build:web
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows

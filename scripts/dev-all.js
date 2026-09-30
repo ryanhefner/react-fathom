@@ -30,7 +30,7 @@ const sites = [
   {
     name: 'docs',
     dir: 'docs',
-    command: 'npm',
+    command: 'pnpm',
     args: ['run', 'dev', '--', '-p', '3000'],
     port: 3000,
     color: '\x1b[36m', // cyan
@@ -38,7 +38,7 @@ const sites = [
   {
     name: 'next-app',
     dir: 'examples/next-app',
-    command: 'npm',
+    command: 'pnpm',
     args: ['run', 'dev', '--', '-p', '3001'],
     port: 3001,
     color: '\x1b[33m', // yellow
@@ -46,7 +46,7 @@ const sites = [
   {
     name: 'next-pages',
     dir: 'examples/next-pages',
-    command: 'npm',
+    command: 'pnpm',
     args: ['run', 'dev', '--', '-p', '3002'],
     port: 3002,
     color: '\x1b[35m', // magenta
@@ -54,7 +54,7 @@ const sites = [
   {
     name: 'react',
     dir: 'examples/react',
-    command: 'npm',
+    command: 'pnpm',
     args: ['run', 'dev', '--', '--port', '3003'],
     port: 3003,
     color: '\x1b[32m', // green
@@ -62,7 +62,7 @@ const sites = [
   {
     name: 'tanstack',
     dir: 'examples/tanstack-router',
-    command: 'npm',
+    command: 'pnpm',
     args: ['run', 'dev', '--', '--port', '3004'],
     port: 3004,
     color: '\x1b[34m', // blue
@@ -70,7 +70,7 @@ const sites = [
   {
     name: 'gatsby',
     dir: 'examples/gatsby',
-    command: 'npm',
+    command: 'pnpm',
     args: ['run', 'develop', '--', '-p', '3005'],
     port: 3005,
     color: '\x1b[31m', // red

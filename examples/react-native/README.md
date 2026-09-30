@@ -25,7 +25,7 @@ Visit [native.react-fathom.com](https://native.react-fathom.com) to see the web 
 2. Install dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Create a `.env` file with your Fathom site ID:
@@ -37,7 +37,7 @@ Visit [native.react-fathom.com](https://native.react-fathom.com) to see the web 
 4. Start the development server:
 
    ```bash
-   npm start
+   pnpm start
    ```
 
 5. Run on your device or simulator:

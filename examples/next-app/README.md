@@ -25,7 +25,7 @@ The Next.js App Router introduces React Server Components, which require special
 ### 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Configure Fathom
@@ -39,7 +39,7 @@ NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
 ### 3. Run the app
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see it in action.

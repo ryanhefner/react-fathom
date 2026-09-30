@@ -22,31 +22,31 @@ Contributions are welcome! Whether it's bug fixes, new features, documentation i
 ### Prerequisites
 
 - Node.js 20+ (the repository pins Node.js 24.21.0 in `.nvmrc`)
-- Yarn 1.22.19
+- pnpm 12.8.1 (managed through Corepack)
 
 ### 1. Clone and Install
 
 ```bash
 git clone https://github.com/ryanhefner/react-fathom.git
 cd react-fathom
-yarn install --frozen-lockfile
-yarn --cwd docs install --frozen-lockfile
+corepack enable
+pnpm install --frozen-lockfile
 ```
 
 ### 2. Development Workflow
 
 ```bash
 # Run tests in watch mode during development
-yarn vitest
+pnpm exec vitest
 
 # Run tests with coverage
-yarn test:ci
+pnpm test:ci
 
 # Build the package
-yarn build
+pnpm build
 
 # Run every release validation, including a clean packed consumer
-yarn release:check
+pnpm release:check
 ```
 
 ## Project Structure
@@ -91,13 +91,13 @@ We use [Vitest](https://vitest.dev/) for testing. All new features should includ
 
 ```bash
 # Run all tests
-yarn test:ci
+pnpm test:ci
 
 # Run tests in watch mode
-yarn vitest
+pnpm exec vitest
 
 # Run a focused test file
-yarn vitest run src/FathomProvider.test.tsx
+pnpm exec vitest run src/FathomProvider.test.tsx
 ```
 
 ### Writing Tests
@@ -138,8 +138,8 @@ describe('useMyHook', () => {
 ## Code Style
 
 - **TypeScript**: All code should be fully typed
-- **Formatting**: We use Prettier (run `yarn format` before committing)
-- **Linting**: ESLint catches common issues (run `yarn lint`)
+- **Formatting**: We use Prettier (run `pnpm format` before committing)
+- **Linting**: ESLint catches common issues (run `pnpm lint`)
 - **Naming**:
   - Components: PascalCase (`TrackClick.tsx`)
   - Hooks: camelCase with `use` prefix (`useFathom.ts`)
@@ -158,7 +158,7 @@ describe('useMyHook', () => {
 4. **Add or update tests** for your changes
 5. **Ensure CI passes**:
    ```bash
-   yarn release:check
+   pnpm release:check
    ```
 6. **Submit a PR** with a clear description of what and why
 
@@ -181,8 +181,8 @@ Prefixes: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`
 The docs site uses Next.js and Chakra UI and lives in the `/docs` directory.
 
 ```bash
-yarn --cwd docs install --frozen-lockfile
-yarn --cwd docs dev
+pnpm install --frozen-lockfile
+pnpm --dir docs dev
 ```
 
 When adding new features, please also update the relevant documentation pages.
@@ -193,7 +193,7 @@ Run the complete release gate before changing the package version or creating a
 tag:
 
 ```bash
-yarn release:check
+pnpm release:check
 ```
 
 This command checks formatting and lint, runs the full suite with coverage,

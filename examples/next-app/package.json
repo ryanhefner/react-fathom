@@ -9,12 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@react-fathom/example-ui": "file:../shared",
+    "@react-fathom/example-ui": "workspace:*",
     "fathom-client": "^3.6.0",
     "next": "^16.1.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "react-fathom": "link:../.."
+    "react-fathom": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -164,15 +164,15 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run release:smoke",
+    "prepare": "pnpm build",
+    "prepublishOnly": "pnpm release:smoke",
     "prettier": "prettier --check .",
     "push-release": "git push origin main && git push --tags",
-    "security:audit": "yarn audit --level high && yarn --cwd docs audit --level high",
+    "security:audit": "pnpm --filter react-fathom --filter react-fathom-docs audit --prod --audit-level high",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
-    "release:smoke": "npm run build && node scripts/release-smoke.mjs",
-    "release:check": "npm run security:audit && npm run format:check && npm run lint && npm run test:ci && npm run release:smoke && yarn --cwd docs build",
+    "release:smoke": "pnpm build && node scripts/release-smoke.mjs",
+    "release:check": "pnpm security:audit && pnpm format:check && pnpm lint && pnpm test:ci && pnpm release:smoke && pnpm --dir docs build",
     "dev:all": "node scripts/dev-all.js",
     "dev:proxy": "node scripts/dev-all.js --proxy"
   },
@@ -211,6 +211,9 @@
       "optional": true
     }
   },
+  "dependencies": {
+    "@babel/runtime": "^7.29.7"
+  },
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@babel/plugin-transform-class-properties": "^7.29.7",
@@ -243,12 +246,15 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "fathom-client": "^3.6.0",
+    "gatsby": "^5.16.1",
     "globals": "^17.0.0",
     "jsdom": "^30.1.1",
     "next": "^16.3.7",
     "prettier": "^3.0.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-native": "^0.76.9",
+    "react-native-webview": "^13.12.5",
     "react-router-dom": "^7.18.4",
     "regenerator-runtime": "^0.14.0",
     "rimraf": "^6.1.3",
@@ -258,5 +264,5 @@
     "vite": "^8.3.1",
     "vitest": "^4.1.11"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "pnpm@12.8.1"
 }

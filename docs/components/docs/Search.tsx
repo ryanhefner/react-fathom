@@ -45,7 +45,7 @@ export function Search() {
           await pagefind.init()
           pagefindRef.current = pagefind
         } catch {
-          console.warn('Pagefind not available (run `npm run build` first)')
+          console.warn('Pagefind not available (run `pnpm build` first)')
         }
       }
       loadPagefind()
