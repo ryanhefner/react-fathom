@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { LuCheck, LuCopy } from 'react-icons/lu'
 
+import { useFathom } from '@/lib/fathom'
 import { Box, Flex, IconButton } from '@chakra-ui/react'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
@@ -23,6 +24,7 @@ const commands: Record<PackageManager, { install: string; devFlag: string }> = {
 export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
   const [manager, setManager] = useState<PackageManager>('npm')
   const [copied, setCopied] = useState(false)
+  const { trackEvent } = useFathom()
 
   const packageList = Array.isArray(packages) ? packages.join(' ') : packages
   const { install, devFlag } = commands[manager]
@@ -33,7 +35,13 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(command)
     setCopied(true)
+    trackEvent(`docs-package-command-copy-${manager}`)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleManagerChange = (nextManager: PackageManager) => {
+    setManager(nextManager)
+    trackEvent(`docs-package-manager-select-${nextManager}`)
   }
 
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
@@ -55,7 +63,7 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
             borderBottomWidth="2px"
             borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
             _hover={{ color: manager === m ? undefined : 'gray.200' }}
-            onClick={() => setManager(m)}
+            onClick={() => handleManagerChange(m)}
           >
             {m}
           </Box>
@@ -98,6 +106,7 @@ interface NpmToYarnProps {
 export function NpmToYarn({ children }: NpmToYarnProps) {
   const [manager, setManager] = useState<PackageManager>('npm')
   const [copied, setCopied] = useState(false)
+  const { trackEvent } = useFathom()
 
   // Transform npm command to other package managers
   const transformCommand = (cmd: string, to: PackageManager): string => {
@@ -140,7 +149,13 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(command)
     setCopied(true)
+    trackEvent(`docs-package-command-copy-${manager}`)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleManagerChange = (nextManager: PackageManager) => {
+    setManager(nextManager)
+    trackEvent(`docs-package-manager-select-${nextManager}`)
   }
 
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
@@ -161,7 +176,7 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
             borderBottomWidth="2px"
             borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
             _hover={{ color: manager === m ? undefined : 'gray.200' }}
-            onClick={() => setManager(m)}
+            onClick={() => handleManagerChange(m)}
           >
             {m}
           </Box>

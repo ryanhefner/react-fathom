@@ -2,6 +2,7 @@
 
 import { useState, createContext, useContext, type ReactNode } from 'react'
 
+import { useFathom } from '@/lib/fathom'
 import { Box, Flex } from '@chakra-ui/react'
 
 interface TabsContextValue {
@@ -45,9 +46,15 @@ interface TabTriggerProps {
 
 export function TabTrigger({ value, children }: TabTriggerProps) {
   const context = useContext(TabsContext)
+  const { trackEvent } = useFathom()
   if (!context) throw new Error('TabTrigger must be used within Tabs')
 
   const isActive = context.activeTab === value
+
+  const handleSelect = () => {
+    context.setActiveTab(value)
+    trackEvent(`docs-tab-select-${value}`)
+  }
 
   return (
     <Box
@@ -61,7 +68,7 @@ export function TabTrigger({ value, children }: TabTriggerProps) {
       borderBottomColor={isActive ? 'blue.500' : 'transparent'}
       mb="-1px"
       _hover={{ color: 'fg' }}
-      onClick={() => context.setActiveTab(value)}
+      onClick={handleSelect}
     >
       {children}
     </Box>

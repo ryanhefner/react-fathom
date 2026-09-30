@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 
 import { LuArrowRight } from 'react-icons/lu'
 
+import { useFathom } from '@/lib/fathom'
 import { Box, CloseButton, Flex, Text } from '@chakra-ui/react'
 
 import { SiteLink } from './SiteLink'
@@ -41,6 +42,7 @@ export function AnnouncementBanner({
   dismissible = true,
 }: AnnouncementBannerProps) {
   const [isDismissed, setIsDismissed] = useState(true) // Start hidden to prevent flash
+  const { trackEvent } = useFathom()
   const storageKey = `announcement-dismissed-${id}`
 
   useEffect(() => {
@@ -59,6 +61,7 @@ export function AnnouncementBanner({
   const handleDismiss = () => {
     localStorage.setItem(storageKey, 'true')
     setIsDismissed(true)
+    trackEvent('docs-announcement-dismiss')
   }
 
   if (isDismissed) {

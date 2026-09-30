@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 
 import { LuChevronDown, LuChevronRight } from 'react-icons/lu'
 
+import { useFathom } from '@/lib/fathom'
 import { Box, chakra, Flex, Text } from '@chakra-ui/react'
 
 interface FileTreeProps {
@@ -34,7 +35,16 @@ interface FolderProps {
 
 export function Folder({ name, children, defaultOpen = true }: FolderProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
+  const { trackEvent } = useFathom()
   const hasChildren = Boolean(children)
+
+  const handleToggle = () => {
+    if (!hasChildren) return
+
+    const nextOpen = !isOpen
+    setIsOpen(nextOpen)
+    trackEvent(`docs-file-tree-${nextOpen ? 'expand' : 'collapse'}`)
+  }
 
   return (
     <Box>
@@ -50,7 +60,7 @@ export function Folder({ name, children, defaultOpen = true }: FolderProps) {
         cursor={hasChildren ? 'pointer' : 'default'}
         _hover={hasChildren ? { color: 'blue.400' } : undefined}
         aria-expanded={hasChildren ? isOpen : undefined}
-        onClick={() => hasChildren && setIsOpen(!isOpen)}
+        onClick={handleToggle}
       >
         <Box aria-hidden="true" color="fg.muted" fontSize="xs" width="12px">
           {hasChildren ? isOpen ? <LuChevronDown /> : <LuChevronRight /> : null}

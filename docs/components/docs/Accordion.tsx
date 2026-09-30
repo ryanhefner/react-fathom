@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 
 import { LuChevronDown } from 'react-icons/lu'
 
+import { useFathom } from '@/lib/fathom'
 import { Box, Flex, Text } from '@chakra-ui/react'
 
 interface AccordionItemProps {
@@ -18,6 +19,13 @@ export function AccordionItem({
   defaultOpen = false,
 }: AccordionItemProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
+  const { trackEvent } = useFathom()
+
+  const handleToggle = () => {
+    const nextOpen = !isOpen
+    setIsOpen(nextOpen)
+    trackEvent(`docs-accordion-${nextOpen ? 'expand' : 'collapse'}`)
+  }
 
   return (
     <Box borderWidth="1px" borderRadius="md" overflow="hidden">
@@ -30,7 +38,7 @@ export function AccordionItem({
         justify="space-between"
         bg={isOpen ? 'bg.muted' : 'transparent'}
         _hover={{ bg: 'bg.muted' }}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         cursor="pointer"
         textAlign="left"
       >
