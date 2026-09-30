@@ -3,6 +3,8 @@ import { defineConfig, defineRecipe } from '@chakra-ui/react'
 export const siteThemeConfig = defineConfig({
   globalCss: {
     html: {
+      bg: 'bg',
+      color: 'fg',
       scrollBehavior: 'smooth',
     },
     'header, nav, aside, [data-pagefind-body]::before, [aria-label="Search"], [aria-label="Table of contents"], [aria-label="Breadcrumb"], button, [role="button"], footer':
@@ -12,8 +14,12 @@ export const siteThemeConfig = defineConfig({
         },
       },
     body: {
-      bg: 'bg',
-      color: 'fg',
+      bg: 'white',
+      color: 'black',
+      _dark: {
+        bg: 'black',
+        color: 'white',
+      },
       _print: {
         bg: 'white !important',
         color: 'black !important',
