@@ -19,10 +19,13 @@ const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
 const DOCS_PATH = 'docs/content'
 
 interface DocsLayoutProps {
+  breadcrumbs?: boolean
   children: ReactNode
   lastUpdated?: string | null
   nav: DocsNavItem[]
   page: DocsPage
+  pageActions?: boolean
+  pagination?: boolean
   searchRecords: readonly DocsSearchRecord[]
 }
 
@@ -40,10 +43,13 @@ function formatDate(dateString: string): string {
 }
 
 export function DocsLayout({
+  breadcrumbs = true,
   children,
   lastUpdated,
   nav,
   page,
+  pageActions = true,
+  pagination = true,
   searchRecords,
 }: DocsLayoutProps) {
   const editUrl = getEditUrl(page)
@@ -64,19 +70,23 @@ export function DocsLayout({
       >
         <DocsArticle
           actions={
-            <DocsPageActions.Root
-              editUrl={editUrl}
-              page={page}
-              variant="split"
-            />
+            pageActions ? (
+              <DocsPageActions.Root
+                editUrl={editUrl}
+                page={page}
+                variant="split"
+              />
+            ) : undefined
           }
           breadcrumbs={
-            <DocsBreadcrumbs
-              homeHref="/"
-              homeLabel="Home"
-              nav={nav}
-              page={page}
-            />
+            breadcrumbs ? (
+              <DocsBreadcrumbs
+                homeHref="/"
+                homeLabel="Home"
+                nav={nav}
+                page={page}
+              />
+            ) : undefined
           }
           headings={page.headings}
           page={page}
@@ -95,7 +105,7 @@ export function DocsLayout({
               </Text>
             </Flex>
           ) : null}
-          <DocsPagination nav={nav} page={page} />
+          {pagination ? <DocsPagination nav={nav} page={page} /> : null}
           <Box as="footer" borderTopWidth="1px" mt={12} pt={6}>
             <Text color="fg.muted" fontSize="sm">
               MIT {new Date().getFullYear()} © Ryan Hefner
