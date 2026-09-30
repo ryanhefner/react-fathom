@@ -1,0 +1,100 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version already present in package.json
+        required: true
+        type: string
+      npm_tag:
+        description: npm distribution channel
+        required: true
+        default: next
+        type: choice
+        options:
+          - next
+          - latest
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish-${{ github.event.release.tag_name || inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish react-fathom
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out the release commit
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve and validate release channel
+        id: release
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_IS_PRERELEASE: ${{ github.event.release.prerelease }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_NPM_TAG: ${{ inputs.npm_tag }}
+          INPUT_VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          package_version="$(node --input-type=module -e "import manifest from './package.json' with { type: 'json' }; process.stdout.write(manifest.version)")"
+
+          if [[ "$EVENT_NAME" == "release" ]]; then
+            if [[ "$RELEASE_IS_PRERELEASE" == "true" ]]; then
+              npm_tag="next"
+            else
+              npm_tag="latest"
+            fi
+            expected_version="${RELEASE_TAG#v}"
+            release_tag="$RELEASE_TAG"
+          else
+            npm_tag="$INPUT_NPM_TAG"
+            expected_version="$INPUT_VERSION"
+            release_tag=""
+          fi
+
+          node scripts/validate-release.mjs "$npm_tag" "$expected_version" "$release_tag"
+          echo "package_version=$package_version" >> "$GITHUB_OUTPUT"
+          echo "npm_tag=$npm_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure the version is unpublished
+        env:
+          PACKAGE_VERSION: ${{ steps.release.outputs.package_version }}
+        shell: bash
+        run: |
+          if npm view "react-fathom@$PACKAGE_VERSION" version >/dev/null 2>&1; then
+            echo "::error::react-fathom@$PACKAGE_VERSION is already published. Bump package.json before publishing another immutable version."
+            exit 1
+          fi
+
+      - name: Run release checks
+        run: pnpm release:check
+
+      - name: Publish package
+        env:
+          NPM_TAG: ${{ steps.release.outputs.npm_tag }}
+        run: npm publish --access public --provenance --tag "$NPM_TAG"

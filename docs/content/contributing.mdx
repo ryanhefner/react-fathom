@@ -190,7 +190,7 @@ When adding new features, please also update the relevant documentation pages.
 ## Release Validation
 
 Run the complete release gate before changing the package version or creating a
-tag:
+release:
 
 ```bash
 pnpm release:check
@@ -202,3 +202,29 @@ packed tarball into an isolated ESM/CommonJS/NodeNext consumer, and creates a
 production build of the documentation site. Make the version bump as the final
 release commit after this command succeeds, then publish and tag that exact
 commit.
+
+### npm release channels
+
+The `Publish to npm` GitHub Actions workflow supports two channels and validates
+them before publishing:
+
+| GitHub release | Version example | npm dist-tag |
+| -------------- | --------------- | ------------ |
+| Prerelease     | `0.3.0-next.0`  | `next`       |
+| Stable release | `0.3.0`         | `latest`     |
+
+To publish a preview, bump `package.json` to a prerelease version, commit it,
+create the matching tag (for example `v0.3.0-next.0`), and publish a GitHub
+prerelease. To publish the stable build, use a stable version and matching tag,
+then publish a normal GitHub release. The workflow rejects a stable version on
+`next`, a prerelease version on `latest`, or any mismatch between the GitHub tag
+and `package.json`.
+
+The workflow can also be run manually for recovery. Select the exact commit or
+tag, enter its existing `package.json` version, and choose the matching npm
+channel. npm versions are immutable, so an already-published version must never
+be reused.
+
+Publishing uses npm Trusted Publishing. Configure the npm package to trust
+`.github/workflows/publish.yml` in this repository; no long-lived npm token is
+required.
