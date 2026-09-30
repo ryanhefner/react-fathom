@@ -1,7 +1,17 @@
 'use client'
 
+import { LuGithub } from 'react-icons/lu'
+
 import type { DocsSearchRecord } from '@chakra-docs/core'
-import { Box, Container, Flex, HStack } from '@chakra-ui/react'
+import {
+  Box,
+  Container,
+  Flex,
+  HStack,
+  IconButton,
+  Portal,
+  Tooltip,
+} from '@chakra-ui/react'
 
 import { DocsSiteSearch } from './DocsSiteSearch'
 import { SiteLink } from './SiteLink'
@@ -47,16 +57,33 @@ export function Navbar({ searchRecords }: NavbarProps) {
               >
                 API
               </SiteLink>
-              <SiteLink
-                href="https://github.com/ryanhefner/react-fathom"
-                color="fg.muted"
-                _hover={{ color: 'fg' }}
-              >
-                GitHub
-              </SiteLink>
             </HStack>
           </HStack>
-          <DocsSiteSearch records={searchRecords} />
+          <HStack gap={2}>
+            <DocsSiteSearch records={searchRecords} />
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <IconButton
+                  asChild
+                  aria-label="View react-fathom on GitHub"
+                  variant="ghost"
+                  color="fg.muted"
+                  minH="44px"
+                  minW="44px"
+                  _hover={{ color: 'fg', bg: 'bg.panel' }}
+                >
+                  <SiteLink href="https://github.com/ryanhefner/react-fathom">
+                    <LuGithub aria-hidden="true" />
+                  </SiteLink>
+                </IconButton>
+              </Tooltip.Trigger>
+              <Portal>
+                <Tooltip.Positioner>
+                  <Tooltip.Content>GitHub</Tooltip.Content>
+                </Tooltip.Positioner>
+              </Portal>
+            </Tooltip.Root>
+          </HStack>
         </Flex>
       </Container>
     </Box>
