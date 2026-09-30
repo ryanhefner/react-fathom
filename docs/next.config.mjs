@@ -6,6 +6,7 @@ const rootDir = path.resolve(__dirname, '..')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: ['react-fathom.test'],
   output: 'export',
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
