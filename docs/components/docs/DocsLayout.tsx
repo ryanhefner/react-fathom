@@ -90,6 +90,7 @@ export function DocsLayout({
           }
           headings={page.headings}
           page={page}
+          slotProps={{ mx: 'auto' }}
         >
           <Box className="mdx-content">{children}</Box>
           {lastUpdated ? (

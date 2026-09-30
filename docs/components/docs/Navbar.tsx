@@ -23,7 +23,7 @@ export function Navbar({ searchRecords }: NavbarProps) {
       bg="bg"
       backdropFilter="blur(10px)"
     >
-      <Container maxW="container.xl" py={3}>
+      <Container maxW="7xl" py={3}>
         <Flex justify="space-between" align="center">
           <HStack gap={8}>
             <Link
