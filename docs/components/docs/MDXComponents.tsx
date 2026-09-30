@@ -1,158 +1,49 @@
 import type { MDXComponents as MDXComponentsType } from 'mdx/types'
 
-import { Box, Code, Heading, List, Table, Text } from '@chakra-ui/react'
-
 import { Accordion, AccordionItem, Collapsible } from './Accordion'
 import { Callout } from './Callout'
 import { Cards, Card } from './Cards'
-import { Pre, Figure, Figcaption } from './CodeBlock'
+import { Pre } from './CodeBlock'
 import { FileTree, Folder, File } from './FileTree'
+import {
+  MarkdownElement,
+  MarkdownHeading,
+  MarkdownLink,
+  MarkdownCode,
+  MarkdownTable,
+} from './MDXElements'
 import { PackageInstall, NpmToYarn } from './PackageInstall'
-import { SiteLink } from './SiteLink'
 import { Steps, Step } from './Steps'
 import { Tabs, Tab, TabList, TabTrigger, TabContent } from './Tabs'
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
 
 export function getMDXComponents(): MDXComponentsType {
   return MDXComponents
 }
 
+// MDX keeps its JSX compiler while sharing native Markdown recipe slots.
 export const MDXComponents: MDXComponentsType = {
-  h1: (props) => <Heading as="h1" size="2xl" mt={8} mb={4} {...props} />,
-  h2: (props) => {
-    const id = props.children ? slugify(String(props.children)) : undefined
-    return (
-      <Heading
-        as="h2"
-        size="xl"
-        mt={10}
-        mb={4}
-        pb={2}
-        borderBottomWidth="1px"
-        id={id}
-        css={{
-          '&:hover a': { opacity: 1 },
-          scrollMarginTop: '80px',
-        }}
-        {...props}
-      >
-        {props.children}
-        {id && (
-          <SiteLink
-            href={`#${id}`}
-            ml={2}
-            opacity={0}
-            color="fg.muted"
-            _hover={{ color: 'fg' }}
-          >
-            #
-          </SiteLink>
-        )}
-      </Heading>
-    )
-  },
-  h3: (props) => {
-    const id = props.children ? slugify(String(props.children)) : undefined
-    return (
-      <Heading
-        as="h3"
-        size="lg"
-        mt={8}
-        mb={3}
-        id={id}
-        css={{
-          '&:hover a': { opacity: 1 },
-          scrollMarginTop: '80px',
-        }}
-        {...props}
-      >
-        {props.children}
-        {id && (
-          <SiteLink
-            href={`#${id}`}
-            ml={2}
-            opacity={0}
-            color="fg.muted"
-            _hover={{ color: 'fg' }}
-          >
-            #
-          </SiteLink>
-        )}
-      </Heading>
-    )
-  },
-  h4: (props) => <Heading as="h4" size="md" mt={6} mb={2} {...props} />,
-  p: (props) => <Text my={4} lineHeight="tall" {...props} />,
-  a: ({ href, ...props }) => (
-    <SiteLink
-      href={href || '#'}
-      color="blue.500"
-      _hover={{ textDecoration: 'underline' }}
-      {...props}
-    />
-  ),
-  ul: (props) => <List.Root as="ul" my={4} pl={4} gap={2} {...props} />,
-  ol: (props) => <List.Root as="ol" my={4} pl={4} gap={2} {...props} />,
-  li: (props) => <List.Item {...props} />,
-  code: ({ children, className, ...props }) => {
-    // If it has data-theme, it's from rehype-pretty-code - pass through
-    if ('data-theme' in props || 'data-language' in props) {
-      return (
-        <code className={className} {...props}>
-          {children}
-        </code>
-      )
-    }
-    // If it's inline code (no className), render as inline
-    if (!className) {
-      return (
-        <Code px={1.5} py={0.5} borderRadius="md" fontSize="0.9em" {...props}>
-          {children}
-        </Code>
-      )
-    }
-    // Block code without highlighting
-    return (
-      <code className={className} {...props}>
-        {children}
-      </code>
-    )
-  },
+  h1: (props) => <MarkdownHeading as="h1" {...props} />,
+  h2: (props) => <MarkdownHeading as="h2" {...props} />,
+  h3: (props) => <MarkdownHeading as="h3" {...props} />,
+  h4: (props) => <MarkdownHeading as="h4" {...props} />,
+  h5: (props) => <MarkdownHeading as="h5" {...props} />,
+  h6: (props) => <MarkdownHeading as="h6" {...props} />,
+  p: (props) => <MarkdownElement as="p" slot="paragraph" {...props} />,
+  a: MarkdownLink,
+  ul: (props) => <MarkdownElement as="ul" slot="list" {...props} />,
+  ol: (props) => <MarkdownElement as="ol" slot="list" {...props} />,
+  li: (props) => <MarkdownElement as="li" slot="listItem" {...props} />,
+  code: MarkdownCode,
   pre: Pre,
-  figure: Figure,
-  figcaption: Figcaption,
-  table: (props) => (
-    <Box my={4} overflowX="auto">
-      <Table.Root size="sm" {...props} />
-    </Box>
-  ),
-  thead: Table.Header,
-  tbody: Table.Body,
-  tr: Table.Row,
-  th: (props) => (
-    <Table.ColumnHeader fontWeight="semibold" textAlign="left" {...props} />
-  ),
-  td: Table.Cell,
-  blockquote: (props) => (
-    <Box
-      as="blockquote"
-      my={4}
-      pl={4}
-      borderLeftWidth="4px"
-      borderLeftColor="gray.300"
-      color="fg.muted"
-      fontStyle="italic"
-      {...props}
-    />
-  ),
-  hr: () => <Box as="hr" my={8} borderTopWidth="1px" />,
-  // Custom components
+  table: MarkdownTable,
+  thead: (props) => <MarkdownElement as="thead" slot="tableHead" {...props} />,
+  tbody: (props) => <MarkdownElement as="tbody" slot="tableBody" {...props} />,
+  tr: (props) => <MarkdownElement as="tr" slot="tableRow" {...props} />,
+  th: (props) => <MarkdownElement as="th" slot="tableHeader" {...props} />,
+  td: (props) => <MarkdownElement as="td" slot="tableCell" {...props} />,
+  blockquote: (props) => <Callout title="Note">{props.children}</Callout>,
+  hr: (props) => <MarkdownElement as="hr" slot="separator" {...props} />,
+  img: (props) => <MarkdownElement as="img" slot="image" {...props} />,
   Accordion,
   AccordionItem,
   Callout,

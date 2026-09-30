@@ -1,4 +1,4 @@
-import { defineConfig, defineRecipe } from '@chakra-ui/react'
+import { defineConfig, defineRecipe, defineSlotRecipe } from '@chakra-ui/react'
 
 export const siteThemeConfig = defineConfig({
   globalCss: {
@@ -101,7 +101,43 @@ export const siteThemeConfig = defineConfig({
         },
       }),
     },
+    slotRecipes: {
+      chakraDocsCodeBlock: defineSlotRecipe({
+        slots: [
+          'root',
+          'header',
+          'title',
+          'control',
+          'language',
+          'copyTrigger',
+          'copyIndicator',
+          'content',
+          'code',
+          'codeText',
+        ],
+        base: {
+          root: {
+            bg: 'black',
+            borderColor: 'gray.800',
+            borderRadius: 'lg',
+            color: 'gray.100',
+            my: 4,
+            '&:where(html.dark *)': { bg: 'gray.900' },
+          },
+          header: { borderBottomColor: 'gray.800' },
+          title: { color: 'gray.400' },
+          language: { color: 'gray.400' },
+          copyTrigger: {
+            color: 'white',
+            _hover: { bg: 'whiteAlpha.200', color: 'white' },
+            _focusVisible: { outlineColor: 'white' },
+          },
+          copyIndicator: { boxSize: 4 },
+        },
+      }),
+    },
     tokens: {
+      fontWeights: { semibold: { value: '500' } },
       fonts: {
         body: {
           value:

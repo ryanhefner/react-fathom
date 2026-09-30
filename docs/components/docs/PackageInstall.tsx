@@ -1,18 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { CodeBlock, DocsTabs } from '@chakra-docs/chakra'
 
-import { LuCheck, LuCopy } from 'react-icons/lu'
-
-import { useFathom } from '@/lib/fathom'
-import { Box, Flex, IconButton } from '@chakra-ui/react'
-
-type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
-
-interface PackageInstallProps {
-  packages: string | string[]
-  dev?: boolean
-}
+const managers = ['npm', 'yarn', 'pnpm', 'bun'] as const
+type PackageManager = (typeof managers)[number]
 
 const commands: Record<PackageManager, { install: string; devFlag: string }> = {
   npm: { install: 'npm install', devFlag: '-D' },
@@ -21,202 +12,77 @@ const commands: Record<PackageManager, { install: string; devFlag: string }> = {
   bun: { install: 'bun add', devFlag: '-d' },
 }
 
-export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
-  const [manager, setManager] = useState<PackageManager>('npm')
-  const [copied, setCopied] = useState(false)
-  const { trackEvent } = useFathom()
-
-  const packageList = Array.isArray(packages) ? packages.join(' ') : packages
-  const { install, devFlag } = commands[manager]
-  const command = dev
-    ? `${install} ${devFlag} ${packageList}`
-    : `${install} ${packageList}`
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(command)
-    setCopied(true)
-    trackEvent(`docs-package-command-copy-${manager}`)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const handleManagerChange = (nextManager: PackageManager) => {
-    setManager(nextManager)
-    trackEvent(`docs-package-manager-select-${nextManager}`)
-  }
-
-  const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
-
+function PackageCommands({
+  command,
+}: {
+  command: (manager: PackageManager) => string
+}) {
   return (
-    <Box
-      my={4}
-      borderRadius="lg"
-      overflow="hidden"
-      bg="black"
-      _dark={{ bg: 'gray.900' }}
-    >
-      {/* Tab header */}
-      <Flex borderBottomWidth="1px" borderColor="gray.700">
-        {managers.map((m) => (
-          <Box
-            key={m}
-            as="button"
-            px={4}
-            py={2}
-            fontSize="sm"
-            fontWeight={manager === m ? 'semibold' : 'normal'}
-            color={manager === m ? 'white' : 'gray.400'}
-            bg={manager === m ? 'gray.800' : 'transparent'}
-            borderBottomWidth="2px"
-            borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
-            _hover={{ color: manager === m ? undefined : 'gray.200' }}
-            onClick={() => handleManagerChange(m)}
-          >
-            {m}
-          </Box>
+    <DocsTabs.Root preference="package-manager">
+      <DocsTabs.List>
+        {managers.map((manager) => (
+          <DocsTabs.Trigger key={manager} value={manager}>
+            {manager}
+          </DocsTabs.Trigger>
         ))}
-        <Box flex={1} />
-        <IconButton
-          aria-label={copied ? 'Command copied' : 'Copy command'}
-          size="xs"
-          variant="ghost"
-          color="gray.400"
-          _hover={{ color: 'white', bg: 'whiteAlpha.200' }}
-          m={2}
-          onClick={handleCopy}
-        >
-          {copied ? <LuCheck /> : <LuCopy />}
-        </IconButton>
-      </Flex>
-
-      {/* Command */}
-      <Box
-        as="pre"
-        p={4}
-        fontSize="sm"
-        lineHeight="tall"
-        overflowX="auto"
-        color="gray.100"
-        fontFamily="mono"
-      >
-        <code>{command}</code>
-      </Box>
-    </Box>
+      </DocsTabs.List>
+      {managers.map((manager) => (
+        <DocsTabs.Content key={manager} value={manager}>
+          <CodeBlock
+            code={command(manager)}
+            language="bash"
+            packageManager={manager}
+          />
+        </DocsTabs.Content>
+      ))}
+    </DocsTabs.Root>
   )
 }
 
-// Simpler version that just transforms npm commands to other managers
-interface NpmToYarnProps {
-  children: string
-}
-
-export function NpmToYarn({ children }: NpmToYarnProps) {
-  const [manager, setManager] = useState<PackageManager>('npm')
-  const [copied, setCopied] = useState(false)
-  const { trackEvent } = useFathom()
-
-  // Transform npm command to other package managers
-  const transformCommand = (cmd: string, to: PackageManager): string => {
-    let result = cmd.trim()
-
-    if (to === 'npm') return result
-
-    // npm install -> yarn/pnpm add/bun add
-    result = result.replace(/^npm install/, commands[to].install)
-    result = result.replace(/^npm i /, `${commands[to].install} `)
-
-    // npm run -> yarn/pnpm/bun (no run needed for yarn)
-    if (to === 'yarn') {
-      result = result.replace(/^npm run /, 'yarn ')
-    } else {
-      result = result.replace(/^npm run /, `${to} run `)
-    }
-
-    // npm init -> yarn init/pnpm init/bun init
-    result = result.replace(/^npm init/, `${to} init`)
-
-    // npm ci -> yarn install --frozen-lockfile/pnpm install --frozen-lockfile
-    if (to === 'yarn') {
-      result = result.replace(/^npm ci$/, 'yarn install --frozen-lockfile')
-    } else if (to === 'pnpm') {
-      result = result.replace(/^npm ci$/, 'pnpm install --frozen-lockfile')
-    } else if (to === 'bun') {
-      result = result.replace(/^npm ci$/, 'bun install --frozen-lockfile')
-    }
-
-    // -D flag
-    result = result.replace(/ -D /, ` ${commands[to].devFlag} `)
-    result = result.replace(/ --save-dev /, ` ${commands[to].devFlag} `)
-
-    return result
-  }
-
-  const command = transformCommand(children, manager)
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(command)
-    setCopied(true)
-    trackEvent(`docs-package-command-copy-${manager}`)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const handleManagerChange = (nextManager: PackageManager) => {
-    setManager(nextManager)
-    trackEvent(`docs-package-manager-select-${nextManager}`)
-  }
-
-  const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
+export function PackageInstall({
+  packages,
+  dev = false,
+}: {
+  packages: string | string[]
+  dev?: boolean
+}) {
+  const packageList = Array.isArray(packages) ? packages.join(' ') : packages
 
   return (
-    <Box
-      my={4}
-      borderRadius="lg"
-      overflow="hidden"
-      bg="black"
-      _dark={{ bg: 'gray.900' }}
-    >
-      <Flex borderBottomWidth="1px" borderColor="gray.700">
-        {managers.map((m) => (
-          <Box
-            key={m}
-            as="button"
-            px={4}
-            py={2}
-            fontSize="sm"
-            fontWeight={manager === m ? 'semibold' : 'normal'}
-            color={manager === m ? 'white' : 'gray.400'}
-            bg={manager === m ? 'gray.800' : 'transparent'}
-            borderBottomWidth="2px"
-            borderBottomColor={manager === m ? 'blue.500' : 'transparent'}
-            _hover={{ color: manager === m ? undefined : 'gray.200' }}
-            onClick={() => handleManagerChange(m)}
-          >
-            {m}
-          </Box>
-        ))}
-        <Box flex={1} />
-        <IconButton
-          aria-label={copied ? 'Command copied' : 'Copy command'}
-          size="xs"
-          variant="ghost"
-          color="gray.400"
-          _hover={{ color: 'white', bg: 'whiteAlpha.200' }}
-          m={2}
-          onClick={handleCopy}
-        >
-          {copied ? <LuCheck /> : <LuCopy />}
-        </IconButton>
-      </Flex>
-      <Box
-        as="pre"
-        p={4}
-        fontSize="sm"
-        lineHeight="tall"
-        overflowX="auto"
-        color="gray.100"
-        fontFamily="mono"
-      >
-        <code>{command}</code>
-      </Box>
-    </Box>
+    <PackageCommands
+      command={(manager) => {
+        const { install, devFlag } = commands[manager]
+        return `${install}${dev ? ` ${devFlag}` : ''} ${packageList}`
+      }}
+    />
+  )
+}
+
+export function NpmToYarn({ children }: { children: string }) {
+  return (
+    <PackageCommands
+      command={(manager) => {
+        let command = children.trim()
+        if (manager === 'npm') return command
+
+        command = command.replace(
+          /^npm (?:install|i)(?=\s|$)/,
+          commands[manager].install,
+        )
+        command = command.replace(
+          /^npm run /,
+          manager === 'yarn' ? 'yarn ' : `${manager} run `,
+        )
+        command = command.replace(/^npm init/, `${manager} init`)
+        command = command.replace(
+          /^npm ci$/,
+          `${manager} install --frozen-lockfile`,
+        )
+        return command.replace(
+          / (?:-D|--save-dev)(?=\s|$)/g,
+          ` ${commands[manager].devFlag}`,
+        )
+      }}
+    />
   )
 }
