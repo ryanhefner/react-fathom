@@ -1,4 +1,5 @@
 import { DocsLayout, WelcomePage } from '@/components/docs'
+import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { getDocsManifest } from '@/lib/chakra-docs'
 import type { DocsPage } from '@chakra-docs/core'
 
@@ -24,7 +25,13 @@ export default async function Home() {
       pagination={false}
       searchRecords={manifest.search}
     >
-      <WelcomePage />
+      <WelcomePage
+        codeBlock={
+          <DocsMarkdown
+            source={'```bash\nnpm install react-fathom fathom-client\n```'}
+          />
+        }
+      />
     </DocsLayout>
   )
 }

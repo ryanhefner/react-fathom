@@ -1,10 +1,7 @@
 import { notFound } from 'next/navigation'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import rehypePrettyCode from 'rehype-pretty-code'
-import remarkGfm from 'remark-gfm'
 
 import { DocsLayout } from '@/components/docs'
-import { getMDXComponents } from '@/components/docs/MDXComponents'
+import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { getDocsManifest } from '@/lib/chakra-docs'
 import { getLastUpdated } from '@/lib/docs'
 import {
@@ -37,12 +34,6 @@ export async function generateMetadata({
   }
 }
 
-const rehypePrettyCodeOptions = {
-  theme: 'github-dark',
-  keepBackground: false,
-  defaultLang: 'plaintext',
-}
-
 export default async function DocPage({
   params,
 }: {
@@ -66,16 +57,7 @@ export default async function DocPage({
       page={page}
       searchRecords={manifest.search}
     >
-      <MDXRemote
-        source={page.body ?? ''}
-        components={getMDXComponents()}
-        options={{
-          mdxOptions: {
-            rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
-            remarkPlugins: [remarkGfm],
-          },
-        }}
-      />
+      <DocsMarkdown source={page.body ?? ''} />
     </DocsLayout>
   )
 }

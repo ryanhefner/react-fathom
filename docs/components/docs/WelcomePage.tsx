@@ -1,11 +1,17 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 import { LuArrowRight } from 'react-icons/lu'
 
 import { DocsCards } from '@chakra-docs/chakra'
 import { Box, Heading, Stack, Text } from '@chakra-ui/react'
 
 import { SiteLink } from './SiteLink'
+
+interface WelcomePageProps {
+  codeBlock: ReactNode
+}
 
 const guides = [
   {
@@ -40,7 +46,7 @@ const guides = [
   },
 ]
 
-export function WelcomePage() {
+export function WelcomePage({ codeBlock }: WelcomePageProps) {
   return (
     <Stack gap={10}>
       <Stack align="flex-start" gap={4}>
@@ -49,21 +55,7 @@ export function WelcomePage() {
           Native applications with automatic page-view tracking, typed hooks,
           and declarative components.
         </Text>
-        <Box
-          as="pre"
-          bg="black"
-          borderRadius="md"
-          borderWidth="1px"
-          fontFamily="mono"
-          fontSize="sm"
-          color="gray.100"
-          maxW="full"
-          overflowX="auto"
-          px={4}
-          py={3}
-        >
-          npm install react-fathom fathom-client
-        </Box>
+        <Box w="full">{codeBlock}</Box>
         <SiteLink
           href="/docs/getting-started"
           alignItems="center"
