@@ -2,12 +2,8 @@
 
 import type { ReactNode } from 'react'
 
-import { chakraDocsRecipeKeys } from '@chakra-docs/chakra/theme'
-import { Stack, useSlotRecipe } from '@chakra-ui/react'
+import { Prose } from '@postkit/react'
 
 export function MDXDocument({ children }: { children: ReactNode }) {
-  const recipe = useSlotRecipe({ key: chakraDocsRecipeKeys.markdownContent })
-  const styles = recipe()
-
-  return <Stack css={styles.root}>{children}</Stack>
+  return <Prose>{children}</Prose>
 }

@@ -15,14 +15,16 @@ import { chakraDocsThemeConfig } from '@chakra-docs/chakra/theme'
 import { NextLink } from '@chakra-docs/next/link'
 import { createChakraDocsShikiAdapter } from '@chakra-docs/shiki'
 import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react'
+import { PostkitProvider } from '@postkit/react'
 
 import { ColorModeProvider } from './color-mode'
-import { siteThemeConfig } from './theme'
+import { postkitThemeConfig, siteThemeConfig } from './theme'
 import { EventStream } from '../components/docs/EventStream'
 
 const docsSystem = createSystem(
   defaultConfig,
   chakraDocsThemeConfig,
+  postkitThemeConfig,
   siteThemeConfig,
 )
 
@@ -103,8 +105,13 @@ export function Provider({ children }: { children: React.ReactNode }) {
           siteId={siteId}
           debug={{ enabled: true, console: false }}
         >
-          <DocsIntegrationProvider>{children}</DocsIntegrationProvider>
-          <EventStream forceShow />
+          <PostkitProvider
+            system={docsSystem}
+            codeBlockAdapter={codeBlockAdapter}
+          >
+            <DocsIntegrationProvider>{children}</DocsIntegrationProvider>
+            <EventStream forceShow />
+          </PostkitProvider>
         </NextFathomProviderApp>
       </ColorModeProvider>
     </ChakraProvider>

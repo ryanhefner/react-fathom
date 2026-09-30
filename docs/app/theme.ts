@@ -1,5 +1,25 @@
 import { chakraDocsSlotRecipes } from '@chakra-docs/chakra/theme'
 import { defineConfig, defineRecipe, defineSlotRecipe } from '@chakra-ui/react'
+import { createPostkitTheme } from '@postkit/react/theme'
+
+export const postkitThemeConfig = createPostkitTheme({
+  prose: {
+    base: {
+      a: {
+        color: 'fg',
+        textDecorationColor: 'border.emphasized',
+        _hover: { color: 'fg', textDecorationColor: 'fg' },
+      },
+      table: {
+        _focusVisible: {
+          outline: '2px solid',
+          outlineColor: 'fg.muted',
+          outlineOffset: '-2px',
+        },
+      },
+    },
+  },
+})
 
 export const siteThemeConfig = defineConfig({
   globalCss: {
