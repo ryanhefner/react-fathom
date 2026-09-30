@@ -1,57 +1,28 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import { DocsCards, type DocsCardsRootProps } from '@chakra-docs/chakra'
 
-import { Box, Grid, Text } from '@chakra-ui/react'
+// Preserve the short names used by authored MDX; styling belongs to Chakra Docs.
+export const Card = DocsCards.Card
 
-import { SiteLink } from './SiteLink'
-
-interface CardsProps {
-  children: ReactNode
-  cols?: number
-}
-
-export function Cards({ children, cols = 2 }: CardsProps) {
+export function Cards({
+  cols,
+  ...props
+}: DocsCardsRootProps & { cols?: number }) {
   return (
-    <Grid
-      my={4}
-      templateColumns={{ base: '1fr', md: `repeat(${cols}, 1fr)` }}
-      gap={4}
-    >
-      {children}
-    </Grid>
-  )
-}
-
-interface CardProps {
-  title: string
-  href: string
-  children?: ReactNode
-}
-
-export function Card({ title, href, children }: CardProps) {
-  const content = (
-    <Box
-      p={4}
-      borderWidth="1px"
-      borderRadius="lg"
-      _hover={{ borderColor: 'blue.500', shadow: 'sm' }}
-      transition="all 0.2s"
-    >
-      <Text fontWeight="semibold" mb={1}>
-        {title}
-      </Text>
-      {children && (
-        <Text fontSize="sm" color="fg.muted">
-          {children}
-        </Text>
-      )}
-    </Box>
-  )
-
-  return (
-    <SiteLink href={href} _hover={{ textDecoration: 'none' }}>
-      {content}
-    </SiteLink>
+    <DocsCards.Root
+      {...props}
+      slotProps={
+        cols
+          ? {
+              gridTemplateColumns: {
+                base: 'minmax(0, 1fr)',
+                md: `repeat(${cols}, minmax(0, 1fr))`,
+              },
+              ...props.slotProps,
+            }
+          : props.slotProps
+      }
+    />
   )
 }

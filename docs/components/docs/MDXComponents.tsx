@@ -9,8 +9,8 @@ import { Pre, Figure, Figcaption } from './CodeBlock'
 import { FileTree, Folder, File } from './FileTree'
 import { PackageInstall, NpmToYarn } from './PackageInstall'
 import { SiteLink } from './SiteLink'
-import { Steps } from './Steps'
-import { Tabs, Tab } from './Tabs'
+import { Steps, Step } from './Steps'
+import { Tabs, Tab, TabList, TabTrigger, TabContent } from './Tabs'
 
 function slugify(text: string): string {
   return text
@@ -161,8 +161,12 @@ export const MDXComponents: MDXComponentsType = {
   Folder,
   File,
   Steps,
+  Step,
   Tabs,
   Tab,
+  TabList,
+  TabTrigger,
+  TabContent,
   Cards,
   Card,
   PackageInstall,
