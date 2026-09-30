@@ -122,23 +122,34 @@ export function DocsLayout({
         sidebarDefaultExpanded="active"
       >
         <DocsArticle
-          actions={
-            pageActions ? (
-              <DocsPageActions.Root
-                editUrl={editUrl}
-                page={page}
-                variant="split"
-              />
-            ) : undefined
-          }
           breadcrumbs={
-            breadcrumbs ? (
-              <DocsBreadcrumbs
-                homeHref="/"
-                homeLabel="Home"
-                nav={nav}
-                page={page}
-              />
+            breadcrumbs || pageActions ? (
+              <Flex
+                align="center"
+                columnGap={4}
+                justify="space-between"
+                rowGap={3}
+                wrap="wrap"
+                w="full"
+              >
+                {breadcrumbs ? (
+                  <DocsBreadcrumbs
+                    homeHref="/"
+                    homeLabel="Home"
+                    nav={nav}
+                    page={page}
+                  />
+                ) : null}
+                {pageActions ? (
+                  <Box flexShrink={0} ms="auto">
+                    <DocsPageActions.Root
+                      editUrl={editUrl}
+                      page={page}
+                      variant="split"
+                    />
+                  </Box>
+                ) : null}
+              </Flex>
             ) : undefined
           }
           headings={page.headings}
