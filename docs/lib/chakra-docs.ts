@@ -57,6 +57,10 @@ async function buildManifest(): Promise<DocsManifest> {
 }
 
 export function getDocsManifest(): Promise<DocsManifest> {
+  // Filesystem content is not an imported module, so Next's hot reload does not
+  // invalidate this module's promise when an MDX file changes.
+  if (process.env.NODE_ENV === 'development') return buildManifest()
+
   manifestPromise ??= buildManifest()
   return manifestPromise
 }
