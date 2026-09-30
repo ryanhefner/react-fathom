@@ -12,6 +12,8 @@ export const siteThemeConfig = defineConfig({
         },
       },
     body: {
+      bg: 'bg',
+      color: 'fg',
       _print: {
         bg: 'white !important',
         color: 'black !important',
@@ -72,6 +74,20 @@ export const siteThemeConfig = defineConfig({
     },
   },
   theme: {
+    semanticTokens: {
+      colors: {
+        bg: {
+          DEFAULT: {
+            value: { _light: '{colors.white}', _dark: '{colors.black}' },
+          },
+        },
+        fg: {
+          DEFAULT: {
+            value: { _light: '{colors.black}', _dark: '{colors.white}' },
+          },
+        },
+      },
+    },
     recipes: {
       heading: defineRecipe({
         base: {
