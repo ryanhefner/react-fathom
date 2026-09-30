@@ -27,7 +27,7 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
         aria-label={copied ? 'Code copied' : 'Copy code'}
         size="xs"
         variant="ghost"
-        color="gray.400"
+        color="white"
         _hover={{ color: 'white', bg: 'whiteAlpha.200' }}
         position="absolute"
         top={2}
