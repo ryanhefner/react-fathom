@@ -1,9 +1,6 @@
 import { defineConfig, defineRecipe } from '@chakra-ui/react'
 
 export const siteThemeConfig = defineConfig({
-  conditions: {
-    dark: '@media (prefers-color-scheme: dark)',
-  },
   globalCss: {
     html: {
       scrollBehavior: 'smooth',

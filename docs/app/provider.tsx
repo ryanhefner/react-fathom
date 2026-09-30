@@ -9,6 +9,7 @@ import { chakraDocsThemeConfig } from '@chakra-docs/chakra/theme'
 import { NextLink } from '@chakra-docs/next/link'
 import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react'
 
+import { ColorModeProvider } from './color-mode'
 import { siteThemeConfig } from './theme'
 import { EventStream } from '../components/docs/EventStream'
 
@@ -49,13 +50,15 @@ export function Provider({ children }: { children: React.ReactNode }) {
 
   return (
     <ChakraProvider value={docsSystem}>
-      <NextFathomProviderApp
-        siteId={siteId}
-        debug={{ enabled: true, console: false }}
-      >
-        <DocsIntegrationProvider>{children}</DocsIntegrationProvider>
-        <EventStream forceShow />
-      </NextFathomProviderApp>
+      <ColorModeProvider>
+        <NextFathomProviderApp
+          siteId={siteId}
+          debug={{ enabled: true, console: false }}
+        >
+          <DocsIntegrationProvider>{children}</DocsIntegrationProvider>
+          <EventStream forceShow />
+        </NextFathomProviderApp>
+      </ColorModeProvider>
     </ChakraProvider>
   )
 }
