@@ -68,4 +68,22 @@ export const siteThemeConfig = defineConfig({
       margin: '2cm',
     },
   },
+  theme: {
+    tokens: {
+      fonts: {
+        body: {
+          value:
+            "'Suisse Intl', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        },
+        heading: {
+          value:
+            "'Suisse Intl', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        },
+        mono: {
+          value:
+            "'Suisse Intl Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+        },
+      },
+    },
+  },
 })

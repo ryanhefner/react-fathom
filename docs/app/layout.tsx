@@ -74,6 +74,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link
+          rel="preconnect"
+          href="https://kits.fontstack.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://kits.fontstack.com/kit/q_2_tnzd.css"
+        />
+      </head>
       <body>
         <Provider>{children}</Provider>
       </body>
