@@ -1,4 +1,4 @@
-import { defineConfig } from '@chakra-ui/react'
+import { defineConfig, defineRecipe } from '@chakra-ui/react'
 
 export const siteThemeConfig = defineConfig({
   globalCss: {
@@ -69,6 +69,13 @@ export const siteThemeConfig = defineConfig({
     },
   },
   theme: {
+    recipes: {
+      heading: defineRecipe({
+        base: {
+          fontWeight: 500,
+        },
+      }),
+    },
     tokens: {
       fonts: {
         body: {
