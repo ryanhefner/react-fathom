@@ -232,7 +232,13 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
           </Flex>
 
           {/* Events list */}
-          <Box flex={1} overflowY="auto" p={3}>
+          <Box
+            flex={1}
+            overflowY="auto"
+            p={3}
+            bg="gray.100"
+            _dark={{ bg: 'gray.900' }}
+          >
             {events.length === 0 ? (
               <Flex
                 h="100%"
