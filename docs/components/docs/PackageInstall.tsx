@@ -47,7 +47,13 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
 
   return (
-    <Box my={4} borderRadius="lg" overflow="hidden" bg="black">
+    <Box
+      my={4}
+      borderRadius="lg"
+      overflow="hidden"
+      bg="black"
+      _dark={{ bg: 'gray.900' }}
+    >
       {/* Tab header */}
       <Flex borderBottomWidth="1px" borderColor="gray.700">
         {managers.map((m) => (
@@ -161,7 +167,13 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
   const managers: PackageManager[] = ['npm', 'yarn', 'pnpm', 'bun']
 
   return (
-    <Box my={4} borderRadius="lg" overflow="hidden" bg="black">
+    <Box
+      my={4}
+      borderRadius="lg"
+      overflow="hidden"
+      bg="black"
+      _dark={{ bg: 'gray.900' }}
+    >
       <Flex borderBottomWidth="1px" borderColor="gray.700">
         {managers.map((m) => (
           <Box

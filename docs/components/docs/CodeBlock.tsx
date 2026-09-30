@@ -40,6 +40,7 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
       <chakra.pre
         ref={preRef}
         bg="black"
+        _dark={{ bg: 'gray.900' }}
         borderRadius="lg"
         color="gray.100"
         fontSize="sm"
@@ -99,6 +100,7 @@ export function Figure({ children, ...props }: ComponentProps<'figure'>) {
   return (
     <chakra.figure
       bg="black"
+      _dark={{ bg: 'gray.900' }}
       borderRadius="lg"
       my={4}
       overflow="hidden"
