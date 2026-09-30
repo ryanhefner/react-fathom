@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-test-package:
     docker:
-      - image: cimg/node:22.15.1
+      - image: cimg/node:22.22.2
     steps:
       - checkout
 
@@ -61,7 +61,7 @@ jobs:
 
   build-examples:
     docker:
-      - image: cimg/node:22.15.1
+      - image: cimg/node:22.22.2
     steps:
       - checkout
 
