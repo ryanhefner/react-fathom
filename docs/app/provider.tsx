@@ -4,7 +4,7 @@ import { useMemo, type ReactNode } from 'react'
 
 import { useFathom } from '@/lib/fathom'
 import { NextFathomProviderApp } from '@/lib/fathom-next'
-import { DocsProvider } from '@chakra-docs/chakra'
+import { DocsProvider, type DocsAnalyticsCallbacks } from '@chakra-docs/chakra'
 import { chakraDocsThemeConfig } from '@chakra-docs/chakra/theme'
 import { NextLink } from '@chakra-docs/next/link'
 import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react'
@@ -21,16 +21,30 @@ const docsSystem = createSystem(
 
 function DocsIntegrationProvider({ children }: { children: ReactNode }) {
   const { trackEvent } = useFathom()
+  const analytics = useMemo<DocsAnalyticsCallbacks>(
+    () => ({
+      onCodeCopy: () => trackEvent('docs-code-copy'),
+      onHeadingLinkCopy: () => trackEvent('docs-heading-link-copy'),
+      onPackageCommandCopy: ({ manager }) =>
+        trackEvent(`docs-package-command-copy-${manager}`),
+      onPageAction: ({ action }) => trackEvent(`docs-page-action-${action}`),
+      onPageCopy: ({ format }) => trackEvent(`docs-page-copy-${format}`),
+      onPageFeedback: ({ value }) => trackEvent(`docs-page-feedback-${value}`),
+      onSearch: (query) => {
+        if (query) trackEvent('docs-search-query')
+      },
+      onSearchClose: ({ reason }) => trackEvent(`docs-search-close-${reason}`),
+      onSearchError: () => trackEvent('docs-search-error'),
+      onSearchOpen: () => trackEvent('docs-search-open'),
+      onSearchResults: () => trackEvent('docs-search-results'),
+      onSearchResultSelect: (_result, { interaction }) =>
+        trackEvent(`docs-search-result-select-${interaction}`),
+    }),
+    [trackEvent],
+  )
   const config = useMemo(
     () => ({
-      analytics: {
-        onSearchOpen: () => trackEvent('docs-search-open'),
-        onSearchResultSelect: () => trackEvent('docs-search-result-select'),
-        onPageCopy: ({ format }: { format: 'markdown' | 'link' }) =>
-          trackEvent(`docs-page-copy-${format}`),
-        onPageAction: ({ action }: { action: string }) =>
-          trackEvent(`docs-page-action-${action}`),
-      },
+      analytics,
       layout: {
         stickyTop: '5rem',
         scrollMarginTop: '6rem',
@@ -39,7 +53,7 @@ function DocsIntegrationProvider({ children }: { children: ReactNode }) {
       siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://react-fathom.com',
       title: 'react-fathom',
     }),
-    [trackEvent],
+    [analytics],
   )
 
   return <DocsProvider config={config}>{children}</DocsProvider>

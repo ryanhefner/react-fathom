@@ -1,7 +1,8 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import { useCallback, useRef, type ReactNode } from 'react'
 
+import { useFathom } from '@/lib/fathom'
 import {
   DocsArticle,
   DocsBreadcrumbs,
@@ -42,6 +43,28 @@ function formatDate(dateString: string): string {
   })
 }
 
+function getActiveSidebarBranchIds(
+  items: readonly DocsNavItem[],
+  activeRoute: string,
+): string[] | undefined {
+  for (const item of items) {
+    if (item.hidden) continue
+
+    const children = (item.children ?? []).filter((child) => !child.hidden)
+    const childPath = getActiveSidebarBranchIds(children, activeRoute)
+
+    if (item.href === activeRoute) {
+      return children.length > 0 ? [item.id] : []
+    }
+
+    if (childPath !== undefined) {
+      return children.length > 0 ? [item.id, ...childPath] : childPath
+    }
+  }
+
+  return undefined
+}
+
 export function DocsLayout({
   breadcrumbs = true,
   children,
@@ -53,6 +76,31 @@ export function DocsLayout({
   searchRecords,
 }: DocsLayoutProps) {
   const editUrl = getEditUrl(page)
+  const { trackEvent } = useFathom()
+  const expandedIdsRef = useRef<readonly string[]>(
+    getActiveSidebarBranchIds(nav, page.route) ?? [],
+  )
+  const handleSidebarExpandedChange = useCallback(
+    (nextExpandedIds: readonly string[]) => {
+      const previousIds = new Set(expandedIdsRef.current)
+      const nextIds = new Set(nextExpandedIds)
+
+      for (const id of nextExpandedIds) {
+        if (!previousIds.has(id)) {
+          trackEvent(`docs-sidebar-expand-${id}`)
+        }
+      }
+
+      for (const id of expandedIdsRef.current) {
+        if (!nextIds.has(id)) {
+          trackEvent(`docs-sidebar-collapse-${id}`)
+        }
+      }
+
+      expandedIdsRef.current = nextExpandedIds
+    },
+    [trackEvent],
+  )
 
   return (
     <Box minH="100vh">
@@ -60,10 +108,15 @@ export function DocsLayout({
       <ChakraDocsLayout
         headings={page.headings}
         mobileNavigationProps={{
+          onOpenChange: ({ open }) =>
+            trackEvent(
+              `docs-mobile-navigation-${open ? 'expand' : 'collapse'}`,
+            ),
           search: <DocsSiteSearch records={searchRecords} />,
           title: 'Browse documentation',
         }}
         nav={nav}
+        onSidebarExpandedChange={handleSidebarExpandedChange}
         page={page}
         sidebarCollapsible
         sidebarDefaultExpanded="active"
