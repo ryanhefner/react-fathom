@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -49,6 +49,42 @@ for (const target of ['dist/es/next/index.js', 'dist/cjs/next/index.cjs']) {
   for (const nextImport of ['next/compat/router', 'next/navigation']) {
     if (!contents.includes(nextImport)) {
       failures.push(`${target} does not retain ${nextImport} as an external`)
+    }
+  }
+}
+
+for (const [format, extension] of [
+  ['es', '.js'],
+  ['cjs', '.cjs'],
+]) {
+  const chunkDirectory = resolve(workspaceRoot, `dist/${format}/_chunks`)
+  const chunkFiles = await readdir(chunkDirectory)
+  const contextChunks = []
+
+  for (const chunkFile of chunkFiles.filter((file) =>
+    file.endsWith(extension),
+  )) {
+    const contents = await readFile(resolve(chunkDirectory, chunkFile), 'utf8')
+    if (contents.includes('createContext(defaultContextValue)')) {
+      contextChunks.push(chunkFile)
+    }
+  }
+
+  if (contextChunks.length !== 1) {
+    failures.push(
+      `dist/${format} contains ${contextChunks.length} Fathom context runtimes instead of one`,
+    )
+    continue
+  }
+
+  const [contextChunk] = contextChunks
+  for (const entrypoint of [
+    `dist/${format}/index${extension}`,
+    `dist/${format}/next/index${extension}`,
+  ]) {
+    const contents = await readFile(resolve(workspaceRoot, entrypoint), 'utf8')
+    if (!contents.includes(contextChunk)) {
+      failures.push(`${entrypoint} does not consume the shared context runtime`)
     }
   }
 }

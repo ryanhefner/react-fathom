@@ -132,15 +132,7 @@ const makeExternal = (baseExternals) => (id) => {
 }
 
 const external = ['fathom-client', 'react']
-const nextExternal = ['fathom-client', 'react', 'next']
-const nativeExternal = ['react', 'react-native', 'react-native-webview']
-const reactRouterExternal = ['fathom-client', 'react', 'react-router-dom']
-const gatsbyExternal = ['fathom-client', 'react', '@reach/router']
-const tanstackRouterExternal = [
-  'fathom-client',
-  'react',
-  '@tanstack/react-router',
-]
+const packageExternal = Object.keys(pkg.peerDependencies)
 
 const input = 'src/index.ts'
 const debugInput = 'src/debug/index.ts'
@@ -149,6 +141,16 @@ const nativeInput = 'src/native/index.ts'
 const reactRouterInput = 'src/react-router/index.ts'
 const gatsbyInput = 'src/gatsby/index.ts'
 const tanstackRouterInput = 'src/tanstack-router/index.ts'
+
+const packageInputs = {
+  index: input,
+  'debug/index': debugInput,
+  'next/index': nextInput,
+  'native/index': nativeInput,
+  'react-router/index': reactRouterInput,
+  'gatsby/index': gatsbyInput,
+  'tanstack-router/index': tanstackRouterInput,
+}
 
 const onwarn = (warning, warn) => {
   // Source directives are intentionally replaced by the output banner so the
@@ -186,172 +188,31 @@ export default [
     external: makeExternal(external),
     plugins: [...defaultPlugins],
   },
-  // ES - index
+  // ES modules are emitted together so every public entrypoint imports the
+  // same shared context/runtime chunks.
   {
-    input,
+    input: packageInputs,
     output: {
       ...defaultOutputOptions,
       dir: 'dist/es',
       format: 'esm',
       entryFileNames: '[name].js',
+      chunkFileNames: '_chunks/[name]-[hash].js',
     },
-    external: makeExternal(external),
+    external: makeExternal(packageExternal),
     plugins: defaultPlugins,
   },
-  // CJS - index
+  // CommonJS modules share the same runtime for require() consumers as well.
   {
-    input,
+    input: packageInputs,
     output: {
       ...defaultOutputOptions,
       dir: 'dist/cjs',
       format: 'cjs',
       entryFileNames: '[name].cjs',
+      chunkFileNames: '_chunks/[name]-[hash].cjs',
     },
-    external: makeExternal(external),
-    plugins: defaultPlugins,
-  },
-  // ES - debug
-  {
-    input: debugInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/debug',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(external),
-    plugins: defaultPlugins,
-  },
-  // CJS - debug
-  {
-    input: debugInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/debug',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(external),
-    plugins: defaultPlugins,
-  },
-  // ES - next
-  {
-    input: nextInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/next',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(nextExternal),
-    plugins: defaultPlugins,
-  },
-  // CJS - next
-  {
-    input: nextInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/next',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(nextExternal),
-    plugins: defaultPlugins,
-  },
-  // ES - native
-  {
-    input: nativeInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/native',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(nativeExternal),
-    plugins: defaultPlugins,
-  },
-  // CJS - native
-  {
-    input: nativeInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/native',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(nativeExternal),
-    plugins: defaultPlugins,
-  },
-  // ES - react-router
-  {
-    input: reactRouterInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/react-router',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(reactRouterExternal),
-    plugins: defaultPlugins,
-  },
-  // CJS - react-router
-  {
-    input: reactRouterInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/react-router',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(reactRouterExternal),
-    plugins: defaultPlugins,
-  },
-  // ES - gatsby
-  {
-    input: gatsbyInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/gatsby',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(gatsbyExternal),
-    plugins: defaultPlugins,
-  },
-  // CJS - gatsby
-  {
-    input: gatsbyInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/gatsby',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(gatsbyExternal),
-    plugins: defaultPlugins,
-  },
-  // ES - tanstack-router
-  {
-    input: tanstackRouterInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/es/tanstack-router',
-      format: 'esm',
-      entryFileNames: '[name].js',
-    },
-    external: makeExternal(tanstackRouterExternal),
-    plugins: defaultPlugins,
-  },
-  // CJS - tanstack-router
-  {
-    input: tanstackRouterInput,
-    output: {
-      ...defaultOutputOptions,
-      dir: 'dist/cjs/tanstack-router',
-      format: 'cjs',
-      entryFileNames: '[name].cjs',
-    },
-    external: makeExternal(tanstackRouterExternal),
+    external: makeExternal(packageExternal),
     plugins: defaultPlugins,
   },
 ].map((config) => ({ ...config, onwarn }))
