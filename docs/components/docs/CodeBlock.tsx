@@ -3,7 +3,7 @@
 import { useRef, useState, type ComponentProps } from 'react'
 
 import { useFathom } from '@/lib/fathom'
-import { Box, IconButton } from '@chakra-ui/react'
+import { Box, chakra, IconButton } from '@chakra-ui/react'
 
 // Pre component for rehype-pretty-code
 export function Pre({ children, ...props }: ComponentProps<'pre'>) {
@@ -35,54 +35,59 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
       >
         {copied ? '✓' : '📋'}
       </IconButton>
-      <pre
+      <chakra.pre
         ref={preRef}
-        style={{
-          padding: '1rem',
-          fontSize: '0.875rem',
-          lineHeight: '1.625',
-          overflowX: 'auto',
-          borderRadius: '0.5rem',
+        borderRadius="lg"
+        fontSize="sm"
+        lineHeight="1.625"
+        overflowX="auto"
+        p={4}
+        css={{
+          '& code': {
+            bg: 'transparent',
+            display: 'block',
+            fontFamily: 'mono',
+            fontSize: 'inherit',
+            p: 0,
+          },
+          '& [data-line]': {
+            mx: -4,
+            px: 4,
+          },
+          '& [data-highlighted-line]': {
+            bg: 'bg.emphasized',
+          },
+          '& [data-highlighted-chars]': {
+            bg: 'bg.muted',
+            borderRadius: 'sm',
+            px: 1,
+            py: 0.5,
+          },
+          '& [data-line-numbers]': {
+            counterReset: 'line',
+          },
+          '& [data-line-numbers] > [data-line]::before': {
+            color: 'fg.subtle',
+            content: 'counter(line)',
+            counterIncrement: 'line',
+            display: 'inline-block',
+            mr: 6,
+            textAlign: 'right',
+            w: 4,
+          },
+          '& [data-theme] span': {
+            color: 'var(--shiki-light)',
+          },
+          _dark: {
+            '& [data-theme] span': {
+              color: 'var(--shiki-dark)',
+            },
+          },
         }}
         {...props}
       >
-        <style>{`
-          pre code {
-            display: block;
-            background: transparent;
-            padding: 0;
-            font-size: inherit;
-            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-          }
-          pre [data-line] {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            margin-left: -1rem;
-            margin-right: -1rem;
-          }
-          pre [data-highlighted-line] {
-            background: rgba(200, 200, 255, 0.1);
-          }
-          pre [data-highlighted-chars] {
-            background: rgba(200, 200, 255, 0.2);
-            border-radius: 0.25rem;
-            padding: 0.125rem 0.25rem;
-          }
-          pre [data-line-numbers] {
-            counter-reset: line;
-          }
-          pre [data-line-numbers] > [data-line]::before {
-            counter-increment: line;
-            content: counter(line);
-            display: inline-block;
-            width: 1rem;
-            margin-right: 1.5rem;
-            text-align: right;
-            color: rgb(100, 100, 100);
-          }
-        `}</style>
         {children}
-      </pre>
+      </chakra.pre>
     </Box>
   )
 }
@@ -96,25 +101,15 @@ export function Figure({ children, ...props }: ComponentProps<'figure'>) {
   }
 
   return (
-    <figure
-      style={{
-        margin: '1rem 0',
-        borderRadius: '0.5rem',
-        overflow: 'hidden',
-      }}
-      className="code-figure"
+    <chakra.figure
+      bg="bg.subtle"
+      borderRadius="lg"
+      my={4}
+      overflow="hidden"
       {...props}
     >
-      <style>{`
-        .code-figure {
-          background: var(--chakra-colors-gray-900);
-        }
-        [data-theme="light"] .code-figure {
-          background: var(--chakra-colors-gray-50);
-        }
-      `}</style>
       {children}
-    </figure>
+    </chakra.figure>
   )
 }
 
@@ -130,29 +125,19 @@ export function Figcaption({
   }
 
   return (
-    <figcaption
-      style={{
-        display: 'flex',
-        padding: '0.5rem 1rem',
-        borderBottom: '1px solid var(--chakra-colors-gray-700)',
-        fontSize: '0.875rem',
-        fontFamily:
-          'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
-      }}
-      className="code-title"
+    <chakra.figcaption
+      bg="bg.muted"
+      borderBottomColor="border"
+      borderBottomWidth="1px"
+      color="fg.muted"
+      display="flex"
+      fontFamily="mono"
+      fontSize="sm"
+      px={4}
+      py={2}
       {...props}
     >
-      <style>{`
-        .code-title {
-          background: var(--chakra-colors-gray-800);
-          color: var(--chakra-colors-gray-400);
-        }
-        [data-theme="light"] .code-title {
-          background: var(--chakra-colors-gray-100);
-          color: var(--chakra-colors-gray-600);
-        }
-      `}</style>
       {children}
-    </figcaption>
+    </chakra.figcaption>
   )
 }

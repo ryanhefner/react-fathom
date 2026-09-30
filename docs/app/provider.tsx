@@ -10,9 +10,14 @@ import { NextLink } from '@chakra-docs/next/link'
 import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react'
 
 import { ColorModeProvider } from './color-mode'
+import { siteThemeConfig } from './theme'
 import { EventStream } from '../components/docs/EventStream'
 
-const docsSystem = createSystem(defaultConfig, chakraDocsThemeConfig)
+const docsSystem = createSystem(
+  defaultConfig,
+  chakraDocsThemeConfig,
+  siteThemeConfig,
+)
 
 function DocsIntegrationProvider({ children }: { children: ReactNode }) {
   const { trackEvent } = useFathom()

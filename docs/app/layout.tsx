@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 
 import { Provider } from './provider'
-import './globals.css'
 
 const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
 
