@@ -25,6 +25,7 @@
     "shiki": "^3.21.0"
   },
   "devDependencies": {
+    "@types/mdx": "^2.0.14",
     "@types/node": "^25.0.10",
     "@types/react": "^19.2.7",
     "typescript": "^5.7.0"
