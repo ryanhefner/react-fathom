@@ -1,6 +1,6 @@
 'use client'
 
-import { LuGithub } from 'react-icons/lu'
+import { SiGithub } from 'react-icons/si'
 
 import type { DocsSearchRecord } from '@chakra-docs/core'
 import {
@@ -73,7 +73,7 @@ export function Navbar({ searchRecords }: NavbarProps) {
                   _hover={{ color: 'fg', bg: 'bg.panel' }}
                 >
                   <SiteLink href="https://github.com/ryanhefner/react-fathom">
-                    <LuGithub aria-hidden="true" />
+                    <SiGithub aria-hidden="true" />
                   </SiteLink>
                 </IconButton>
               </Tooltip.Trigger>
