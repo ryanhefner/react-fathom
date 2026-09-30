@@ -2,7 +2,9 @@
 
 import { useState, type ReactNode } from 'react'
 
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { LuChevronDown, LuChevronRight } from 'react-icons/lu'
+
+import { Box, chakra, Flex, Text } from '@chakra-ui/react'
 
 interface FileTreeProps {
   children: ReactNode
@@ -36,20 +38,26 @@ export function Folder({ name, children, defaultOpen = true }: FolderProps) {
 
   return (
     <Box>
-      <Flex
-        align="center"
+      <chakra.button
+        alignItems="center"
+        display="flex"
         gap={2}
         py={0.5}
+        disabled={!hasChildren}
+        type="button"
+        width="full"
+        textAlign="left"
         cursor={hasChildren ? 'pointer' : 'default'}
         _hover={hasChildren ? { color: 'blue.400' } : undefined}
+        aria-expanded={hasChildren ? isOpen : undefined}
         onClick={() => hasChildren && setIsOpen(!isOpen)}
       >
-        <Text fontSize="xs" color="fg.muted" width="12px" textAlign="center">
-          {hasChildren ? (isOpen ? '▼' : '▶') : ''}
-        </Text>
+        <Box aria-hidden="true" color="fg.muted" fontSize="xs" width="12px">
+          {hasChildren ? isOpen ? <LuChevronDown /> : <LuChevronRight /> : null}
+        </Box>
         <Text>📁</Text>
         <Text>{name}</Text>
-      </Flex>
+      </chakra.button>
       {isOpen && children && (
         <Box
           pl={6}

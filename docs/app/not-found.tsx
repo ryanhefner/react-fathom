@@ -1,3 +1,5 @@
+import { LuArrowLeft } from 'react-icons/lu'
+
 import { ColorModeButton } from '@/components/docs/ColorModeButton'
 import { DocsSiteSearch } from '@/components/docs/DocsSiteSearch'
 import { SiteLink } from '@/components/docs/SiteLink'
@@ -111,11 +113,15 @@ export default async function NotFound() {
 
           <SiteLink
             href="/"
+            alignItems="center"
             color="blue.500"
+            display="inline-flex"
             fontWeight="medium"
+            gap={1}
             _hover={{ textDecoration: 'underline' }}
           >
-            ← Back to home
+            <LuArrowLeft aria-hidden="true" />
+            Back to home
           </SiteLink>
         </VStack>
       </Container>

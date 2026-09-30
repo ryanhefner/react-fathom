@@ -1,5 +1,7 @@
 'use client'
 
+import { LuArrowRight } from 'react-icons/lu'
+
 import { DocsCards } from '@chakra-docs/chakra'
 import { Box, Heading, Stack, Text } from '@chakra-ui/react'
 
@@ -62,8 +64,16 @@ export function WelcomePage() {
         >
           npm install react-fathom fathom-client
         </Box>
-        <SiteLink href="/docs/getting-started" color="fg" fontWeight="semibold">
-          Read the getting-started guide →
+        <SiteLink
+          href="/docs/getting-started"
+          alignItems="center"
+          color="fg"
+          display="inline-flex"
+          fontWeight="semibold"
+          gap={1}
+        >
+          Read the getting-started guide
+          <LuArrowRight aria-hidden="true" />
         </SiteLink>
       </Stack>
 

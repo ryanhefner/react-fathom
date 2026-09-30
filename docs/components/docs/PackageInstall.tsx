@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 
-import { Box, Flex, IconButton } from '@chakra-ui/react'
+import { LuCheck, LuCopy } from 'react-icons/lu'
 
-import { CopyCompleteIcon, CopyStackIcon } from './CopyIcons'
+import { Box, Flex, IconButton } from '@chakra-ui/react'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
 
@@ -70,7 +70,7 @@ export function PackageInstall({ packages, dev = false }: PackageInstallProps) {
           m={2}
           onClick={handleCopy}
         >
-          {copied ? <CopyCompleteIcon /> : <CopyStackIcon />}
+          {copied ? <LuCheck /> : <LuCopy />}
         </IconButton>
       </Flex>
 
@@ -176,7 +176,7 @@ export function NpmToYarn({ children }: NpmToYarnProps) {
           m={2}
           onClick={handleCopy}
         >
-          {copied ? <CopyCompleteIcon /> : <CopyStackIcon />}
+          {copied ? <LuCheck /> : <LuCopy />}
         </IconButton>
       </Flex>
       <Box

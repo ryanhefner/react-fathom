@@ -2,6 +2,8 @@
 
 import { useState, type ReactNode } from 'react'
 
+import { LuChevronDown } from 'react-icons/lu'
+
 import { Box, Flex, Text } from '@chakra-ui/react'
 
 interface AccordionItemProps {
@@ -33,14 +35,16 @@ export function AccordionItem({
         textAlign="left"
       >
         <Text fontWeight="medium">{title}</Text>
-        <Text
+        <Box
+          aria-hidden="true"
           fontSize="lg"
           color="fg.muted"
+          flexShrink={0}
           transform={isOpen ? 'rotate(180deg)' : 'rotate(0deg)'}
           transition="transform 0.2s"
         >
-          ▼
-        </Text>
+          <LuChevronDown />
+        </Box>
       </Flex>
       {isOpen && (
         <Box px={4} py={3} borderTopWidth="1px">

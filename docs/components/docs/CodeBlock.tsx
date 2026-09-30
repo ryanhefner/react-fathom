@@ -2,10 +2,10 @@
 
 import { useRef, useState, type ComponentProps } from 'react'
 
+import { LuCheck, LuCopy } from 'react-icons/lu'
+
 import { useFathom } from '@/lib/fathom'
 import { Box, chakra, IconButton } from '@chakra-ui/react'
-
-import { CopyCompleteIcon, CopyStackIcon } from './CopyIcons'
 
 // Pre component for rehype-pretty-code
 export function Pre({ children, ...props }: ComponentProps<'pre'>) {
@@ -35,7 +35,7 @@ export function Pre({ children, ...props }: ComponentProps<'pre'>) {
         zIndex={1}
         onClick={handleCopy}
       >
-        {copied ? <CopyCompleteIcon /> : <CopyStackIcon />}
+        {copied ? <LuCheck /> : <LuCopy />}
       </IconButton>
       <chakra.pre
         ref={preRef}

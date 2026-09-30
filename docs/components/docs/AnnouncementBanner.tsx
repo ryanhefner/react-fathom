@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 
+import { LuArrowRight } from 'react-icons/lu'
+
 import { Box, CloseButton, Flex, Text } from '@chakra-ui/react'
 
 import { SiteLink } from './SiteLink'
@@ -82,11 +84,15 @@ export function AnnouncementBanner({
               {' '}
               <SiteLink
                 href={linkHref}
+                alignItems="center"
+                display="inline-flex"
+                gap={1}
                 textDecoration="underline"
                 fontWeight="semibold"
                 _hover={{ opacity: 0.8 }}
               >
-                {linkText} →
+                {linkText}
+                <LuArrowRight aria-hidden="true" />
               </SiteLink>
             </>
           )}
