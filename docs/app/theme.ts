@@ -17,6 +17,9 @@ export const siteThemeConfig = defineConfig({
         color: 'black !important',
       },
     },
+    'strong, b': {
+      fontWeight: 500,
+    },
     main: {
       _print: {
         maxW: 'full !important',
