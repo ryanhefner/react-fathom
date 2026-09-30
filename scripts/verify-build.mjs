@@ -39,6 +39,20 @@ for (const target of ['dist/es/native/index.js', 'dist/cjs/native/index.cjs']) {
   }
 }
 
+for (const target of ['dist/es/next/index.js', 'dist/cjs/next/index.cjs']) {
+  const contents = await readFile(resolve(workspaceRoot, target), 'utf8')
+
+  if (contents.includes('RouterContext') || contents.includes('next/dist/')) {
+    failures.push(`${target} contains bundled Next.js router internals`)
+  }
+
+  for (const nextImport of ['next/compat/router', 'next/navigation']) {
+    if (!contents.includes(nextImport)) {
+      failures.push(`${target} does not retain ${nextImport} as an external`)
+    }
+  }
+}
+
 if (failures.length > 0) {
   throw new Error(`Build verification failed:\n- ${failures.join('\n- ')}`)
 }

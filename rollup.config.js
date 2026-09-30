@@ -114,7 +114,11 @@ const makeExternal = (baseExternals) => (id) => {
     return true
   }
   // Check if it's in the base externals list
-  if (baseExternals.includes(id)) {
+  if (
+    baseExternals.some(
+      (packageName) => id === packageName || id.startsWith(`${packageName}/`),
+    )
+  ) {
     return true
   }
   // Check if it's a path to a Node.js built-in (e.g., 'node:fs')
@@ -128,13 +132,7 @@ const makeExternal = (baseExternals) => (id) => {
 }
 
 const external = ['fathom-client', 'react']
-const nextExternal = [
-  'fathom-client',
-  'react',
-  'next/router',
-  'next/compat/router',
-  'next/navigation',
-]
+const nextExternal = ['fathom-client', 'react', 'next']
 const nativeExternal = ['react', 'react-native', 'react-native-webview']
 const reactRouterExternal = ['fathom-client', 'react', 'react-router-dom']
 const gatsbyExternal = ['fathom-client', 'react', '@reach/router']
