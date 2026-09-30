@@ -62,6 +62,8 @@ function EventCard({ event }: { event: DebugEvent }) {
       p={3}
       borderWidth="1px"
       borderColor={borderColor[event.type]}
+      borderRadius="md"
+      boxShadow="sm"
       bg="bg"
       w="100%"
       animation="fadeIn 0.3s ease-out"
