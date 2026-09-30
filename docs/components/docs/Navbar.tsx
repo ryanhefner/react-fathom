@@ -27,12 +27,13 @@ export function Navbar({ searchRecords }: NavbarProps) {
       position="sticky"
       top={0}
       zIndex={50}
+      h="siteHeader"
       borderBottomWidth="1px"
       bg="bg"
       backdropFilter="blur(10px)"
     >
-      <Container maxW="7xl" py={3}>
-        <Flex justify="space-between" align="center">
+      <Container maxW="7xl" h="full">
+        <Flex justify="space-between" align="center" h="full">
           <HStack gap={8}>
             <SiteLink
               href="/"

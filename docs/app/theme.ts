@@ -197,6 +197,9 @@ export const siteThemeConfig = defineConfig({
       }),
     },
     tokens: {
+      sizes: {
+        siteHeader: { value: 'calc({sizes.11} + {spacing.6} + 1px)' },
+      },
       fontWeights: { semibold: { value: '500' } },
       fonts: {
         body: {

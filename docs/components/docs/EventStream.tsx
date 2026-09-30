@@ -208,7 +208,9 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
         >
           {/* Header */}
           <Flex
-            p={4}
+            h="siteHeader"
+            flexShrink={0}
+            px={4}
             borderBottomWidth="1px"
             borderBottomColor="border"
             justifyContent="space-between"
