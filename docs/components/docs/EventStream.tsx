@@ -2,6 +2,14 @@
 
 import { useState, useEffect } from 'react'
 
+import {
+  LuActivity,
+  LuFileText,
+  LuMousePointerClick,
+  LuTrophy,
+  LuX,
+} from 'react-icons/lu'
+
 import { type DebugEvent } from '@/lib/fathom'
 import { Box, Button, Flex, IconButton, Text, VStack } from '@chakra-ui/react'
 
@@ -9,9 +17,9 @@ const STORAGE_KEY = 'react-fathom-event-stream-visible'
 
 function EventIcon({ type }: { type: DebugEvent['type'] }) {
   const icons = {
-    pageview: '📄',
-    event: '🎯',
-    goal: '🏆',
+    pageview: <LuFileText aria-hidden="true" />,
+    event: <LuMousePointerClick aria-hidden="true" />,
+    goal: <LuTrophy aria-hidden="true" />,
   }
   return <span>{icons[type]}</span>
 }
@@ -25,15 +33,10 @@ function formatTime(timestamp: number): string {
 }
 
 function EventCard({ event }: { event: DebugEvent }) {
-  const bgColor = {
-    pageview: { light: 'blue.50', dark: 'blue.950' },
-    event: { light: 'purple.50', dark: 'purple.950' },
-    goal: { light: 'green.50', dark: 'green.950' },
-  }
   const borderColor = {
-    pageview: 'blue.400',
-    event: 'purple.400',
-    goal: 'green.400',
+    pageview: 'blue.500',
+    event: 'purple.500',
+    goal: 'green.500',
   }
 
   let title = ''
@@ -57,11 +60,9 @@ function EventCard({ event }: { event: DebugEvent }) {
   return (
     <Box
       p={3}
-      borderRadius="md"
-      borderLeftWidth="3px"
-      borderLeftColor={borderColor[event.type]}
-      bg={bgColor[event.type].light}
-      _dark={{ bg: bgColor[event.type].dark }}
+      borderWidth="1px"
+      borderColor={borderColor[event.type]}
+      bg="bg"
       w="100%"
       animation="fadeIn 0.3s ease-out"
       css={{
@@ -74,20 +75,15 @@ function EventCard({ event }: { event: DebugEvent }) {
       <Flex justifyContent="space-between" alignItems="center" mb={1}>
         <Flex alignItems="center" gap={2}>
           <EventIcon type={event.type} />
-          <Text fontWeight="semibold" fontSize="sm">
+          <Text fontWeight={500} fontSize="sm">
             {title}
           </Text>
         </Flex>
-        <Text fontSize="xs" color="gray.500" _dark={{ color: 'gray.400' }}>
+        <Text fontSize="xs" color="fg.muted">
           {formatTime(event.timestamp)}
         </Text>
       </Flex>
-      <Text
-        fontSize="xs"
-        color="gray.600"
-        _dark={{ color: 'gray.300' }}
-        wordBreak="break-all"
-      >
+      <Text fontSize="xs" color="fg.muted" wordBreak="break-all">
         {subtitle}
       </Text>
     </Box>
@@ -176,20 +172,21 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
       {/* Toggle button */}
       <IconButton
         aria-label={isVisible ? 'Hide event stream' : 'Show event stream'}
+        title={isVisible ? 'Hide event stream' : 'Show event stream'}
         position="fixed"
         bottom={4}
         right={4}
         zIndex={1000}
-        borderRadius="full"
-        size="lg"
-        bg="purple.500"
-        color="white"
-        _hover={{ bg: 'purple.600' }}
-        _dark={{ bg: 'purple.400', _hover: { bg: 'purple.500' } }}
+        borderWidth="1px"
+        borderColor="border"
+        borderRadius="md"
+        size="md"
+        bg="bg"
+        color="fg"
+        _hover={{ bg: 'bg.panel' }}
         onClick={() => setIsVisible(!isVisible)}
-        boxShadow="lg"
       >
-        {isVisible ? '✕' : '📊'}
+        {isVisible ? <LuX /> : <LuActivity />}
       </IconButton>
 
       {/* Event stream panel */}
@@ -200,28 +197,25 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
           right={0}
           bottom={0}
           w={{ base: '100%', md: '320px' }}
-          bg="white"
+          bg="bg"
           borderLeftWidth="1px"
-          borderLeftColor="gray.200"
-          _dark={{ bg: 'gray.900', borderLeftColor: 'gray.700' }}
+          borderLeftColor="border"
           zIndex={999}
           display="flex"
           flexDirection="column"
-          boxShadow="xl"
         >
           {/* Header */}
           <Flex
             p={4}
             borderBottomWidth="1px"
-            borderBottomColor="gray.200"
+            borderBottomColor="border"
             justifyContent="space-between"
             alignItems="center"
-            bg="gray.50"
-            _dark={{ bg: 'gray.800', borderBottomColor: 'gray.700' }}
+            bg="bg"
           >
             <Flex alignItems="center" gap={2}>
-              <Text fontSize="lg">📊</Text>
-              <Text fontWeight="semibold">Event Stream</Text>
+              <LuActivity aria-hidden="true" />
+              <Text fontWeight={500}>Event Stream</Text>
             </Flex>
             <Button
               size="xs"
@@ -241,10 +235,10 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
                 alignItems="center"
                 justifyContent="center"
                 flexDirection="column"
-                color="gray.500"
+                color="fg.muted"
                 gap={2}
               >
-                <Text fontSize="2xl">🔍</Text>
+                <LuActivity aria-hidden="true" size={24} />
                 <Text fontSize="sm" textAlign="center">
                   No events yet.
                   <br />
@@ -261,23 +255,10 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
           </Box>
 
           {/* Footer */}
-          <Box
-            p={3}
-            borderTopWidth="1px"
-            borderTopColor="gray.200"
-            bg="gray.50"
-            _dark={{ bg: 'gray.800', borderTopColor: 'gray.700' }}
-          >
-            <Text fontSize="xs" color="gray.500" textAlign="center">
+          <Box p={3} borderTopWidth="1px" borderTopColor="border" bg="bg">
+            <Text fontSize="xs" color="fg.muted" textAlign="center">
               {events.length} event{events.length !== 1 ? 's' : ''} • Press{' '}
-              <Text
-                as="span"
-                fontFamily="mono"
-                bg="gray.200"
-                _dark={{ bg: 'gray.700' }}
-                px={1}
-                borderRadius="sm"
-              >
+              <Text as="span" fontFamily="mono" bg="bg.panel" px={1}>
                 ⌘.
               </Text>{' '}
               to toggle
