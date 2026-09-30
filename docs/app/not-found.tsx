@@ -1,18 +1,9 @@
 import { LuArrowLeft } from 'react-icons/lu'
 
-import { ColorModeButton } from '@/components/docs/ColorModeButton'
 import { DocsSiteSearch } from '@/components/docs/DocsSiteSearch'
 import { SiteLink } from '@/components/docs/SiteLink'
 import { getDocsManifest } from '@/lib/chakra-docs'
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Flex,
-  HStack,
-} from '@chakra-ui/react'
+import { Box, Container, Heading, Text, VStack, Flex } from '@chakra-ui/react'
 
 const popularPages = [
   { title: 'Getting Started', href: '/docs/getting-started' },
@@ -42,12 +33,9 @@ function SimpleNavbar() {
           >
             react-fathom
           </SiteLink>
-          <HStack gap={4}>
-            <SiteLink href="/docs" color="fg.muted" _hover={{ color: 'fg' }}>
-              Docs
-            </SiteLink>
-            <ColorModeButton />
-          </HStack>
+          <SiteLink href="/docs" color="fg.muted" _hover={{ color: 'fg' }}>
+            Docs
+          </SiteLink>
         </Flex>
       </Container>
     </Box>

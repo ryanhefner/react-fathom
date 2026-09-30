@@ -3,7 +3,6 @@
 import type { DocsSearchRecord } from '@chakra-docs/core'
 import { Box, Container, Flex, HStack } from '@chakra-ui/react'
 
-import { ColorModeButton } from './ColorModeButton'
 import { DocsSiteSearch } from './DocsSiteSearch'
 import { SiteLink } from './SiteLink'
 
@@ -57,10 +56,7 @@ export function Navbar({ searchRecords }: NavbarProps) {
               </SiteLink>
             </HStack>
           </HStack>
-          <HStack gap={2}>
-            <DocsSiteSearch records={searchRecords} />
-            <ColorModeButton />
-          </HStack>
+          <DocsSiteSearch records={searchRecords} />
         </Flex>
       </Container>
     </Box>
