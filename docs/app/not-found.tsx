@@ -1,7 +1,6 @@
-import NextLink from 'next/link'
-
 import { ColorModeButton } from '@/components/docs/ColorModeButton'
 import { DocsSiteSearch } from '@/components/docs/DocsSiteSearch'
+import { SiteLink } from '@/components/docs/SiteLink'
 import { getDocsManifest } from '@/lib/chakra-docs'
 import {
   Box,
@@ -9,7 +8,6 @@ import {
   Heading,
   Text,
   VStack,
-  Link,
   Flex,
   HStack,
 } from '@chakra-ui/react'
@@ -34,18 +32,18 @@ function SimpleNavbar() {
     >
       <Container maxW="container.xl" py={3}>
         <Flex justify="space-between" align="center">
-          <Link
-            asChild
+          <SiteLink
+            href="/"
             fontWeight="bold"
             fontSize="lg"
             _hover={{ textDecoration: 'none' }}
           >
-            <NextLink href="/">react-fathom</NextLink>
-          </Link>
+            react-fathom
+          </SiteLink>
           <HStack gap={4}>
-            <Link asChild color="fg.muted" _hover={{ color: 'fg' }}>
-              <NextLink href="/docs">Docs</NextLink>
-            </Link>
+            <SiteLink href="/docs" color="fg.muted" _hover={{ color: 'fg' }}>
+              Docs
+            </SiteLink>
             <ColorModeButton />
           </HStack>
         </Flex>
@@ -92,9 +90,9 @@ export default async function NotFound() {
             </Text>
             <Flex gap={3} flexWrap="wrap" justify="center">
               {popularPages.map((page) => (
-                <Link
+                <SiteLink
                   key={page.href}
-                  asChild
+                  href={page.href}
                   px={4}
                   py={2}
                   borderRadius="md"
@@ -105,20 +103,20 @@ export default async function NotFound() {
                     _light: { bg: 'gray.200' },
                   }}
                 >
-                  <NextLink href={page.href}>{page.title}</NextLink>
-                </Link>
+                  {page.title}
+                </SiteLink>
               ))}
             </Flex>
           </Box>
 
-          <Link
-            asChild
+          <SiteLink
+            href="/"
             color="blue.500"
             fontWeight="medium"
             _hover={{ textDecoration: 'underline' }}
           >
-            <NextLink href="/">← Back to home</NextLink>
-          </Link>
+            ← Back to home
+          </SiteLink>
         </VStack>
       </Container>
     </>

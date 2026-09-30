@@ -1,7 +1,6 @@
 import type { MDXComponents as MDXComponentsType } from 'mdx/types'
-import NextLink from 'next/link'
 
-import { Box, Code, Heading, Link, List, Table, Text } from '@chakra-ui/react'
+import { Box, Code, Heading, List, Table, Text } from '@chakra-ui/react'
 
 import { Accordion, AccordionItem, Collapsible } from './Accordion'
 import { Callout } from './Callout'
@@ -9,6 +8,7 @@ import { Cards, Card } from './Cards'
 import { Pre, Figure, Figcaption } from './CodeBlock'
 import { FileTree, Folder, File } from './FileTree'
 import { PackageInstall, NpmToYarn } from './PackageInstall'
+import { SiteLink } from './SiteLink'
 import { Steps } from './Steps'
 import { Tabs, Tab } from './Tabs'
 
@@ -44,7 +44,7 @@ export const MDXComponents: MDXComponentsType = {
       >
         {props.children}
         {id && (
-          <Link
+          <SiteLink
             href={`#${id}`}
             ml={2}
             opacity={0}
@@ -52,7 +52,7 @@ export const MDXComponents: MDXComponentsType = {
             _hover={{ color: 'fg' }}
           >
             #
-          </Link>
+          </SiteLink>
         )}
       </Heading>
     )
@@ -74,7 +74,7 @@ export const MDXComponents: MDXComponentsType = {
       >
         {props.children}
         {id && (
-          <Link
+          <SiteLink
             href={`#${id}`}
             ml={2}
             opacity={0}
@@ -82,31 +82,21 @@ export const MDXComponents: MDXComponentsType = {
             _hover={{ color: 'fg' }}
           >
             #
-          </Link>
+          </SiteLink>
         )}
       </Heading>
     )
   },
   h4: (props) => <Heading as="h4" size="md" mt={6} mb={2} {...props} />,
   p: (props) => <Text my={4} lineHeight="tall" {...props} />,
-  a: ({ href, ...props }) => {
-    const isExternal = href?.startsWith('http')
-    if (isExternal) {
-      return (
-        <Link
-          href={href}
-          color="blue.500"
-          _hover={{ textDecoration: 'underline' }}
-          {...props}
-        />
-      )
-    }
-    return (
-      <Link asChild color="blue.500" _hover={{ textDecoration: 'underline' }}>
-        <NextLink href={href || '#'} {...props} />
-      </Link>
-    )
-  },
+  a: ({ href, ...props }) => (
+    <SiteLink
+      href={href || '#'}
+      color="blue.500"
+      _hover={{ textDecoration: 'underline' }}
+      {...props}
+    />
+  ),
   ul: (props) => <List.Root as="ul" my={4} pl={4} gap={2} {...props} />,
   ol: (props) => <List.Root as="ol" my={4} pl={4} gap={2} {...props} />,
   li: (props) => <List.Item {...props} />,

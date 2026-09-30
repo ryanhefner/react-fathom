@@ -1,9 +1,9 @@
 'use client'
 
-import NextLink from 'next/link'
-
 import { DocsCards } from '@chakra-docs/chakra'
-import { Box, Heading, Link, Stack, Text } from '@chakra-ui/react'
+import { Box, Heading, Stack, Text } from '@chakra-ui/react'
+
+import { SiteLink } from './SiteLink'
 
 const guides = [
   {
@@ -61,11 +61,9 @@ export function WelcomePage() {
         >
           npm install react-fathom fathom-client
         </Box>
-        <Link asChild color="fg" fontWeight="semibold">
-          <NextLink href="/docs/getting-started">
-            Read the getting-started guide →
-          </NextLink>
-        </Link>
+        <SiteLink href="/docs/getting-started" color="fg" fontWeight="semibold">
+          Read the getting-started guide →
+        </SiteLink>
       </Stack>
 
       <Box>
@@ -90,11 +88,11 @@ export function WelcomePage() {
         </Heading>
         <Text color="fg.muted">
           Review the{' '}
-          <Link href="https://github.com/ryanhefner/react-fathom">
+          <SiteLink href="https://github.com/ryanhefner/react-fathom">
             source on GitHub
-          </Link>{' '}
+          </SiteLink>{' '}
           or learn more about{' '}
-          <Link href="https://usefathom.com">Fathom Analytics</Link>.
+          <SiteLink href="https://usefathom.com">Fathom Analytics</SiteLink>.
         </Text>
       </Box>
     </Stack>

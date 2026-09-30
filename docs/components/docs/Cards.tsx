@@ -2,9 +2,9 @@
 
 import type { ReactNode } from 'react'
 
-import NextLink from 'next/link'
+import { Box, Grid, Text } from '@chakra-ui/react'
 
-import { Box, Grid, Link, Text } from '@chakra-ui/react'
+import { SiteLink } from './SiteLink'
 
 interface CardsProps {
   children: ReactNode
@@ -30,8 +30,6 @@ interface CardProps {
 }
 
 export function Card({ title, href, children }: CardProps) {
-  const isExternal = href.startsWith('http')
-
   const content = (
     <Box
       p={4}
@@ -51,17 +49,9 @@ export function Card({ title, href, children }: CardProps) {
     </Box>
   )
 
-  if (isExternal) {
-    return (
-      <Link href={href} _hover={{ textDecoration: 'none' }}>
-        {content}
-      </Link>
-    )
-  }
-
   return (
-    <Link asChild _hover={{ textDecoration: 'none' }}>
-      <NextLink href={href}>{content}</NextLink>
-    </Link>
+    <SiteLink href={href} _hover={{ textDecoration: 'none' }}>
+      {content}
+    </SiteLink>
   )
 }

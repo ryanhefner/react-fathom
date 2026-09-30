@@ -1,12 +1,11 @@
 'use client'
 
-import NextLink from 'next/link'
-
 import type { DocsSearchRecord } from '@chakra-docs/core'
-import { Box, Container, Flex, HStack, Link } from '@chakra-ui/react'
+import { Box, Container, Flex, HStack } from '@chakra-ui/react'
 
 import { ColorModeButton } from './ColorModeButton'
 import { DocsSiteSearch } from './DocsSiteSearch'
+import { SiteLink } from './SiteLink'
 
 interface NavbarProps {
   searchRecords: readonly DocsSearchRecord[]
@@ -26,28 +25,36 @@ export function Navbar({ searchRecords }: NavbarProps) {
       <Container maxW="7xl" py={3}>
         <Flex justify="space-between" align="center">
           <HStack gap={8}>
-            <Link
-              asChild
+            <SiteLink
+              href="/"
               fontWeight="bold"
               fontSize="lg"
               _hover={{ textDecoration: 'none' }}
             >
-              <NextLink href="/">react-fathom</NextLink>
-            </Link>
+              react-fathom
+            </SiteLink>
             <HStack as="nav" gap={6} display={{ base: 'none', md: 'flex' }}>
-              <Link asChild color="fg.muted" _hover={{ color: 'fg' }}>
-                <NextLink href="/docs/getting-started">Docs</NextLink>
-              </Link>
-              <Link asChild color="fg.muted" _hover={{ color: 'fg' }}>
-                <NextLink href="/docs/api">API</NextLink>
-              </Link>
-              <Link
+              <SiteLink
+                href="/docs/getting-started"
+                color="fg.muted"
+                _hover={{ color: 'fg' }}
+              >
+                Docs
+              </SiteLink>
+              <SiteLink
+                href="/docs/api"
+                color="fg.muted"
+                _hover={{ color: 'fg' }}
+              >
+                API
+              </SiteLink>
+              <SiteLink
                 href="https://github.com/ryanhefner/react-fathom"
                 color="fg.muted"
                 _hover={{ color: 'fg' }}
               >
                 GitHub
-              </Link>
+              </SiteLink>
             </HStack>
           </HStack>
           <HStack gap={2}>

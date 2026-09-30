@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react'
 
-import { Box, CloseButton, Flex, Link, Text } from '@chakra-ui/react'
+import { Box, CloseButton, Flex, Text } from '@chakra-ui/react'
+
+import { SiteLink } from './SiteLink'
 
 interface AnnouncementBannerProps {
   id: string
@@ -78,14 +80,14 @@ export function AnnouncementBanner({
           {linkText && linkHref && (
             <>
               {' '}
-              <Link
+              <SiteLink
                 href={linkHref}
                 textDecoration="underline"
                 fontWeight="semibold"
                 _hover={{ opacity: 0.8 }}
               >
                 {linkText} →
-              </Link>
+              </SiteLink>
             </>
           )}
         </Text>

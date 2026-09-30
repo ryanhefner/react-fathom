@@ -1,6 +1,8 @@
 'use client'
 
-import { Box, Flex, Heading, Link, Text, VStack } from '@chakra-ui/react'
+import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+
+import { SiteLink } from './SiteLink'
 
 interface Commit {
   hash: string
@@ -25,13 +27,13 @@ export function ChangelogEntry({
     <Box mb={8} pb={8} borderBottomWidth="1px">
       <Flex align="baseline" gap={4} mb={4}>
         <Heading as="h2" size="lg">
-          <Link
+          <SiteLink
             href={`${repoUrl}/releases/tag/${version}`}
             color="blue.500"
             _hover={{ textDecoration: 'underline' }}
           >
             {version}
-          </Link>
+          </SiteLink>
         </Heading>
         <Text color="fg.muted" fontSize="sm">
           {date}
@@ -40,7 +42,7 @@ export function ChangelogEntry({
       <VStack align="stretch" gap={2}>
         {commits.map((commit) => (
           <Flex key={commit.hash} gap={3} fontSize="sm">
-            <Link
+            <SiteLink
               href={`${repoUrl}/commit/${commit.hash}`}
               fontFamily="mono"
               color="fg.muted"
@@ -48,7 +50,7 @@ export function ChangelogEntry({
               flexShrink={0}
             >
               {commit.hash}
-            </Link>
+            </SiteLink>
             <Text flex={1}>{commit.message}</Text>
             <Text color="fg.muted" flexShrink={0}>
               {commit.author}
