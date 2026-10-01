@@ -2,9 +2,44 @@ import { describe, expect, it } from 'vitest'
 
 import { postkitRecipeKeys } from '@postkit/react/theme'
 
+import { testSystem } from './chakra-test-system'
 import { postkitThemeConfig, siteThemeConfig } from '../app/theme'
 
 describe('documentation prose theme', () => {
+  it('resolves shared document offsets through spacing tokens', () => {
+    expect(
+      testSystem.css({
+        top: 'docsStickyTop',
+        scrollMarginTop: 'docsScrollMargin',
+      }),
+    ).toEqual({
+      top: testSystem.token.var('spacing.docsStickyTop'),
+      scrollMarginTop: testSystem.token.var('spacing.docsScrollMargin'),
+    })
+  })
+  it('registers site chrome recipes, animation tokens, and semantic event colors', () => {
+    for (const key of [
+      'siteNavbar',
+      'siteFooter',
+      'communeFooter',
+      'siteEventStream',
+    ]) {
+      expect(
+        siteThemeConfig.theme?.slotRecipes?.[key]?.slots.length,
+      ).toBeGreaterThan(0)
+    }
+    expect(
+      siteThemeConfig.theme?.tokens?.durations?.eventStreamPanel?.value,
+    ).toBe('200ms')
+    expect(siteThemeConfig.theme?.tokens?.easings?.snappy?.value).toBe(
+      'cubic-bezier(0.4, 0, 0.2, 1)',
+    )
+    expect(
+      siteThemeConfig.theme?.semanticTokens?.colors?.['eventStream.canvas']
+        ?.value,
+    ).toEqual({ _light: '{colors.gray.100}', _dark: '{colors.gray.900}' })
+    expect(siteThemeConfig.theme?.keyframes?.eventCardEnter).toBeDefined()
+  })
   it('uses blue inline links with hover and keyboard-focus underlines without changing navigation links', () => {
     const prose =
       postkitThemeConfig.theme?.slotRecipes?.[postkitRecipeKeys.prose]

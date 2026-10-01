@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Flex, Text } from '@chakra-ui/react'
+import { Box, Container, Flex, Text, useSlotRecipe } from '@chakra-ui/react'
 
 import { SiteLink } from './SiteLink'
 
@@ -9,35 +9,21 @@ interface SiteFooterProps {
 }
 
 export function SiteFooter({ year }: SiteFooterProps) {
+  const styles = useSlotRecipe({ key: 'siteFooter' })()
   return (
-    <Box
-      as="footer"
-      aria-label="Site credits and license"
-      bg="bg"
-      color="fg.muted"
-      borderTopWidth="1px"
-      borderColor="border"
-    >
-      <Container maxW="7xl" py={{ base: 6, md: 8 }}>
-        <Flex
-          direction={{ base: 'column', md: 'row' }}
-          align={{ base: 'flex-start', md: 'center' }}
-          justify="space-between"
-          gap={3}
-          fontSize="sm"
-        >
+    <Box as="footer" aria-label="Site credits and license" css={styles.root}>
+      <Container css={styles.container}>
+        <Flex css={styles.content}>
           <Text>
             © {year > 2025 ? `2025–${year}` : year}{' '}
-            <SiteLink href="https://www.ryanhefner.com" color="fg">
+            <SiteLink href="https://www.ryanhefner.com" css={styles.creditLink}>
               Ryan Hefner
             </SiteLink>
             .
           </Text>
           <SiteLink
             href="https://github.com/ryanhefner/react-fathom/blob/main/LICENSE"
-            color="fg"
-            minH="44px"
-            flexShrink={0}
+            css={styles.licenseLink}
           >
             MIT license
           </SiteLink>

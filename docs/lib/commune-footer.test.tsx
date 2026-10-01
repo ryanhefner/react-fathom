@@ -6,9 +6,10 @@ import '@testing-library/jest-dom/vitest'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
 import { cleanup, render, screen } from '@testing-library/react'
 
+import { testSystem } from './chakra-test-system'
 import { CommuneFooter } from '../components/docs/CommuneFooter'
 
 describe('COMMUNE sub-footer', () => {
@@ -19,7 +20,7 @@ describe('COMMUNE sub-footer', () => {
 
   it('provides a full-width, accessible link using the local Playstack SVG', () => {
     render(
-      <ChakraProvider value={defaultSystem}>
+      <ChakraProvider value={testSystem}>
         <CommuneFooter />
       </ChakraProvider>,
     )

@@ -3,7 +3,7 @@ import React from 'react'
 import '@testing-library/jest-dom/vitest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
 import {
   cleanup,
   fireEvent,
@@ -12,13 +12,14 @@ import {
   waitFor,
 } from '@testing-library/react'
 
+import { testSystem } from './chakra-test-system'
 import { EventStream } from '../components/docs/EventStream'
 
 const storageKey = 'react-fathom-event-stream-visible'
 
 function renderStream() {
   return render(
-    <ChakraProvider value={defaultSystem}>
+    <ChakraProvider value={testSystem}>
       <EventStream forceShow />
     </ChakraProvider>,
   )
@@ -63,8 +64,16 @@ describe('documentation event stream disclosure', () => {
     expect(panel).not.toHaveAttribute('inert')
     const styles = getComputedStyle(panel)
     expect(styles.animationName).toBe('slide-from-right-full')
-    expect(styles.animationDuration).toBe('200ms')
-    expect(styles.animationTimingFunction).toBe('cubic-bezier(0.4, 0, 0.2, 1)')
+    expect(styles.animationDuration).toBe(
+      testSystem.token.var('durations.eventStreamPanel'),
+    )
+    expect(styles.animationTimingFunction).toBe(
+      testSystem.token.var('easings.snappy'),
+    )
+    expect(testSystem.token('durations.eventStreamPanel')).toBe('200ms')
+    expect(testSystem.token('easings.snappy')).toBe(
+      'cubic-bezier(0.4, 0, 0.2, 1)',
+    )
 
     fireEvent.click(toggle)
     expect(toggle).toHaveAttribute('aria-expanded', 'false')

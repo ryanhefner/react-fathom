@@ -11,22 +11,14 @@ import {
   DocsProvider,
   type DocsAnalyticsCallbacks,
 } from '@chakra-docs/chakra'
-import { chakraDocsThemeConfig } from '@chakra-docs/chakra/theme'
 import { NextLink } from '@chakra-docs/next/link'
 import { createChakraDocsShikiAdapter } from '@chakra-docs/shiki'
-import { ChakraProvider, createSystem, defaultConfig } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
 import { PostkitProvider } from '@postkit/react'
 
 import { ColorModeProvider } from './color-mode'
-import { postkitThemeConfig, siteThemeConfig } from './theme'
+import { siteSystem } from './system'
 import { EventStream } from '../components/docs/EventStream'
-
-const docsSystem = createSystem(
-  defaultConfig,
-  chakraDocsThemeConfig,
-  postkitThemeConfig,
-  siteThemeConfig,
-)
 
 const codeBlockAdapter = createChakraDocsShikiAdapter({
   themes: { light: 'github-dark', dark: 'github-dark' },
@@ -76,8 +68,8 @@ function DocsIntegrationProvider({ children }: { children: ReactNode }) {
         copiedIcon: <LuCheck aria-hidden="true" />,
       },
       layout: {
-        stickyTop: '5rem',
-        scrollMarginTop: '6rem',
+        stickyTop: siteSystem.token.var('spacing.docsStickyTop'),
+        scrollMarginTop: siteSystem.token.var('spacing.docsScrollMargin'),
       },
       linkComponent: NextLink,
       siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://react-fathom.com',
@@ -99,14 +91,14 @@ export function Provider({ children }: { children: React.ReactNode }) {
   const siteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID || 'DEMO'
 
   return (
-    <ChakraProvider value={docsSystem}>
+    <ChakraProvider value={siteSystem}>
       <ColorModeProvider>
         <NextFathomProviderApp
           siteId={siteId}
           debug={{ enabled: true, console: false }}
         >
           <PostkitProvider
-            system={docsSystem}
+            system={siteSystem}
             codeBlockAdapter={codeBlockAdapter}
           >
             <DocsIntegrationProvider>{children}</DocsIntegrationProvider>

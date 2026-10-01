@@ -11,6 +11,7 @@ import {
   IconButton,
   Portal,
   Tooltip,
+  useSlotRecipe,
 } from '@chakra-ui/react'
 
 import { DocsSiteSearch } from './DocsSiteSearch'
@@ -21,41 +22,20 @@ interface NavbarProps {
 }
 
 export function Navbar({ searchRecords }: NavbarProps) {
+  const styles = useSlotRecipe({ key: 'siteNavbar' })()
   return (
-    <Box
-      as="header"
-      position="sticky"
-      top={0}
-      zIndex={50}
-      h="siteHeader"
-      borderBottomWidth="1px"
-      bg="bg"
-      backdropFilter="blur(10px)"
-    >
-      <Container maxW="7xl" h="full">
+    <Box as="header" css={styles.root}>
+      <Container css={styles.container}>
         <Flex justify="space-between" align="center" h="full">
-          <SiteLink
-            href="/"
-            fontWeight={500}
-            fontSize="lg"
-            _hover={{ textDecoration: 'none' }}
-          >
+          <SiteLink href="/" css={styles.brand}>
             react-fathom
           </SiteLink>
           <HStack gap={6}>
             <HStack as="nav" gap={6} display={{ base: 'none', md: 'flex' }}>
-              <SiteLink
-                href="/docs/getting-started"
-                color="fg.muted"
-                _hover={{ color: 'fg' }}
-              >
+              <SiteLink href="/docs/getting-started" css={styles.navLink}>
                 Docs
               </SiteLink>
-              <SiteLink
-                href="/docs/api"
-                color="fg.muted"
-                _hover={{ color: 'fg' }}
-              >
+              <SiteLink href="/docs/api" css={styles.navLink}>
                 API
               </SiteLink>
             </HStack>
@@ -67,10 +47,7 @@ export function Navbar({ searchRecords }: NavbarProps) {
                     asChild
                     aria-label="View react-fathom on GitHub"
                     variant="ghost"
-                    color="fg.muted"
-                    minH="44px"
-                    minW="44px"
-                    _hover={{ color: 'fg', bg: 'bg.panel' }}
+                    css={styles.githubTrigger}
                   >
                     <SiteLink href="https://github.com/ryanhefner/react-fathom">
                       <SiGithub aria-hidden="true" />

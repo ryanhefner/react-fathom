@@ -6,9 +6,10 @@ import '@testing-library/jest-dom/vitest'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
 import { cleanup, render, screen } from '@testing-library/react'
 
+import { testSystem } from './chakra-test-system'
 import { SiteFooter } from '../components/docs/SiteFooter'
 
 describe('shared site footer', () => {
@@ -16,7 +17,7 @@ describe('shared site footer', () => {
 
   it('includes Ryan’s credit and MIT license without repeating the Commune sub-footer', () => {
     render(
-      <ChakraProvider value={defaultSystem}>
+      <ChakraProvider value={testSystem}>
         <SiteFooter year={2026} />
       </ChakraProvider>,
     )

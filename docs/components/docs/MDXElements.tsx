@@ -29,7 +29,7 @@ export function MarkdownHeading({
   const Heading = postkitComponents[as]
 
   return (
-    <Heading id={id} scrollMarginTop="6rem" {...props}>
+    <Heading id={id} scrollMarginTop="docsScrollMargin" {...props}>
       {children}
       {id ? <DocsHeadingPermalink headingId={id} /> : null}
     </Heading>

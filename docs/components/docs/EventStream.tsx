@@ -19,6 +19,7 @@ import {
   Presence,
   Text,
   VStack,
+  useSlotRecipe,
 } from '@chakra-ui/react'
 
 const STORAGE_KEY = 'react-fathom-event-stream-visible'
@@ -41,10 +42,11 @@ function formatTime(timestamp: number): string {
 }
 
 function EventCard({ event }: { event: DebugEvent }) {
+  const styles = useSlotRecipe({ key: 'siteEventStream' })()
   const borderColor = {
-    pageview: 'blue.500',
-    event: 'purple.500',
-    goal: 'green.500',
+    pageview: 'eventStream.pageview',
+    event: 'eventStream.event',
+    goal: 'eventStream.goal',
   }
 
   let title = ''
@@ -66,23 +68,7 @@ function EventCard({ event }: { event: DebugEvent }) {
   }
 
   return (
-    <Box
-      p={3}
-      borderWidth="2px"
-      borderColor={borderColor[event.type]}
-      borderRadius="lg"
-      boxShadow="sm"
-      bg="bg"
-      w="100%"
-      animation="fadeIn 0.3s ease-out"
-      _motionReduce={{ animation: 'none' }}
-      css={{
-        '@keyframes fadeIn': {
-          from: { opacity: 0, transform: 'translateX(20px)' },
-          to: { opacity: 1, transform: 'translateX(0)' },
-        },
-      }}
-    >
+    <Box css={styles.card} borderColor={borderColor[event.type]}>
       <Flex justifyContent="space-between" alignItems="center" mb={1}>
         <Flex alignItems="center" gap={2}>
           <EventIcon type={event.type} />
@@ -110,6 +96,7 @@ interface EventStreamProps {
 }
 
 export function EventStream({ forceShow = false }: EventStreamProps) {
+  const styles = useSlotRecipe({ key: 'siteEventStream' })()
   const [isVisible, setIsVisible] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const [events, setEvents] = useState<DebugEvent[]>([])
@@ -197,17 +184,8 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
         aria-expanded={isVisible}
         aria-controls={panelId}
         title={isVisible ? 'Hide event stream' : 'Show event stream'}
-        position="fixed"
-        bottom={4}
-        right={4}
-        zIndex={1000}
-        borderWidth="1px"
-        borderColor="border"
-        borderRadius="md"
+        css={styles.toggle}
         size="md"
-        bg="bg"
-        color="fg"
-        _hover={{ bg: 'bg.panel' }}
         onClick={toggleVisibility}
       >
         {isVisible ? <LuX /> : <LuActivity />}
@@ -224,38 +202,11 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
         present={isVisible}
         lazyMount
         unmountOnExit
-        animationName={{
-          _open: 'slide-from-right-full',
-          _closed: 'slide-to-right-full',
-        }}
-        animationDuration="200ms"
-        animationTimingFunction="cubic-bezier(0.4, 0, 0.2, 1)"
-        animationFillMode="both"
-        _motionReduce={{ animation: 'none' }}
+        css={styles.panel}
         pointerEvents={isVisible ? 'auto' : 'none'}
-        position="fixed"
-        top={0}
-        right={0}
-        bottom={0}
-        w={{ base: '100%', md: '320px' }}
-        bg="bg"
-        borderLeftWidth="1px"
-        borderLeftColor="border"
-        zIndex={999}
-        display="flex"
-        flexDirection="column"
       >
         {/* Header */}
-        <Flex
-          h="siteHeader"
-          flexShrink={0}
-          px={4}
-          borderBottomWidth="1px"
-          borderBottomColor="border"
-          justifyContent="space-between"
-          alignItems="center"
-          bg="bg"
-        >
+        <Flex css={styles.header}>
           <Flex alignItems="center" gap={2}>
             <LuActivity aria-hidden="true" />
             <Text fontWeight={500}>Event Stream</Text>
@@ -271,22 +222,9 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
         </Flex>
 
         {/* Events list */}
-        <Box
-          flex={1}
-          overflowY="auto"
-          p={3}
-          bg="gray.100"
-          _dark={{ bg: 'gray.900' }}
-        >
+        <Box css={styles.events}>
           {events.length === 0 ? (
-            <Flex
-              h="100%"
-              alignItems="center"
-              justifyContent="center"
-              flexDirection="column"
-              color="fg.muted"
-              gap={2}
-            >
+            <Flex css={styles.empty}>
               <LuActivity aria-hidden="true" size={24} />
               <Text fontSize="sm" textAlign="center">
                 No events yet.
@@ -304,10 +242,10 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
         </Box>
 
         {/* Footer */}
-        <Box p={3} borderTopWidth="1px" borderTopColor="border" bg="bg">
+        <Box css={styles.footer}>
           <Text fontSize="xs" color="fg.muted" textAlign="center">
             {events.length} event{events.length !== 1 ? 's' : ''} • Press{' '}
-            <Text as="span" fontFamily="mono" bg="bg.panel" px={1}>
+            <Text as="span" css={styles.shortcut}>
               ⌘.
             </Text>{' '}
             to toggle
