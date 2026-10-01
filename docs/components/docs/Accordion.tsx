@@ -1,11 +1,16 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { LuChevronDown } from 'react-icons/lu'
 
 import { useFathom } from '@/lib/fathom'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Collapsible as ChakraCollapsible,
+  Text,
+  useSlotRecipe,
+} from '@chakra-ui/react'
 
 interface AccordionItemProps {
   title: string
@@ -18,48 +23,31 @@ export function AccordionItem({
   children,
   defaultOpen = false,
 }: AccordionItemProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen)
+  const styles = useSlotRecipe({ key: 'siteDisclosure' })()
   const { trackEvent } = useFathom()
 
-  const handleToggle = () => {
-    const nextOpen = !isOpen
-    setIsOpen(nextOpen)
-    trackEvent(`docs-accordion-${nextOpen ? 'expand' : 'collapse'}`)
-  }
-
   return (
-    <Box borderWidth="1px" borderRadius="md" overflow="hidden">
-      <Flex
-        as="button"
-        width="100%"
-        px={4}
-        py={3}
-        align="center"
-        justify="space-between"
-        bg={isOpen ? 'bg.muted' : 'transparent'}
-        _hover={{ bg: 'bg.muted' }}
-        onClick={handleToggle}
-        cursor="pointer"
-        textAlign="left"
-      >
-        <Text fontWeight="medium">{title}</Text>
-        <Box
-          aria-hidden="true"
-          fontSize="lg"
-          color="fg.muted"
-          flexShrink={0}
-          transform={isOpen ? 'rotate(180deg)' : 'rotate(0deg)'}
-          transition="transform 0.2s"
-        >
+    <ChakraCollapsible.Root
+      css={styles.root}
+      defaultOpen={defaultOpen}
+      lazyMount
+      unmountOnExit
+      onOpenChange={({ open }) =>
+        trackEvent(`docs-accordion-${open ? 'expand' : 'collapse'}`)
+      }
+    >
+      <ChakraCollapsible.Trigger css={styles.trigger}>
+        <Text as="span" fontWeight="medium">
+          {title}
+        </Text>
+        <ChakraCollapsible.Indicator aria-hidden="true" css={styles.indicator}>
           <LuChevronDown />
-        </Box>
-      </Flex>
-      {isOpen && (
-        <Box px={4} py={3} borderTopWidth="1px">
-          {children}
-        </Box>
-      )}
-    </Box>
+        </ChakraCollapsible.Indicator>
+      </ChakraCollapsible.Trigger>
+      <ChakraCollapsible.Content css={styles.content}>
+        {children}
+      </ChakraCollapsible.Content>
+    </ChakraCollapsible.Root>
   )
 }
 

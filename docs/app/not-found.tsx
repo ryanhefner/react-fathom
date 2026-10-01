@@ -3,7 +3,17 @@ import { LuArrowLeft } from 'react-icons/lu'
 import { DocsSiteSearch } from '@/components/docs/DocsSiteSearch'
 import { SiteLink } from '@/components/docs/SiteLink'
 import { getDocsManifest } from '@/lib/chakra-docs'
-import { Box, Container, Heading, Text, VStack, Flex } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Container,
+  Heading,
+  Text,
+  VStack,
+  Flex,
+} from '@chakra-ui/react'
+
+import { Navbar } from '../components/docs/Navbar'
 
 const popularPages = [
   { title: 'Getting Started', href: '/docs/getting-started' },
@@ -12,43 +22,13 @@ const popularPages = [
   { title: 'API Reference', href: '/docs/api' },
 ]
 
-function SimpleNavbar() {
-  return (
-    <Box
-      as="header"
-      position="sticky"
-      top={0}
-      zIndex={50}
-      borderBottomWidth="1px"
-      bg="bg"
-      backdropFilter="blur(10px)"
-    >
-      <Container maxW="container.xl" py={3}>
-        <Flex justify="space-between" align="center">
-          <SiteLink
-            href="/"
-            fontWeight={500}
-            fontSize="lg"
-            _hover={{ textDecoration: 'none' }}
-          >
-            react-fathom
-          </SiteLink>
-          <SiteLink href="/docs" color="fg.muted" _hover={{ color: 'fg' }}>
-            Docs
-          </SiteLink>
-        </Flex>
-      </Container>
-    </Box>
-  )
-}
-
 export default async function NotFound() {
   const manifest = await getDocsManifest()
 
   return (
     <>
-      <SimpleNavbar />
-      <Container maxW="container.md" py={20}>
+      <Navbar searchRecords={manifest.search} />
+      <Container as="main" maxW="3xl" py={20}>
         <VStack gap={8} textAlign="center">
           <Box>
             <Text
@@ -80,21 +60,9 @@ export default async function NotFound() {
             </Text>
             <Flex gap={3} flexWrap="wrap" justify="center">
               {popularPages.map((page) => (
-                <SiteLink
-                  key={page.href}
-                  href={page.href}
-                  px={4}
-                  py={2}
-                  borderRadius="md"
-                  bg="gray.800"
-                  _light={{ bg: 'gray.100' }}
-                  _hover={{
-                    bg: 'gray.700',
-                    _light: { bg: 'gray.200' },
-                  }}
-                >
-                  {page.title}
-                </SiteLink>
+                <Button asChild variant="surface" key={page.href}>
+                  <SiteLink href={page.href}>{page.title}</SiteLink>
+                </Button>
               ))}
             </Flex>
           </Box>
@@ -102,7 +70,7 @@ export default async function NotFound() {
           <SiteLink
             href="/"
             alignItems="center"
-            color="blue.500"
+            color="site.link"
             display="inline-flex"
             fontWeight="medium"
             gap={1}

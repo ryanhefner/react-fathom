@@ -29,7 +29,7 @@ export function ChangelogEntry({
         <Heading as="h2" size="lg">
           <SiteLink
             href={`${repoUrl}/releases/tag/${version}`}
-            color="blue.500"
+            color="site.link"
             _hover={{ textDecoration: 'underline' }}
           >
             {version}
@@ -46,7 +46,7 @@ export function ChangelogEntry({
               href={`${repoUrl}/commit/${commit.hash}`}
               fontFamily="mono"
               color="fg.muted"
-              _hover={{ color: 'blue.500' }}
+              _hover={{ color: 'site.link' }}
               flexShrink={0}
             >
               {commit.hash}

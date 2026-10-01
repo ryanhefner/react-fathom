@@ -105,6 +105,9 @@ export const siteThemeConfig = defineConfig({
   theme: {
     semanticTokens: {
       colors: {
+        'fileTree.canvas': {
+          value: { _light: '{colors.gray.50}', _dark: '{colors.gray.900}' },
+        },
         'eventStream.canvas': {
           value: { _light: '{colors.gray.100}', _dark: '{colors.gray.900}' },
         },

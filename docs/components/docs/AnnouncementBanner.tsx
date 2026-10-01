@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { LuArrowRight } from 'react-icons/lu'
 
 import { useFathom } from '@/lib/fathom'
-import { Box, CloseButton, Flex, Text } from '@chakra-ui/react'
+import { Box, CloseButton, Flex, Text, useSlotRecipe } from '@chakra-ui/react'
 
 import { SiteLink } from './SiteLink'
 
@@ -18,21 +18,6 @@ interface AnnouncementBannerProps {
   dismissible?: boolean
 }
 
-const variantStyles = {
-  info: {
-    bg: 'blue.600',
-    color: 'white',
-  },
-  warning: {
-    bg: 'yellow.500',
-    color: 'black',
-  },
-  success: {
-    bg: 'green.600',
-    color: 'white',
-  },
-}
-
 export function AnnouncementBanner({
   id,
   message,
@@ -41,6 +26,7 @@ export function AnnouncementBanner({
   variant = 'info',
   dismissible = true,
 }: AnnouncementBannerProps) {
+  const styles = useSlotRecipe({ key: 'siteAnnouncement' })({ status: variant })
   const [isDismissed, setIsDismissed] = useState(true) // Start hidden to prevent flash
   const { trackEvent } = useFathom()
   const storageKey = `announcement-dismissed-${id}`
@@ -59,7 +45,11 @@ export function AnnouncementBanner({
   }, [storageKey])
 
   const handleDismiss = () => {
-    localStorage.setItem(storageKey, 'true')
+    try {
+      localStorage.setItem(storageKey, 'true')
+    } catch {
+      // Dismiss for this session even if browser storage is unavailable.
+    }
     setIsDismissed(true)
     trackEvent('docs-announcement-dismiss')
   }
@@ -68,32 +58,15 @@ export function AnnouncementBanner({
     return null
   }
 
-  const styles = variantStyles[variant]
-
   return (
-    <Box bg={styles.bg} color={styles.color} py={2} px={4}>
-      <Flex
-        maxW="container.xl"
-        mx="auto"
-        align="center"
-        justify="center"
-        gap={2}
-        position="relative"
-      >
-        <Text fontSize="sm" fontWeight="medium" textAlign="center">
+    <Box css={styles.root}>
+      <Flex css={styles.content}>
+        <Text css={styles.message}>
           {message}
           {linkText && linkHref && (
             <>
               {' '}
-              <SiteLink
-                href={linkHref}
-                alignItems="center"
-                display="inline-flex"
-                gap={1}
-                textDecoration="underline"
-                fontWeight="semibold"
-                _hover={{ opacity: 0.8 }}
-              >
+              <SiteLink href={linkHref} css={styles.link}>
                 {linkText}
                 <LuArrowRight aria-hidden="true" />
               </SiteLink>
@@ -103,11 +76,9 @@ export function AnnouncementBanner({
         {dismissible && (
           <CloseButton
             size="sm"
-            position="absolute"
-            right={0}
             onClick={handleDismiss}
             aria-label="Dismiss announcement"
-            _hover={{ bg: 'whiteAlpha.200' }}
+            css={styles.close}
           />
         )}
       </Flex>

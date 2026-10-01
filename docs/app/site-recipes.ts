@@ -3,6 +3,150 @@ import { defineSlotRecipe } from '@chakra-ui/react'
 // Site-specific chrome lives in the theme. Components keep content, behavior,
 // and one-off layout props; Chakra's css prop consumes these slot recipes.
 export const siteSlotRecipes = {
+  siteDisclosure: defineSlotRecipe({
+    slots: ['root', 'trigger', 'indicator', 'content'],
+    base: {
+      root: {
+        borderWidth: '1px',
+        borderColor: 'border',
+        borderRadius: 'md',
+        overflow: 'hidden',
+      },
+      trigger: {
+        display: 'flex',
+        w: 'full',
+        px: 4,
+        py: 3,
+        gap: 2,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        cursor: 'pointer',
+        textAlign: 'left',
+        _open: { bg: 'bg.muted' },
+        _hover: { bg: 'bg.muted' },
+        _focusVisible: {
+          outline: '2px solid',
+          outlineColor: 'fg.muted',
+          outlineOffset: '-2px',
+        },
+      },
+      indicator: {
+        flexShrink: 0,
+        boxSize: 5,
+        color: 'fg.muted',
+        transitionProperty: 'transform',
+        transitionDuration: 'eventStreamPanel',
+        transitionTimingFunction: 'snappy',
+        _open: { transform: 'rotate(180deg)' },
+        _motionReduce: { transition: 'none' },
+      },
+      content: {
+        px: 4,
+        py: 3,
+        borderTopWidth: '1px',
+        borderColor: 'border',
+        _motionReduce: { animation: 'none' },
+      },
+    },
+  }),
+  siteFileTree: defineSlotRecipe({
+    slots: ['root', 'folder', 'indicator', 'content', 'file'],
+    base: {
+      root: {
+        my: 4,
+        p: 4,
+        borderRadius: 'lg',
+        bg: 'fileTree.canvas',
+        fontFamily: 'mono',
+        fontSize: 'sm',
+        overflowWrap: 'anywhere',
+      },
+      folder: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        py: 0.5,
+        w: 'full',
+        textAlign: 'left',
+        cursor: 'pointer',
+        _hover: { color: 'site.link' },
+        _focusVisible: {
+          outline: '2px solid',
+          outlineColor: 'fg.muted',
+          outlineOffset: '2px',
+        },
+      },
+      indicator: {
+        boxSize: 3,
+        fontSize: 'xs',
+        flexShrink: 0,
+        color: 'fg.muted',
+        _open: { transform: 'rotate(90deg)' },
+      },
+      content: {
+        pl: 6,
+        borderLeftWidth: '1px',
+        borderColor: 'border',
+        ml: 1.5,
+        _motionReduce: { animation: 'none' },
+      },
+      file: { display: 'flex', alignItems: 'center', gap: 2, py: 0.5 },
+    },
+  }),
+  siteAnnouncement: defineSlotRecipe({
+    slots: ['root', 'content', 'message', 'link', 'close'],
+    base: {
+      root: { py: 2, px: 4 },
+      content: {
+        maxW: '7xl',
+        mx: 'auto',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+      },
+      message: { fontSize: 'sm', fontWeight: 'medium', textAlign: 'center' },
+      link: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 1,
+        textDecoration: 'underline',
+        fontWeight: 'semibold',
+        color: 'inherit',
+        _hover: { opacity: 0.8 },
+      },
+      close: {
+        flexShrink: 0,
+        color: 'inherit',
+        _hover: { bg: 'blackAlpha.100' },
+      },
+    },
+    variants: {
+      status: {
+        info: {
+          root: {
+            colorPalette: 'blue',
+            bg: 'colorPalette.solid',
+            color: 'colorPalette.contrast',
+          },
+        },
+        warning: {
+          root: {
+            colorPalette: 'yellow',
+            bg: 'colorPalette.solid',
+            color: 'colorPalette.contrast',
+          },
+        },
+        success: {
+          root: {
+            colorPalette: 'green',
+            bg: 'colorPalette.solid',
+            color: 'colorPalette.contrast',
+          },
+        },
+      },
+    },
+    defaultVariants: { status: 'info' },
+  }),
   siteNavbar: defineSlotRecipe({
     slots: ['root', 'container', 'brand', 'navLink', 'githubTrigger'],
     base: {

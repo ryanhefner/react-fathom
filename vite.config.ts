@@ -1,6 +1,11 @@
+import { fileURLToPath } from 'node:url'
+
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./docs', import.meta.url)) },
+  },
   test: {
     coverage: {
       reporter: ['clover', 'html', 'json', 'lcov'],
