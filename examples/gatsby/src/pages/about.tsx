@@ -14,7 +14,7 @@ const AboutPage: React.FC<PageProps> = () => {
           <Heading size="lg" mb={2}>
             About
           </Heading>
-          <Text color="gray.600" _dark={{ color: 'gray.400' }}>
+          <Text color="fg.muted">
             This page demonstrates automatic pageview tracking. When you
             navigate here, react-fathom automatically tracks the pageview.
           </Text>

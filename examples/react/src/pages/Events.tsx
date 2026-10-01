@@ -173,10 +173,11 @@ export function Events() {
         </Text>
         <HStack gap={4}>
           <Input
+            aria-label="Custom event name"
             value={customEventName}
             onChange={(e) => setCustomEventName(e.target.value)}
             placeholder="Event name"
-            maxW="200px"
+            maxW="exampleInput"
           />
           <Button
             colorPalette="purple"

@@ -20,7 +20,7 @@ const IndexPage: React.FC<PageProps> = () => {
               Example
             </Text>
           </Heading>
-          <Text fontSize="md" color="fg.muted" maxW="480px">
+          <Text fontSize="md" color="fg.muted" maxW="exampleIntro">
             This example demonstrates the Gatsby integration with react-fathom
             for privacy-focused analytics.
           </Text>
@@ -32,18 +32,13 @@ const IndexPage: React.FC<PageProps> = () => {
           </Heading>
           <HStack gap={3}>
             <Button
-              bg="black"
-              color="white"
-              _hover={{ opacity: 0.8 }}
-              _dark={{ bg: 'white', color: 'black' }}
+              colorPalette="gray"
               onClick={() => trackEvent('button_click')}
             >
               Track Event
             </Button>
             <Button
-              bg="#E53935"
-              color="white"
-              _hover={{ opacity: 0.8 }}
+              colorPalette="red"
               onClick={() => trackGoal('EXAMPLE01', 100)}
             >
               Track Goal ($1.00)

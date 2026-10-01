@@ -8,7 +8,7 @@ export function Navbar() {
   return (
     <Box as="header" pt={{ base: 6, md: 8 }} pb={{ base: 4, md: 6 }}>
       <Flex
-        maxW="640px"
+        maxW="exampleContent"
         mx="auto"
         px={{ base: 5, md: 6 }}
         justify="space-between"

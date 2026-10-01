@@ -3,7 +3,16 @@ import React from 'react'
 import type { HeadFC, PageProps } from 'gatsby'
 import { useFathom } from 'react-fathom'
 
-import { Box, Heading, Text, VStack, Input, Button } from '@chakra-ui/react'
+import {
+  Box,
+  Heading,
+  Text,
+  VStack,
+  Input,
+  Button,
+  Field,
+  Textarea,
+} from '@chakra-ui/react'
 
 import { Layout } from '../components/Layout'
 
@@ -20,10 +29,10 @@ const ContactPage: React.FC<PageProps> = () => {
     <Layout>
       <VStack gap={6} align="stretch">
         <Box>
-          <Heading size="lg" mb={2}>
+          <Heading as="h1" size="lg" mb={2}>
             Contact
           </Heading>
-          <Text color="gray.600" _dark={{ color: 'gray.400' }}>
+          <Text color="fg.muted">
             This page demonstrates form tracking. Submit the form to see custom
             event tracking in action.
           </Text>
@@ -31,25 +40,24 @@ const ContactPage: React.FC<PageProps> = () => {
 
         <Box as="form" onSubmit={handleSubmit}>
           <VStack gap={4} align="stretch">
-            <Box>
-              <Text mb={1} fontWeight="medium">
-                Name
-              </Text>
-              <Input placeholder="Your name" />
-            </Box>
-            <Box>
-              <Text mb={1} fontWeight="medium">
-                Email
-              </Text>
-              <Input type="email" placeholder="your@email.com" />
-            </Box>
-            <Box>
-              <Text mb={1} fontWeight="medium">
-                Message
-              </Text>
-              <Input placeholder="Your message" />
-            </Box>
-            <Button type="submit" colorScheme="purple">
+            <Field.Root>
+              <Field.Label>Name</Field.Label>
+              <Input name="name" autoComplete="name" placeholder="Your name" />
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>Email</Field.Label>
+              <Input
+                name="email"
+                autoComplete="email"
+                type="email"
+                placeholder="your@email.com"
+              />
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>Message</Field.Label>
+              <Textarea name="message" placeholder="Your message" />
+            </Field.Root>
+            <Button type="submit" colorPalette="purple">
               Send Message
             </Button>
           </VStack>

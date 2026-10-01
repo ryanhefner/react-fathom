@@ -166,7 +166,7 @@ export function EventStreamPanel({
         position="fixed"
         bottom={4}
         {...(isRight ? { right: 4 } : { left: 4 })}
-        zIndex={1000}
+        zIndex="eventStreamToggle"
         rounded="full"
         size="lg"
         colorPalette="purple"
@@ -182,18 +182,14 @@ export function EventStreamPanel({
           top={0}
           {...(isRight ? { right: 0 } : { left: 0 })}
           bottom={0}
-          width="320px"
+          width={{ base: 'full', md: 80 }}
           bg="bg"
           borderLeftWidth={isRight ? '1px' : undefined}
           borderRightWidth={isRight ? undefined : '1px'}
-          zIndex={999}
+          zIndex="eventStreamPanel"
           display="flex"
           flexDirection="column"
-          boxShadow={
-            isRight
-              ? '-4px 0 12px rgba(0,0,0,0.1)'
-              : '4px 0 12px rgba(0,0,0,0.1)'
-          }
+          boxShadow={isRight ? 'eventPanelRight' : 'eventPanelLeft'}
         >
           {/* Header */}
           <Flex

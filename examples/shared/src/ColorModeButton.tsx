@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 
 import { useTheme } from 'next-themes'
 
-import { IconButton } from '@chakra-ui/react'
+import { Box, IconButton } from '@chakra-ui/react'
 
 /**
  * A button that toggles between light and dark mode.
  * Uses next-themes under the hood.
  */
 export function ColorModeButton() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -27,12 +27,14 @@ export function ColorModeButton() {
         size="sm"
         disabled
       >
-        <span style={{ opacity: 0 }}>🌙</span>
+        <Box as="span" opacity={0} aria-hidden="true">
+          🌙
+        </Box>
       </IconButton>
     )
   }
 
-  const isDark = theme === 'dark'
+  const isDark = resolvedTheme === 'dark'
 
   return (
     <IconButton

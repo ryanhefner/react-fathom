@@ -6,7 +6,6 @@ import { Helmet } from 'react-helmet'
 
 import {
   ChakraProvider,
-  defaultSystem,
   Box,
   Container,
   Flex,
@@ -16,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 
 import { Navbar } from './Navbar'
+import { exampleSystem } from '../theme'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -25,7 +25,7 @@ const siteId = process.env.GATSBY_FATHOM_SITE_ID || 'DEMO'
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <ChakraProvider value={defaultSystem}>
+    <ChakraProvider value={exampleSystem}>
       <FathomProvider siteId={siteId} debug={{ enabled: true }}>
         <Helmet>
           <meta property="og:type" content="website" />
@@ -43,19 +43,20 @@ export function Layout({ children }: LayoutProps) {
           />
         </Helmet>
         <GatsbyFathomTrackView />
-        <Box minH="100vh" display="flex" flexDirection="column">
+        <Box minH="dvh" display="flex" flexDirection="column">
           <Navbar />
           <Box as="main" flex={1} py={{ base: 8, md: 12 }}>
-            <Container maxW="640px" px={{ base: 5, md: 6 }}>
+            <Container maxW="exampleContent" px={{ base: 5, md: 6 }}>
               {children}
             </Container>
           </Box>
           <Box
+            as="footer"
             borderTopWidth="1px"
             borderColor="border.muted"
             py={{ base: 6, md: 8 }}
           >
-            <Container maxW="640px" px={{ base: 5, md: 6 }}>
+            <Container maxW="exampleContent" px={{ base: 5, md: 6 }}>
               <Flex
                 justify="space-between"
                 align="center"

@@ -4,7 +4,9 @@ import type { ReactNode } from 'react'
 
 import { ThemeProvider } from 'next-themes'
 
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
+
+import { exampleSystem } from './theme'
 
 export interface ExampleProviderNextProps {
   children: ReactNode
@@ -16,7 +18,7 @@ export interface ExampleProviderNextProps {
  */
 export function ExampleProviderNext({ children }: ExampleProviderNextProps) {
   return (
-    <ChakraProvider value={defaultSystem}>
+    <ChakraProvider value={exampleSystem}>
       <ThemeProvider attribute="class" disableTransitionOnChange>
         {children}
       </ThemeProvider>

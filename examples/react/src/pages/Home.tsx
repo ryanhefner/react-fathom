@@ -12,7 +12,7 @@ export function Home() {
             Example
           </Text>
         </Heading>
-        <Text fontSize="md" color="fg.muted" maxW="480px">
+        <Text fontSize="md" color="fg.muted" maxW="exampleIntro">
           This example demonstrates how to integrate react-fathom into a
           standard React application using Vite and React Router.
         </Text>

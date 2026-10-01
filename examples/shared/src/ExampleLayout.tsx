@@ -2,7 +2,15 @@
 
 import type { ComponentType, ReactNode } from 'react'
 
-import { Box, Container, Flex, HStack, Link, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Container,
+  Flex,
+  HStack,
+  Link,
+  Text,
+  useSlotRecipe,
+} from '@chakra-ui/react'
 
 import { ColorModeButton } from './ColorModeButton'
 import { EventStreamPanel } from './EventStreamPanel'
@@ -68,20 +76,16 @@ export function ExampleLayout({
   showEventStream = true,
   frameworkName,
 }: ExampleLayoutProps) {
+  const styles = useSlotRecipe({ key: 'exampleLayout' })()
   return (
     <>
-      <Box minH="100vh" display="flex" flexDirection="column">
+      <Box css={styles.shell}>
         {/* Header */}
-        <Box as="header" pt={{ base: 6, md: 8 }} pb={{ base: 4, md: 6 }}>
-          <Container maxW="640px" px={{ base: 5, md: 6 }}>
+        <Box as="header" css={styles.header}>
+          <Container css={styles.container}>
             <Flex justify="space-between" align="center">
               <HStack gap={{ base: 3, md: 4 }}>
-                <Link
-                  asChild
-                  fontWeight="medium"
-                  fontSize="sm"
-                  _hover={{ textDecoration: 'none', opacity: 0.7 }}
-                >
+                <Link asChild css={styles.brand}>
                   <LinkComponent href="/">{title}</LinkComponent>
                 </Link>
                 {frameworkName && (
@@ -96,9 +100,7 @@ export function ExampleLayout({
                   <Link
                     key={link.href}
                     asChild
-                    color="fg.muted"
-                    _hover={{ color: 'fg' }}
-                    fontSize="sm"
+                    css={styles.navLink}
                     display={{
                       base: link.href === '/' ? 'none' : 'block',
                       md: 'block',
@@ -114,25 +116,14 @@ export function ExampleLayout({
         </Box>
 
         {/* Main Content */}
-        <Box as="main" flex={1} py={{ base: 8, md: 12 }}>
-          <Container maxW="640px" px={{ base: 5, md: 6 }}>
-            {children}
-          </Container>
+        <Box as="main" css={styles.main}>
+          <Container css={styles.container}>{children}</Container>
         </Box>
 
         {/* Footer */}
-        <Box
-          borderTopWidth="1px"
-          borderColor="border.muted"
-          py={{ base: 6, md: 8 }}
-        >
-          <Container maxW="640px" px={{ base: 5, md: 6 }}>
-            <Flex
-              justify="space-between"
-              align="center"
-              flexDir={{ base: 'column', md: 'row' }}
-              gap={4}
-            >
+        <Box as="footer" css={styles.footer}>
+          <Container css={styles.container}>
+            <Flex css={styles.footerContent}>
               <Text fontSize="xs" color="fg.muted">
                 © {new Date().getFullYear()} —{' '}
                 <Link
