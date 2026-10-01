@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postyalc": "cd .. && corepack pnpm install --offline --ignore-scripts",
     "start": "next start"
   },
   "dependencies": {
