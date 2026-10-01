@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useId, useRef } from 'react'
 
 import {
   LuActivity,
@@ -11,7 +11,15 @@ import {
 } from 'react-icons/lu'
 
 import { type DebugEvent } from '@/lib/fathom'
-import { Box, Button, Flex, IconButton, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Presence,
+  Text,
+  VStack,
+} from '@chakra-ui/react'
 
 const STORAGE_KEY = 'react-fathom-event-stream-visible'
 
@@ -67,6 +75,7 @@ function EventCard({ event }: { event: DebugEvent }) {
       bg="bg"
       w="100%"
       animation="fadeIn 0.3s ease-out"
+      _motionReduce={{ animation: 'none' }}
       css={{
         '@keyframes fadeIn': {
           from: { opacity: 0, transform: 'translateX(20px)' },
@@ -104,6 +113,16 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const [events, setEvents] = useState<DebugEvent[]>([])
+  const panelId = useId()
+  const panelRef = useRef<HTMLDivElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
+
+  const toggleVisibility = useCallback(() => {
+    if (isVisible && panelRef.current?.contains(document.activeElement)) {
+      toggleRef.current?.focus()
+    }
+    setIsVisible((prev) => !prev)
+  }, [isVisible])
 
   // Load visibility state from localStorage on mount
   useEffect(() => {
@@ -128,12 +147,12 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === '.') {
         e.preventDefault()
-        setIsVisible((prev) => !prev)
+        toggleVisibility()
       }
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [toggleVisibility])
 
   // Save visibility state to localStorage
   useEffect(() => {
@@ -173,7 +192,10 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
     <>
       {/* Toggle button */}
       <IconButton
+        ref={toggleRef}
         aria-label={isVisible ? 'Hide event stream' : 'Show event stream'}
+        aria-expanded={isVisible}
+        aria-controls={panelId}
         title={isVisible ? 'Hide event stream' : 'Show event stream'}
         position="fixed"
         bottom={4}
@@ -186,96 +208,112 @@ export function EventStream({ forceShow = false }: EventStreamProps) {
         bg="bg"
         color="fg"
         _hover={{ bg: 'bg.panel' }}
-        onClick={() => setIsVisible(!isVisible)}
+        onClick={toggleVisibility}
       >
         {isVisible ? <LuX /> : <LuActivity />}
       </IconButton>
 
       {/* Event stream panel */}
-      {isVisible && (
-        <Box
-          position="fixed"
-          top={0}
-          right={0}
-          bottom={0}
-          w={{ base: '100%', md: '320px' }}
+      <Presence
+        ref={panelRef}
+        id={panelId}
+        role="complementary"
+        aria-label="Event stream"
+        aria-hidden={!isVisible}
+        inert={!isVisible}
+        present={isVisible}
+        lazyMount
+        unmountOnExit
+        animationName={{
+          _open: 'slide-from-right-full',
+          _closed: 'slide-to-right-full',
+        }}
+        animationDuration="200ms"
+        animationTimingFunction="cubic-bezier(0.4, 0, 0.2, 1)"
+        animationFillMode="both"
+        _motionReduce={{ animation: 'none' }}
+        pointerEvents={isVisible ? 'auto' : 'none'}
+        position="fixed"
+        top={0}
+        right={0}
+        bottom={0}
+        w={{ base: '100%', md: '320px' }}
+        bg="bg"
+        borderLeftWidth="1px"
+        borderLeftColor="border"
+        zIndex={999}
+        display="flex"
+        flexDirection="column"
+      >
+        {/* Header */}
+        <Flex
+          h="siteHeader"
+          flexShrink={0}
+          px={4}
+          borderBottomWidth="1px"
+          borderBottomColor="border"
+          justifyContent="space-between"
+          alignItems="center"
           bg="bg"
-          borderLeftWidth="1px"
-          borderLeftColor="border"
-          zIndex={999}
-          display="flex"
-          flexDirection="column"
         >
-          {/* Header */}
-          <Flex
-            h="siteHeader"
-            flexShrink={0}
-            px={4}
-            borderBottomWidth="1px"
-            borderBottomColor="border"
-            justifyContent="space-between"
-            alignItems="center"
-            bg="bg"
-          >
-            <Flex alignItems="center" gap={2}>
-              <LuActivity aria-hidden="true" />
-              <Text fontWeight={500}>Event Stream</Text>
-            </Flex>
-            <Button
-              size="xs"
-              variant="ghost"
-              onClick={clearEvents}
-              disabled={events.length === 0}
-            >
-              Clear
-            </Button>
+          <Flex alignItems="center" gap={2}>
+            <LuActivity aria-hidden="true" />
+            <Text fontWeight={500}>Event Stream</Text>
           </Flex>
-
-          {/* Events list */}
-          <Box
-            flex={1}
-            overflowY="auto"
-            p={3}
-            bg="gray.100"
-            _dark={{ bg: 'gray.900' }}
+          <Button
+            size="xs"
+            variant="ghost"
+            onClick={clearEvents}
+            disabled={events.length === 0}
           >
-            {events.length === 0 ? (
-              <Flex
-                h="100%"
-                alignItems="center"
-                justifyContent="center"
-                flexDirection="column"
-                color="fg.muted"
-                gap={2}
-              >
-                <LuActivity aria-hidden="true" size={24} />
-                <Text fontSize="sm" textAlign="center">
-                  No events yet.
-                  <br />
-                  Navigate or interact to see tracking events.
-                </Text>
-              </Flex>
-            ) : (
-              <VStack gap={2} alignItems="stretch">
-                {events.map((event) => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </VStack>
-            )}
-          </Box>
+            Clear
+          </Button>
+        </Flex>
 
-          {/* Footer */}
-          <Box p={3} borderTopWidth="1px" borderTopColor="border" bg="bg">
-            <Text fontSize="xs" color="fg.muted" textAlign="center">
-              {events.length} event{events.length !== 1 ? 's' : ''} • Press{' '}
-              <Text as="span" fontFamily="mono" bg="bg.panel" px={1}>
-                ⌘.
-              </Text>{' '}
-              to toggle
-            </Text>
-          </Box>
+        {/* Events list */}
+        <Box
+          flex={1}
+          overflowY="auto"
+          p={3}
+          bg="gray.100"
+          _dark={{ bg: 'gray.900' }}
+        >
+          {events.length === 0 ? (
+            <Flex
+              h="100%"
+              alignItems="center"
+              justifyContent="center"
+              flexDirection="column"
+              color="fg.muted"
+              gap={2}
+            >
+              <LuActivity aria-hidden="true" size={24} />
+              <Text fontSize="sm" textAlign="center">
+                No events yet.
+                <br />
+                Navigate or interact to see tracking events.
+              </Text>
+            </Flex>
+          ) : (
+            <VStack gap={2} alignItems="stretch">
+              {events.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </VStack>
+          )}
         </Box>
-      )}
+
+        {/* Footer */}
+        <Box p={3} borderTopWidth="1px" borderTopColor="border" bg="bg">
+          <Text fontSize="xs" color="fg.muted" textAlign="center">
+            {events.length} event{events.length !== 1 ? 's' : ''} • Press{' '}
+            <Text as="span" fontFamily="mono" bg="bg.panel" px={1}>
+              ⌘.
+            </Text>{' '}
+            to toggle
+          </Text>
+        </Box>
+      </Presence>
     </>
   )
 }
