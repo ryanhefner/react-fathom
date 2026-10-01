@@ -30,37 +30,27 @@ export function Navbar({ searchRecords }: NavbarProps) {
           <SiteLink href="/" css={styles.brand}>
             react-fathom
           </SiteLink>
-          <HStack gap={6}>
-            <HStack as="nav" gap={6} display={{ base: 'none', md: 'flex' }}>
-              <SiteLink href="/docs/getting-started" css={styles.navLink}>
-                Docs
-              </SiteLink>
-              <SiteLink href="/docs/api" css={styles.navLink}>
-                API
-              </SiteLink>
-            </HStack>
-            <HStack gap={2}>
-              <DocsSiteSearch records={searchRecords} />
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <IconButton
-                    asChild
-                    aria-label="View react-fathom on GitHub"
-                    variant="ghost"
-                    css={styles.githubTrigger}
-                  >
-                    <SiteLink href="https://github.com/ryanhefner/react-fathom">
-                      <SiGithub aria-hidden="true" />
-                    </SiteLink>
-                  </IconButton>
-                </Tooltip.Trigger>
-                <Portal>
-                  <Tooltip.Positioner>
-                    <Tooltip.Content>GitHub</Tooltip.Content>
-                  </Tooltip.Positioner>
-                </Portal>
-              </Tooltip.Root>
-            </HStack>
+          <HStack gap={2}>
+            <DocsSiteSearch records={searchRecords} />
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <IconButton
+                  asChild
+                  aria-label="View react-fathom on GitHub"
+                  variant="ghost"
+                  css={styles.githubTrigger}
+                >
+                  <SiteLink href="https://github.com/ryanhefner/react-fathom">
+                    <SiGithub aria-hidden="true" />
+                  </SiteLink>
+                </IconButton>
+              </Tooltip.Trigger>
+              <Portal>
+                <Tooltip.Positioner>
+                  <Tooltip.Content>GitHub</Tooltip.Content>
+                </Tooltip.Positioner>
+              </Portal>
+            </Tooltip.Root>
           </HStack>
         </Flex>
       </Container>

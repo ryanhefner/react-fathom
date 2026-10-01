@@ -148,7 +148,7 @@ export const siteSlotRecipes = {
     defaultVariants: { status: 'info' },
   }),
   siteNavbar: defineSlotRecipe({
-    slots: ['root', 'container', 'brand', 'navLink', 'githubTrigger'],
+    slots: ['root', 'container', 'brand', 'githubTrigger'],
     base: {
       root: {
         position: 'sticky',
@@ -164,7 +164,6 @@ export const siteSlotRecipes = {
         fontSize: 'lg',
         _hover: { textDecoration: 'none' },
       },
-      navLink: { color: 'fg.muted', _hover: { color: 'fg' } },
       githubTrigger: {
         color: 'fg.muted',
         minH: 11,
