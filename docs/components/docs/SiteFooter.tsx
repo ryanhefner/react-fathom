@@ -2,6 +2,7 @@
 
 import { Box, Container, Flex, Text, useSlotRecipe } from '@chakra-ui/react'
 
+import { OssMark } from './OssMark'
 import { SiteLink } from './SiteLink'
 
 interface SiteFooterProps {
@@ -21,12 +22,21 @@ export function SiteFooter({ year }: SiteFooterProps) {
             </SiteLink>
             .
           </Text>
-          <SiteLink
-            href="https://github.com/ryanhefner/react-fathom/blob/main/LICENSE"
-            css={styles.licenseLink}
-          >
-            MIT license
-          </SiteLink>
+          <Flex css={styles.links}>
+            <SiteLink
+              href="https://github.com/ryanhefner/react-fathom/blob/main/LICENSE"
+              css={styles.licenseLink}
+            >
+              MIT license
+            </SiteLink>
+            <SiteLink
+              href="/withoss"
+              aria-label="Made with open-source software"
+              css={styles.ossLink}
+            >
+              <OssMark decorative />
+            </SiteLink>
+          </Flex>
         </Flex>
       </Container>
     </Box>

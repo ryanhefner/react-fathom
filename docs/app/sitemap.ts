@@ -24,5 +24,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: entry.url === '/docs' ? 0.9 : 0.8,
   }))
 
-  return [landingPage, ...docPages]
+  return [
+    landingPage,
+    {
+      url: new URL('/withoss', SITE_URL).toString(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    ...docPages,
+  ]
 }

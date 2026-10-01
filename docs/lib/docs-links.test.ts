@@ -22,6 +22,7 @@ function files(directory: string, extensions: RegExp): string[] {
 const contentFiles = files(contentDir, /\.mdx?$/)
 const routes = new Set([
   '/',
+  '/withoss',
   ...contentFiles.map(
     (file) =>
       '/docs' +
