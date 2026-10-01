@@ -529,6 +529,35 @@ describe('FathomProvider', () => {
     expect(result.current.client).toBe(parentClient)
   })
 
+  it.each([false, undefined])('honors nested debug=%s', (debug) => {
+    const client = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+    const globalEvent = vi.fn()
+    window.addEventListener('react-fathom:debug', globalEvent)
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={client} debug={{ enabled: true, console: false }}>
+        <FathomProvider debug={debug}>{children}</FathomProvider>
+      </FathomProvider>
+    )
+    try {
+      const { result } = renderHook(() => useFathom(), { wrapper })
+      expect(result.current.debugEnabled).toBe(debug !== false)
+      result.current.trackEvent?.('child-event')
+      expect(client.trackEvent).toHaveBeenCalledTimes(1)
+      expect(globalEvent).toHaveBeenCalledTimes(debug === false ? 0 : 1)
+    } finally {
+      window.removeEventListener('react-fathom:debug', globalEvent)
+    }
+  })
+
   it('should compose nested providers - child overrides parent client', () => {
     const parentClient = {
       trackEvent: vi.fn(),

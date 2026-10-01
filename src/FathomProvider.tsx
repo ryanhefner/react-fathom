@@ -42,6 +42,9 @@ const FathomProvider: React.FC<FathomProviderProps> = ({
     if (debugProp === true) {
       return { enabled: true, console: true }
     }
+    if (debugProp === false) {
+      return { enabled: false, console: false }
+    }
     if (debugProp && typeof debugProp === 'object') {
       return {
         enabled: debugProp.enabled ?? false,
