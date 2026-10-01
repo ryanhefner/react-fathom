@@ -6,6 +6,15 @@ import { testSystem } from './chakra-test-system'
 import { postkitThemeConfig, siteThemeConfig } from '../app/theme'
 
 describe('documentation prose theme', () => {
+  it('keeps header search compact on mobile while retaining desktop shortcuts', () => {
+    const recipe = siteThemeConfig.theme?.slotRecipes?.chakraDocsSearch
+    expect(recipe?.base?.trigger).toMatchObject({
+      minW: { base: 0, md: '13rem' },
+    })
+    expect(recipe?.base?.shortcut).toMatchObject({
+      display: { base: 'none', md: 'inline-flex' },
+    })
+  })
   it('uses pure black and white for the page canvas rather than palette near-black', () => {
     expect(testSystem.token('colors.black')).toBe('#000000')
     expect(testSystem.token('colors.white')).toBe('#ffffff')

@@ -183,6 +183,9 @@ export const siteThemeConfig = defineConfig({
           'status',
         ],
         base: {
+          // The full-width library trigger suits mobile drawers, not a header row.
+          trigger: { minW: { base: 0, md: '13rem' }, flexShrink: 0 },
+          shortcut: { display: { base: 'none', md: 'inline-flex' } },
           root: { borderRadius: 'xl' },
           input: {
             borderTopRadius: 'xl',
