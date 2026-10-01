@@ -19,7 +19,7 @@ const popularPages = [
   { title: 'Getting Started', href: '/docs/getting-started' },
   { title: 'React', href: '/docs/react' },
   { title: 'Next.js', href: '/docs/nextjs' },
-  { title: 'API Reference', href: '/docs/api' },
+  { title: 'API Reference', href: '/docs/api/providers' },
 ]
 
 export default async function NotFound() {

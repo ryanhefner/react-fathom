@@ -42,7 +42,7 @@ const guides = [
   {
     title: 'API reference',
     description: 'Browse providers, hooks, components, and native APIs.',
-    href: '/docs/api',
+    href: '/docs/api/providers',
   },
 ]
 

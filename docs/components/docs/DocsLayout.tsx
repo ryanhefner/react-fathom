@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, type ReactNode } from 'react'
 
+import { getDocsEditUrl } from '@/lib/docs-links'
 import { useFathom } from '@/lib/fathom'
 import {
   DocsArticle,
@@ -16,9 +17,6 @@ import { Box, Flex, Text } from '@chakra-ui/react'
 import { DocsSiteSearch } from './DocsSiteSearch'
 import { Navbar } from './Navbar'
 
-const GITHUB_REPO = 'https://github.com/ryanhefner/react-fathom'
-const DOCS_PATH = 'docs/content'
-
 interface DocsLayoutProps {
   breadcrumbs?: boolean
   children: ReactNode
@@ -28,11 +26,6 @@ interface DocsLayoutProps {
   pageActions?: boolean
   pagination?: boolean
   searchRecords: readonly DocsSearchRecord[]
-}
-
-function getEditUrl(page: DocsPage): string {
-  const filePath = page.slug.length === 0 ? 'index' : page.slug.join('/')
-  return `${GITHUB_REPO}/edit/main/${DOCS_PATH}/${filePath}.mdx`
 }
 
 function formatDate(dateString: string): string {
@@ -75,7 +68,7 @@ export function DocsLayout({
   pagination = true,
   searchRecords,
 }: DocsLayoutProps) {
-  const editUrl = getEditUrl(page)
+  const editUrl = getDocsEditUrl(page)
   const { trackEvent } = useFathom()
   const expandedIdsRef = useRef<readonly string[]>(
     getActiveSidebarBranchIds(nav, page.route) ?? [],
