@@ -60,9 +60,9 @@ function EventCard({ event }: { event: DebugEvent }) {
   return (
     <Box
       p={3}
-      borderWidth="1px"
+      borderWidth="2px"
       borderColor={borderColor[event.type]}
-      borderRadius="md"
+      borderRadius="lg"
       boxShadow="sm"
       bg="bg"
       w="100%"
