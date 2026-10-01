@@ -7,10 +7,13 @@ const rootDir = path.resolve(__dirname, '..')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   allowedDevOrigins: ['react-fathom.test'],
+  experimental: {
+    optimizePackageImports: ['@chakra-ui/react'],
+  },
   output: 'export',
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  // Keep linked React context shared and compile MDXRemote for Turbopack.
+  // Keep linked React context shared and compile MDXRemote.
   transpilePackages: ['react-fathom', 'next-mdx-remote'],
   typescript: {
     // Allow build to succeed even with TypeScript errors
@@ -25,7 +28,7 @@ const nextConfig = {
       'react-fathom/debug': '../dist/es/debug/index.js',
     },
   },
-  // Webpack fallback for production builds
+  // Use Webpack until Turbopack's Emotion hydration mismatch is resolved.
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,

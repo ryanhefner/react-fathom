@@ -62,7 +62,7 @@ describe('COMMUNE sub-footer', () => {
     const layout = readFileSync('docs/app/layout.tsx', 'utf8')
     expect(layout.match(/<CommuneFooter\s*\/>/g)).toHaveLength(1)
     expect(layout).toMatch(
-      /<Provider>\s*\{children\}\s*<SiteFooter[^>]+\/>\s*<CommuneFooter\s*\/>/,
+      /<Provider[^>]*>\s*\{children\}\s*<SiteFooter[^>]+\/>\s*<CommuneFooter\s*\/>/,
     )
   })
 
