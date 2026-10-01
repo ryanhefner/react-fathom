@@ -118,6 +118,8 @@ try {
         },
         devDependencies: {
           '@types/react': '19.2.9',
+          jsdom: '30.1.1',
+          next: '16.3.7',
           typescript: '5.9.3',
         },
       },
@@ -243,6 +245,14 @@ export const smoke = (
   )
   await run(process.execPath, ['smoke.mjs'], consumerDirectory)
   await run(process.execPath, ['smoke.cjs'], consumerDirectory)
+  await writeFile(
+    join(consumerDirectory, 'packed-next.cjs'),
+    await readFile(
+      join(workspaceRoot, 'scripts/fixtures/packed-next.cjs'),
+      'utf8',
+    ),
+  )
+  await run(process.execPath, ['packed-next.cjs'], consumerDirectory)
   await run(
     join(consumerDirectory, 'node_modules', '.bin', 'tsc'),
     ['--noEmit', '-p', 'tsconfig.json'],
@@ -255,6 +265,23 @@ export const smoke = (
       'utf8',
     ),
   )
+  // Confirm the shared runtime also connects on React 18, without requiring
+  // optional framework peers for ordinary root-only consumers.
+  await run(
+    npmCommand,
+    [
+      'install',
+      '--ignore-scripts',
+      '--legacy-peer-deps',
+      '--no-package-lock',
+      'react@18.3.1',
+      'react-dom@18.3.1',
+    ],
+    consumerDirectory,
+  )
+  await run(process.execPath, ['smoke.mjs'], consumerDirectory)
+  await run(process.execPath, ['smoke.cjs'], consumerDirectory)
+  await run(process.execPath, ['packed-next.cjs'], consumerDirectory)
   console.log(`Verified packed react-fathom@${installedManifest.version}.`)
 } finally {
   await rm(tempRoot, { recursive: true, force: true })
