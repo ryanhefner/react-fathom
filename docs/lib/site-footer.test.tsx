@@ -28,11 +28,11 @@ describe('shared site footer', () => {
     )
     expect(screen.getByRole('link', { name: 'Ryan Hefner' })).toHaveAttribute(
       'href',
-      'https://ryanhefner.com',
+      'https://www.ryanhefner.com',
     )
     expect(
       screen.getByRole('link', { name: 'Commune Software' }),
-    ).toHaveAttribute('href', 'https://www.commune.software')
+    ).toHaveAttribute('href', 'https://commune.software')
     expect(screen.getByRole('link', { name: 'MIT license' })).toHaveAttribute(
       'href',
       'https://github.com/ryanhefner/react-fathom/blob/main/LICENSE',

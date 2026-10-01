@@ -29,7 +29,7 @@ describe('COMMUNE sub-footer', () => {
     expect(footer).toHaveTextContent('By')
     expect(
       screen.getByRole('link', { name: 'Commune Software' }),
-    ).toHaveAttribute('href', 'https://www.commune.software')
+    ).toHaveAttribute('href', 'https://commune.software')
     const wordmark = screen.getByRole('img', { name: 'Commune Software' })
     expect(wordmark).toHaveAttribute(
       'src',

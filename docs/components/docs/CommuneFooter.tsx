@@ -22,7 +22,7 @@ export function CommuneFooter() {
           By
         </Text>
         <SiteLink
-          href="https://www.commune.software"
+          href="https://commune.software"
           display="block"
           w="full"
           color="white"

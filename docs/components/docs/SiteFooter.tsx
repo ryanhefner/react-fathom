@@ -28,11 +28,11 @@ export function SiteFooter({ year }: SiteFooterProps) {
         >
           <Text>
             © {year > 2025 ? `2025–${year}` : year}{' '}
-            <SiteLink href="https://ryanhefner.com" color="fg">
+            <SiteLink href="https://www.ryanhefner.com" color="fg">
               Ryan Hefner
             </SiteLink>
             ,{' '}
-            <SiteLink href="https://www.commune.software" color="fg">
+            <SiteLink href="https://commune.software" color="fg">
               Commune Software
             </SiteLink>
             .
