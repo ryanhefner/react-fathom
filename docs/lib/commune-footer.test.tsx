@@ -1,0 +1,65 @@
+import { readFileSync } from 'node:fs'
+
+import React from 'react'
+
+import '@testing-library/jest-dom/vitest'
+
+import { afterEach, describe, expect, it } from 'vitest'
+
+import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
+import { cleanup, render, screen } from '@testing-library/react'
+
+import { CommuneFooter } from '../components/docs/CommuneFooter'
+
+describe('COMMUNE sub-footer', () => {
+  afterEach(() => {
+    cleanup()
+    document.documentElement.classList.remove('dark')
+  })
+
+  it('provides a full-width, accessible link using the local Playstack SVG', () => {
+    render(
+      <ChakraProvider value={defaultSystem}>
+        <CommuneFooter />
+      </ChakraProvider>,
+    )
+    const footer = screen.getByRole('contentinfo', {
+      name: 'By Commune Software',
+    })
+    expect(footer).toHaveTextContent('By')
+    expect(
+      screen.getByRole('link', { name: 'Commune Software' }),
+    ).toHaveAttribute('href', 'https://www.commune.software')
+    const wordmark = screen.getByRole('img', { name: 'Commune Software' })
+    expect(wordmark).toHaveAttribute(
+      'src',
+      '/assets/commune-software-wordmark.svg',
+    )
+    expect(wordmark).toHaveAttribute('loading', 'lazy')
+    expect(getComputedStyle(wordmark).height).toBe('auto')
+    expect(getComputedStyle(wordmark).filter).toBe('invert(1)')
+    document.documentElement.classList.add('dark')
+    expect(getComputedStyle(wordmark).filter).toBe('none')
+  })
+
+  it('is mounted once in the shared layout, after the page content', () => {
+    const layout = readFileSync('docs/app/layout.tsx', 'utf8')
+    expect(layout.match(/<CommuneFooter\s*\/>/g)).toHaveLength(1)
+    expect(layout).toMatch(/<Provider>\s*\{children\}\s*<CommuneFooter\s*\/>/)
+  })
+
+  it('ships the self-contained SVG wordmark without executable or remote content', () => {
+    const asset = readFileSync(
+      'docs/public/assets/commune-software-wordmark.svg',
+      'utf8',
+    )
+    const svg = new DOMParser().parseFromString(asset, 'image/svg+xml')
+    expect(svg.querySelector('parsererror')).toBeNull()
+    expect(svg.documentElement.getAttribute('width')).toBe('832')
+    expect(svg.documentElement.getAttribute('height')).toBe('160')
+    expect(svg.querySelector('g')?.getAttribute('fill')).toBe('#fff')
+    expect(svg.querySelectorAll('g path')).toHaveLength(2)
+    expect(svg.querySelector('script, foreignObject, image, use')).toBeNull()
+    expect(asset).not.toMatch(/\son\w+\s*=|(?:xlink:)?href\s*=/i)
+  })
+})

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 
 import { Provider } from './provider'
+import { CommuneFooter } from '../components/docs/CommuneFooter'
 
 const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
 
@@ -87,7 +88,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <Provider>{children}</Provider>
+        <Provider>
+          {children}
+          <CommuneFooter />
+        </Provider>
       </body>
     </html>
   )
