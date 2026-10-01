@@ -6,9 +6,12 @@ export const postkitThemeConfig = createPostkitTheme({
   prose: {
     base: {
       a: {
-        color: 'fg',
-        textDecorationColor: 'border.emphasized',
-        _hover: { color: 'fg', textDecorationColor: 'fg' },
+        color: 'blue.600',
+        textDecoration: 'none',
+        textDecorationColor: 'currentColor',
+        _dark: { color: 'blue.300' },
+        _hover: { textDecoration: 'underline' },
+        _focusVisible: { textDecoration: 'underline' },
       },
       table: {
         _focusVisible: {
