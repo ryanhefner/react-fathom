@@ -171,7 +171,7 @@
     "security:audit": "pnpm --filter react-fathom --filter react-fathom-docs audit --prod --audit-level high",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
-    "release:validate": "node --test scripts/validate-release.spec.mjs",
+    "release:validate": "node --test scripts/validate-release.spec.mjs scripts/registry-release.spec.mjs",
     "release:smoke": "pnpm build && node scripts/release-smoke.mjs",
     "release:check": "pnpm security:audit && pnpm format:check && pnpm lint && pnpm release:validate && pnpm test:ci && pnpm release:smoke && pnpm --dir docs build",
     "dev:all": "node scripts/dev-all.js",
