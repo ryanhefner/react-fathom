@@ -133,6 +133,7 @@ export const siteThemeConfig = defineConfig({
       heading: defineRecipe({
         base: {
           fontWeight: 500,
+          letterSpacing: 'tight',
         },
       }),
     },

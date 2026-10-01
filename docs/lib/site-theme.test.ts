@@ -6,6 +6,15 @@ import { testSystem } from './chakra-test-system'
 import { postkitThemeConfig, siteThemeConfig } from '../app/theme'
 
 describe('documentation prose theme', () => {
+  it('uses tight letter-spacing for headings while retaining medium weight', () => {
+    expect(siteThemeConfig.theme?.recipes?.heading?.base).toMatchObject({
+      fontWeight: 500,
+      letterSpacing: 'tight',
+    })
+    expect(testSystem.css({ letterSpacing: 'tight' })).toEqual({
+      letterSpacing: testSystem.token.var('letterSpacings.tight'),
+    })
+  })
   it('resolves shared document offsets through spacing tokens', () => {
     expect(
       testSystem.css({
