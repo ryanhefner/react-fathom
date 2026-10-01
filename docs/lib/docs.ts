@@ -160,7 +160,10 @@ export function getDocsNav(): NavItem[] {
   const rootItems: NavItem[] = []
 
   if (fs.existsSync(indexPath)) {
-    const title = getTitleFromFrontmatter(indexPath) || 'Introduction'
+    const title =
+      getTitleFromMeta(loadMeta(CONTENT_DIR), 'index') ||
+      getTitleFromFrontmatter(indexPath) ||
+      'Introduction'
     rootItems.push({ title, href: DOCS_BASE_PATH })
   }
 
