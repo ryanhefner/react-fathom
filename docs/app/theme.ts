@@ -233,6 +233,11 @@ export const siteThemeConfig = defineConfig({
       }),
     },
     tokens: {
+      colors: {
+        // Chakra's named black token is near-black; this site's canvas is pure black.
+        black: { value: '#000000' },
+        white: { value: '#ffffff' },
+      },
       sizes: {
         siteHeader: { value: 'calc({sizes.11} + {spacing.6} + 1px)' },
       },

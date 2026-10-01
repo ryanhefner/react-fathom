@@ -6,6 +6,16 @@ import { testSystem } from './chakra-test-system'
 import { postkitThemeConfig, siteThemeConfig } from '../app/theme'
 
 describe('documentation prose theme', () => {
+  it('uses pure black and white for the page canvas rather than palette near-black', () => {
+    expect(testSystem.token('colors.black')).toBe('#000000')
+    expect(testSystem.token('colors.white')).toBe('#ffffff')
+    expect(
+      siteThemeConfig.theme?.semanticTokens?.colors?.bg?.DEFAULT?.value,
+    ).toEqual({
+      _light: '{colors.white}',
+      _dark: '{colors.black}',
+    })
+  })
   it('uses tight letter-spacing for headings while retaining medium weight', () => {
     expect(siteThemeConfig.theme?.recipes?.heading?.base).toMatchObject({
       fontWeight: 500,
