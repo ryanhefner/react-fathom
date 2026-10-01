@@ -205,7 +205,12 @@ export const siteSlotRecipes = {
         pb: { base: 4, md: 8 },
         _print: { display: 'none' },
       },
-      content: { alignItems: 'flex-start', gap: 1, w: 'full' },
+      content: {
+        alignItems: 'flex-start',
+        textAlign: 'left',
+        gap: 1,
+        w: 'full',
+      },
       label: { fontSize: { base: 'lg', md: '2xl' }, fontWeight: 'medium' },
       link: {
         display: 'block',

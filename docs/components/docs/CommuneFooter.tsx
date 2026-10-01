@@ -1,6 +1,6 @@
 'use client'
 
-import { Container, Image, Text, VStack, useSlotRecipe } from '@chakra-ui/react'
+import { Container, Image, Text, Stack, useSlotRecipe } from '@chakra-ui/react'
 
 import { SiteLink } from './SiteLink'
 
@@ -9,7 +9,7 @@ export function CommuneFooter() {
   const styles = useSlotRecipe({ key: 'communeFooter' })()
   return (
     <Container as="section" aria-label="By Commune Software" css={styles.root}>
-      <VStack css={styles.content}>
+      <Stack css={styles.content}>
         <Text css={styles.label}>By</Text>
         <SiteLink href="https://commune.software" css={styles.link}>
           <Image
@@ -20,7 +20,7 @@ export function CommuneFooter() {
             decoding="async"
           />
         </SiteLink>
-      </VStack>
+      </Stack>
     </Container>
   )
 }

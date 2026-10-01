@@ -28,6 +28,9 @@ describe('COMMUNE sub-footer', () => {
       name: 'By Commune Software',
     })
     expect(footer).toHaveTextContent('By')
+    const label = screen.getByText('By')
+    expect(getComputedStyle(label.parentElement!).alignItems).toBe('flex-start')
+    expect(getComputedStyle(label.parentElement!).textAlign).toBe('left')
     expect(
       screen.getByRole('link', { name: 'Commune Software' }),
     ).toHaveAttribute('href', 'https://commune.software')
