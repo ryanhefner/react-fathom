@@ -25,7 +25,7 @@ export interface WebViewClientOptions {
 }
 
 interface QueuedCommand {
-  type: 'pageview' | 'event' | 'goal' | 'block' | 'enable'
+  type: 'pageview' | 'event' | 'goal'
   args: unknown[]
   timestamp: number
 }
@@ -78,13 +78,17 @@ export function createWebViewClient(
     : 100
 
   let isTrackingBlocked = false
+  let hasTrackingPreference = false
+  let synchronizedRef: FathomWebViewRef | undefined
+  let synchronizedBlocked: boolean | undefined
   let attachedWebViewRef: FathomWebViewRef | null | undefined
 
   const getWebViewRef = () =>
-    attachedWebViewRef ??
-    (typeof webViewRefSource === 'function'
-      ? webViewRefSource()
-      : webViewRefSource.current)
+    attachedWebViewRef !== undefined
+      ? attachedWebViewRef
+      : typeof webViewRefSource === 'function'
+        ? webViewRefSource()
+        : webViewRefSource.current
 
   // Queue for commands sent before WebView is ready
   const commandQueue: QueuedCommand[] = []
@@ -99,6 +103,20 @@ export function createWebViewClient(
     if (debug) {
       console.warn('[react-fathom/webview-client]', ...args)
     }
+  }
+
+  // Consent is state, not a queue entry: it cannot be dropped by queue limits,
+  // and must reach a new/reloaded WebView before any analytics commands.
+  const synchronizeTrackingPreference = (ref: FathomWebViewRef) => {
+    if (
+      !hasTrackingPreference ||
+      (synchronizedRef === ref && synchronizedBlocked === isTrackingBlocked)
+    )
+      return
+    if (isTrackingBlocked) ref.blockTrackingForMe()
+    else ref.enableTrackingForMe()
+    synchronizedRef = ref
+    synchronizedBlocked = isTrackingBlocked
   }
 
   /**
@@ -133,6 +151,11 @@ export function createWebViewClient(
       return 0
     }
 
+    synchronizeTrackingPreference(ref)
+    if (isTrackingBlocked) {
+      commandQueue.length = 0
+      return 0
+    }
     log(`Processing ${commandQueue.length} queued commands`)
     let processed = 0
 
@@ -151,12 +174,6 @@ export function createWebViewClient(
           break
         case 'goal':
           ref.trackGoal(command.args[0] as string, command.args[1] as number)
-          break
-        case 'block':
-          ref.blockTrackingForMe()
-          break
-        case 'enable':
-          ref.enableTrackingForMe()
           break
       }
 
@@ -178,6 +195,7 @@ export function createWebViewClient(
     const ref = getWebViewRef()
 
     if (ref?.isReady()) {
+      synchronizeTrackingPreference(ref)
       executor()
     } else {
       queueCommand(type, args)
@@ -244,19 +262,15 @@ export function createWebViewClient(
 
     blockTrackingForMe: () => {
       isTrackingBlocked = true
-      executeOrQueue('block', [], () => {
-        const ref = getWebViewRef()
-        ref?.blockTrackingForMe()
-      })
+      hasTrackingPreference = true
+      commandQueue.length = 0
+      processQueue()
       log('Tracking blocked')
     },
 
     enableTrackingForMe: () => {
       isTrackingBlocked = false
-      executeOrQueue('enable', [], () => {
-        const ref = getWebViewRef()
-        ref?.enableTrackingForMe()
-      })
+      hasTrackingPreference = true
       log('Tracking enabled')
 
       // Process queue when tracking is re-enabled
@@ -281,6 +295,7 @@ export function createWebViewClient(
      * This will flush any queued commands.
      */
     setWebViewReady: () => {
+      synchronizedRef = undefined
       log('WebView ready, processing queue')
       processQueue()
     },

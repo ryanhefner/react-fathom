@@ -419,6 +419,19 @@ describe('FathomWebView', () => {
       expect(source.html).toContain('data-auto="false"')
     })
 
+    it.each([undefined, true])(
+      'requires explicit opt-in for hidden-page tracking: %s',
+      (auto) => {
+        const { getByTestId } = render(
+          <FathomWebView siteId="TEST_SITE" loadOptions={{ auto }} />,
+        )
+        const source = JSON.parse(
+          getByTestId('webview').getAttribute('data-source') || '{}',
+        )
+        expect(source.html.includes('data-auto="false"')).toBe(auto !== true)
+      },
+    )
+
     it('should include data-canonical attribute when canonical is false', () => {
       const { getByTestId } = render(
         <FathomWebView siteId="TEST_SITE" loadOptions={{ canonical: false }} />,

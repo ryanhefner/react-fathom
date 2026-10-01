@@ -115,7 +115,8 @@ export const FathomWebView = forwardRef<FathomWebViewRef, FathomWebViewProps>(
         `data-site="${escapeHtmlAttribute(siteId.trim())}"`,
       ]
 
-      if (loadOptions.auto === false) {
+      // Native navigation is tracked explicitly, not as a hidden HTML page.
+      if (loadOptions.auto !== true) {
         attrs.push('data-auto="false"')
       }
       if (loadOptions.honorDNT) {

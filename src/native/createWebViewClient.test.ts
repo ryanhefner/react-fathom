@@ -257,6 +257,62 @@ describe('createWebViewClient', () => {
   })
 
   describe('tracking blocked', () => {
+    it.each([
+      { enableQueue: true },
+      { enableQueue: false },
+      { maxQueueSize: 0 },
+    ])(
+      'persists opt-out independently of the analytics queue: %j',
+      (options) => {
+        const ref = createMockWebViewRef(false)
+        const client = createWebViewClient(() => ref, options)
+        client.trackEvent('before-opt-out')
+        client.trackPageview({ url: '/private' })
+        client.blockTrackingForMe()
+        expect(client.getQueueLength()).toBe(0)
+        ref.isReady = () => true
+        client.setWebViewReady()
+        expect(ref.blockTrackingForMe).toHaveBeenCalledTimes(1)
+        expect(ref.trackEvent).not.toHaveBeenCalled()
+        expect(ref.trackPageview).not.toHaveBeenCalled()
+        expect(client.isTrackingEnabled()).toBe(false)
+      },
+    )
+
+    it('does not resurrect pre-opt-out events after re-enabling', () => {
+      const ref = createMockWebViewRef(false)
+      const client = createWebViewClient(() => ref)
+      client.trackEvent('discard-me')
+      client.blockTrackingForMe()
+      client.enableTrackingForMe()
+      client.trackEvent('new-event')
+      ref.isReady = () => true
+      client.setWebViewReady()
+      expect(ref.enableTrackingForMe).toHaveBeenCalledTimes(1)
+      expect(ref.trackEvent).toHaveBeenCalledExactlyOnceWith(
+        'new-event',
+        undefined,
+      )
+      expect(
+        vi.mocked(ref.enableTrackingForMe).mock.invocationCallOrder[0],
+      ).toBeLessThan(vi.mocked(ref.trackEvent).mock.invocationCallOrder[0])
+    })
+
+    it('reapplies opt-out to replacement and reloaded WebViews', () => {
+      const first = createMockWebViewRef()
+      const second = createMockWebViewRef()
+      const client = createWebViewClient(() => first)
+      client.blockTrackingForMe()
+      client.setWebViewRef(null)
+      client.setWebViewReady()
+      expect(first.blockTrackingForMe).toHaveBeenCalledTimes(1)
+      client.setWebViewRef(second)
+      client.setWebViewReady()
+      client.setWebViewReady()
+      expect(second.blockTrackingForMe).toHaveBeenCalledTimes(2)
+      expect(second.trackEvent).not.toHaveBeenCalled()
+    })
+
     it('should not track pageview when blocked', () => {
       const mockRef = createMockWebViewRef(true)
       const client = createWebViewClient(() => mockRef)
