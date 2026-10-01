@@ -118,7 +118,7 @@ describe('NextFathomProviderApp', () => {
     const options = JSON.parse(
       provider.getAttribute('data-client-options') || '{}',
     )
-    expect(options).toEqual(clientOptions)
+    expect(options).toEqual({ honorDNT: true, auto: false })
   })
 
   it('should pass all FathomProvider props except children and disableAutoTrack', () => {

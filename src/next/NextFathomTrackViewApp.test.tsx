@@ -2,7 +2,7 @@ import React from 'react'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { renderHook, waitFor } from '@testing-library/react'
+import { render, renderHook, waitFor } from '@testing-library/react'
 
 import { FathomProvider } from '../FathomProvider'
 import { NextFathomTrackViewApp } from './NextFathomTrackViewApp'
@@ -34,6 +34,42 @@ vi.mock('fathom-client', () => ({
 }))
 
 describe('NextFathomTrackViewApp', () => {
+  it('tracks once under Strict Mode and ignores same-route provider rerenders', async () => {
+    const view = () => (
+      <React.StrictMode>
+        <FathomProvider client={mockFathomClient} debug={{ enabled: false }}>
+          <NextFathomTrackViewApp transformUrl={(url) => url} />
+        </FathomProvider>
+      </React.StrictMode>
+    )
+    const { rerender } = render(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(1)
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(1)
+    const navigation = await import('next/navigation')
+    vi.mocked(navigation.usePathname).mockReturnValue('/second')
+    rerender(view())
+    vi.mocked(navigation.usePathname).mockReturnValue(mockPathname)
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(3)
+  })
+  it('counts returning from a URL suppressed by transformUrl', async () => {
+    const view = () => (
+      <FathomProvider client={mockFathomClient}>
+        <NextFathomTrackViewApp
+          transformUrl={(url) => (url.includes('/private') ? null : url)}
+        />
+      </FathomProvider>
+    )
+    const { rerender } = render(view())
+    const navigation = await import('next/navigation')
+    vi.mocked(navigation.usePathname).mockReturnValue('/private')
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(1)
+    vi.mocked(navigation.usePathname).mockReturnValue(mockPathname)
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(2)
+  })
   beforeEach(async () => {
     vi.clearAllMocks()
     const nextNavigation = await import('next/navigation')

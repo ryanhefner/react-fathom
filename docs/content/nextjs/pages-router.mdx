@@ -17,7 +17,7 @@ import { NextFathomTrackViewPages } from 'react-fathom/next'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <FathomProvider siteId="YOUR_SITE_ID">
+    <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       <NextFathomTrackViewPages />
       <Component {...pageProps} />
     </FathomProvider>
@@ -133,7 +133,7 @@ export default function ProductPage({ product }) {
 To handle pageview tracking manually:
 
 ```tsx filename="pages/_app.tsx"
-<FathomProvider siteId="YOUR_SITE_ID">
+<FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
   <NextFathomTrackViewPages disableAutoTrack />
   <Component {...pageProps} />
 </FathomProvider>

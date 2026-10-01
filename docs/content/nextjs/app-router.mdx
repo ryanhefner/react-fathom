@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <FathomProvider siteId="YOUR_SITE_ID">
+        <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
           <NextFathomTrackViewApp />
           {children}
         </FathomProvider>
@@ -104,7 +104,10 @@ import { NextFathomTrackViewApp } from 'react-fathom/next'
 
 export function AnalyticsProvider({ children }) {
   return (
-    <FathomProvider siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
+    <FathomProvider
+      siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}
+      clientOptions={{ auto: false }}
+    >
       <NextFathomTrackViewApp />
       {children}
     </FathomProvider>
@@ -199,20 +202,18 @@ function CustomTracker() {
 
 ## Avoiding Duplicate Pageviews
 
-If you see duplicate pageviews, you likely have multiple tracking sources:
+The convenience provider and router HOCs disable the embed's automatic and SPA tracking while their router tracker is enabled. When composing a standalone provider with a tracker, disable embed tracking explicitly:
 
 ```tsx
-// WRONG: Both auto tracking AND fathom-client's auto
-<NextFathomProviderApp siteId="YOUR_SITE_ID">
-  {/* NextFathomTrackViewApp tracks pageviews */}
-  {/* AND clientOptions.auto defaults to true */}
-</NextFathomProviderApp>
+// Automatic composition owns pageview tracking.
+<NextFathomProviderApp siteId="YOUR_SITE_ID">{children}</NextFathomProviderApp>
 
 // CORRECT: Disable fathom-client's built-in auto tracking
-<NextFathomProviderApp
+<FathomProvider
   siteId="YOUR_SITE_ID"
   clientOptions={{ auto: false }}
 >
+  <NextFathomTrackViewApp />
   {children}
-</NextFathomProviderApp>
+</FathomProvider>
 ```

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 
 import { useFathom } from '../hooks/useFathom.js'
+import type { FathomClient } from '../types.js'
 import { buildTrackingUrl } from '../utils.js'
 
 export interface TanStackRouterFathomTrackViewProps {
@@ -46,7 +47,7 @@ export interface TanStackRouterFathomTrackViewProps {
  * // In your root route component
  * function RootComponent() {
  *   return (
- *     <FathomProvider siteId="YOUR_SITE_ID">
+ *     <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
  *       <TanStackRouterFathomTrackView />
  *       <Outlet />
  *     </FathomProvider>
@@ -85,7 +86,9 @@ export const TanStackRouterFathomTrackView: React.FC<
   includeHash = false,
   transformUrl,
 }) => {
-  const hasTrackedInitialPageview = useRef(false)
+  const lastNavigation = useRef<{ key: string; client: FathomClient } | null>(
+    null,
+  )
   const { trackPageview, client } = useFathom()
 
   // Get location from TanStack Router state
@@ -118,10 +121,17 @@ export const TanStackRouterFathomTrackView: React.FC<
       return
     }
 
-    // Skip initial render - handled separately
-    if (!hasTrackedInitialPageview.current) {
+    const key = JSON.stringify([
+      location.pathname,
+      location.searchStr,
+      location.hash,
+    ])
+    if (
+      lastNavigation.current?.key === key &&
+      lastNavigation.current.client === client
+    )
       return
-    }
+    lastNavigation.current = { key, client }
 
     const url = buildUrl()
     if (url) {
@@ -136,24 +146,6 @@ export const TanStackRouterFathomTrackView: React.FC<
     disableAutoTrack,
     buildUrl,
   ])
-
-  // Track initial pageview
-  useEffect(() => {
-    if (
-      !trackPageview ||
-      !client ||
-      disableAutoTrack ||
-      hasTrackedInitialPageview.current
-    ) {
-      return
-    }
-
-    hasTrackedInitialPageview.current = true
-    const url = buildUrl()
-    if (url) {
-      trackPageview({ url })
-    }
-  }, [trackPageview, client, disableAutoTrack, buildUrl])
 
   // This component doesn't render anything
   return null

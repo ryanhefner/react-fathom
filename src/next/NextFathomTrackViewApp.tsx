@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 import { useFathom } from '../hooks/useFathom.js'
+import type { FathomClient } from '../types.js'
 import { buildTrackingUrl } from '../utils.js'
 
 export interface NextFathomTrackViewAppProps {
@@ -61,26 +62,34 @@ export const NextFathomTrackViewApp: React.FC<NextFathomTrackViewAppProps> = ({
 }) => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const hasTrackedInitialPageview = useRef(false)
+  const lastNavigation = useRef<{ key: string; client: FathomClient } | null>(
+    null,
+  )
   const { trackPageview, client } = useFathom()
 
   // Track pageviews on route changes
   useEffect(() => {
-    if (!trackPageview || !client || disableAutoTrack) {
+    if (!trackPageview || !client || disableAutoTrack || !pathname) {
       return
     }
 
     const searchString = searchParams?.toString()
+    const key = JSON.stringify([pathname, searchString ?? ''])
+    if (
+      lastNavigation.current?.key === key &&
+      lastNavigation.current.client === client
+    )
+      return
+    // Remember the navigation, not every URL ever visited. Returning to an
+    // earlier route counts again, but effect replay and callback changes do not.
+    // Remember skipped URLs too so returning from a suppressed route counts.
+    lastNavigation.current = { key, client }
     const url = buildTrackingUrl({
       pathname,
       search: searchString,
       transformUrl,
     })
 
-    // Track initial pageview only once
-    if (!hasTrackedInitialPageview.current) {
-      hasTrackedInitialPageview.current = true
-    }
     if (url) {
       trackPageview({ url })
     }

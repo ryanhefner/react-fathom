@@ -15,7 +15,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <ExampleProviderNext>
-      <FathomProvider siteId={siteId} debug={{ enabled: true }}>
+      <FathomProvider
+        siteId={siteId}
+        clientOptions={{ auto: false }}
+        debug={{ enabled: true }}
+      >
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta

@@ -1,10 +1,11 @@
 'use client'
 
-import React, { Suspense } from 'react'
+import React, { Suspense, useMemo } from 'react'
 
 import { FathomProvider } from '../FathomProvider.js'
 import type { FathomProviderProps } from '../types.js'
 import { NextFathomTrackViewApp } from './NextFathomTrackViewApp.js'
+import { routerClientOptions } from './router-options.js'
 
 export interface NextFathomProviderAppProps extends Omit<
   FathomProviderProps,
@@ -49,10 +50,15 @@ export interface NextFathomProviderAppProps extends Omit<
 export const NextFathomProviderApp: React.FC<NextFathomProviderAppProps> = ({
   children,
   disableAutoTrack = false,
+  clientOptions,
   ...fathomProviderProps
 }) => {
+  const resolvedOptions = useMemo(
+    () => routerClientOptions(clientOptions, disableAutoTrack),
+    [clientOptions, disableAutoTrack],
+  )
   return (
-    <FathomProvider {...fathomProviderProps}>
+    <FathomProvider {...fathomProviderProps} clientOptions={resolvedOptions}>
       <Suspense fallback={null}>
         <NextFathomTrackViewApp disableAutoTrack={disableAutoTrack} />
       </Suspense>

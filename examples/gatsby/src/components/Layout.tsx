@@ -26,7 +26,11 @@ const siteId = process.env.GATSBY_FATHOM_SITE_ID || 'DEMO'
 export function Layout({ children }: LayoutProps) {
   return (
     <ChakraProvider value={exampleSystem}>
-      <FathomProvider siteId={siteId} debug={{ enabled: true }}>
+      <FathomProvider
+        siteId={siteId}
+        clientOptions={{ auto: false }}
+        debug={{ enabled: true }}
+      >
         <Helmet>
           <meta property="og:type" content="website" />
           <meta property="og:title" content="Gatsby Example - react-fathom" />

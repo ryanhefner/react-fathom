@@ -98,7 +98,7 @@ import { NextFathomTrackViewPages } from 'react-fathom/next'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <FathomProvider siteId="YOUR_SITE_ID">
+    <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       <NextFathomTrackViewPages />
       <Component {...pageProps} />
     </FathomProvider>
@@ -119,7 +119,7 @@ import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
 function App() {
   return (
     <BrowserRouter>
-      <FathomProvider siteId="YOUR_SITE_ID">
+      <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
         <ReactRouterFathomTrackView />
         <Routes>...</Routes>
       </FathomProvider>
@@ -138,7 +138,7 @@ import { FathomProvider } from 'react-fathom'
 import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
 
 export const wrapRootElement = ({ element }) => (
-  <FathomProvider siteId="YOUR_SITE_ID">
+  <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
     <GatsbyFathomTrackView />
     {element}
   </FathomProvider>
@@ -157,7 +157,7 @@ import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
 
 export const Route = createRootRoute({
   component: () => (
-    <FathomProvider siteId="YOUR_SITE_ID">
+    <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       <TanStackRouterFathomTrackView />
       <Outlet />
     </FathomProvider>

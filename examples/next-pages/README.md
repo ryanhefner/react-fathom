@@ -54,7 +54,10 @@ import { NextFathomTrackViewPages } from 'react-fathom/next'
 
 export default function App({ Component, pageProps }) {
   return (
-    <FathomProvider siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}>
+    <FathomProvider
+      siteId={process.env.NEXT_PUBLIC_FATHOM_SITE_ID}
+      clientOptions={{ auto: false }}
+    >
       <NextFathomTrackViewPages />
       <Component {...pageProps} />
     </FathomProvider>

@@ -46,7 +46,7 @@ export interface GatsbyFathomTrackViewProps {
  *
  * export default function Layout({ children }) {
  *   return (
- *     <FathomProvider siteId="YOUR_SITE_ID">
+ *     <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
  *       <GatsbyFathomTrackView />
  *       {children}
  *     </FathomProvider>

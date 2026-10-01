@@ -25,7 +25,7 @@ import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
 
 export const Route = createRootRoute({
   component: () => (
-    <FathomProvider siteId="YOUR_SITE_ID">
+    <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       <TanStackRouterFathomTrackView />
       <Outlet />
     </FathomProvider>
@@ -57,7 +57,7 @@ function InnerApp() {
 
 export function App() {
   return (
-    <FathomProvider siteId="YOUR_SITE_ID">
+    <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       <RouterProvider router={router} />
     </FathomProvider>
   )

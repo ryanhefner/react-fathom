@@ -93,6 +93,27 @@ function createTestRouter(
 }
 
 describe('TanStackRouterFathomTrackView', () => {
+  it('deduplicates StrictMode without suppressing return visits', async () => {
+    const client = createMockClient()
+    const router = createTestRouter('/test-page', client)
+    const tree = (
+      <React.StrictMode>
+        <RouterProvider router={router} />
+      </React.StrictMode>
+    )
+    const view = render(tree)
+    await waitFor(() => expect(client.trackPageview).toHaveBeenCalledTimes(1))
+    view.rerender(tree)
+    expect(client.trackPageview).toHaveBeenCalledTimes(1)
+    await act(async () => {
+      await router.navigate({ to: '/new-page' })
+    })
+    await act(async () => {
+      await router.navigate({ to: '/test-page' })
+    })
+    expect(client.trackPageview).toHaveBeenCalledTimes(3)
+  })
+
   beforeEach(() => {
     vi.clearAllMocks()
     delete (window as { location?: unknown }).location

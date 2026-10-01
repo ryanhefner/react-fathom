@@ -36,7 +36,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <FathomProvider siteId="YOUR_SITE_ID">
+    <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       <GatsbyFathomTrackView />
       {children}
     </FathomProvider>
@@ -71,7 +71,7 @@ import { FathomProvider } from 'react-fathom'
 import { GatsbyFathomTrackView } from 'react-fathom/gatsby'
 
 export const wrapRootElement = ({ element }) => (
-  <FathomProvider siteId="YOUR_SITE_ID">
+  <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
     <GatsbyFathomTrackView />
     {element}
   </FathomProvider>
@@ -91,10 +91,11 @@ import { createGatsbyFathomPlugins } from 'react-fathom/gatsby'
 const fathomPlugins = createGatsbyFathomPlugins({
   siteId: 'YOUR_SITE_ID',
   // Optional configuration
-  includedDomains: ['yourdomain.com'],
-  excludedDomains: ['staging.yourdomain.com'],
-  spa: 'auto',
-  honorDNT: false,
+  loadOptions: {
+    includedDomains: ['yourdomain.com'],
+    excludedDomains: ['staging.yourdomain.com'],
+    honorDNT: false,
+  },
 })
 
 export const onClientEntry = fathomPlugins.onClientEntry

@@ -13,7 +13,11 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
 
 export const Route = createRootRoute({
   component: () => (
-    <FathomProvider siteId={siteId} debug={{ enabled: true }}>
+    <FathomProvider
+      siteId={siteId}
+      clientOptions={{ auto: false }}
+      debug={{ enabled: true }}
+    >
       <TanStackRouterFathomTrackView />
       <ExampleLayoutSimple
         linkComponent={NavLink}

@@ -15,7 +15,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ExampleProvider>
       <BrowserRouter>
-        <FathomProvider siteId={siteId} debug={{ enabled: true }}>
+        <FathomProvider
+          siteId={siteId}
+          clientOptions={{ auto: false }}
+          debug={{ enabled: true }}
+        >
           <ReactRouterFathomTrackView />
           <App />
         </FathomProvider>

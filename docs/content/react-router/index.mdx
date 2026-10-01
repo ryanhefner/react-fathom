@@ -27,7 +27,7 @@ import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
 function App() {
   return (
     <BrowserRouter>
-      <FathomProvider siteId="YOUR_SITE_ID">
+      <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
         <ReactRouterFathomTrackView />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -63,7 +63,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <FathomProvider siteId="YOUR_SITE_ID">
+        <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
           <ReactRouterFathomTrackView />
           <Outlet />
         </FathomProvider>
@@ -147,7 +147,7 @@ import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
 
 function App() {
   return (
-    <FathomProvider siteId="YOUR_SITE_ID">
+    <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       {/* Disable auto-tracking, handle manually */}
       <ReactRouterFathomTrackView disableAutoTrack />
       <Routes>...</Routes>
@@ -179,7 +179,7 @@ import { ReactRouterFathomTrackView } from 'react-fathom/react-router'
 function App() {
   return (
     <BrowserRouter>
-      <FathomProvider siteId="YOUR_SITE_ID">
+      <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
         {/* Automatic pageview tracking */}
         <ReactRouterFathomTrackView />
 

@@ -41,7 +41,7 @@ export interface NextFathomTrackViewPagesProps {
  *
  * function MyApp({ Component, pageProps }) {
  *   return (
- *     <FathomProvider siteId="YOUR_SITE_ID">
+ *     <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
  *       <NextFathomTrackViewPages />
  *       <Component {...pageProps} />
  *     </FathomProvider>

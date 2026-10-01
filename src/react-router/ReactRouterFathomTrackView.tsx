@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { useFathom } from '../hooks/useFathom.js'
+import type { FathomClient } from '../types.js'
 import { buildTrackingUrl } from '../utils.js'
 
 export interface ReactRouterFathomTrackViewProps {
@@ -48,7 +49,7 @@ export interface ReactRouterFathomTrackViewProps {
  * function App() {
  *   return (
  *     <BrowserRouter>
- *       <FathomProvider siteId="YOUR_SITE_ID">
+ *       <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
  *         <ReactRouterFathomTrackView />
  *         <Routes>...</Routes>
  *       </FathomProvider>
@@ -65,7 +66,7 @@ export interface ReactRouterFathomTrackViewProps {
  *
  * export default function App() {
  *   return (
- *     <FathomProvider siteId="YOUR_SITE_ID">
+ *     <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
  *       <ReactRouterFathomTrackView />
  *       <Outlet />
  *     </FathomProvider>
@@ -93,7 +94,9 @@ export const ReactRouterFathomTrackView: React.FC<
   includeHash = false,
   transformUrl,
 }) => {
-  const hasTrackedInitialPageview = useRef(false)
+  const lastNavigation = useRef<{ key: string; client: FathomClient } | null>(
+    null,
+  )
   const { trackPageview, client } = useFathom()
   const location = useLocation()
 
@@ -124,10 +127,17 @@ export const ReactRouterFathomTrackView: React.FC<
       return
     }
 
-    // Skip initial render - handled separately
-    if (!hasTrackedInitialPageview.current) {
+    const key = JSON.stringify([
+      location.pathname,
+      location.search,
+      location.hash,
+    ])
+    if (
+      lastNavigation.current?.key === key &&
+      lastNavigation.current.client === client
+    )
       return
-    }
+    lastNavigation.current = { key, client }
 
     const url = buildUrl()
     if (url) {
@@ -142,24 +152,6 @@ export const ReactRouterFathomTrackView: React.FC<
     disableAutoTrack,
     buildUrl,
   ])
-
-  // Track initial pageview
-  useEffect(() => {
-    if (
-      !trackPageview ||
-      !client ||
-      disableAutoTrack ||
-      hasTrackedInitialPageview.current
-    ) {
-      return
-    }
-
-    hasTrackedInitialPageview.current = true
-    const url = buildUrl()
-    if (url) {
-      trackPageview({ url })
-    }
-  }, [trackPageview, client, disableAutoTrack, buildUrl])
 
   // This component doesn't render anything
   return null

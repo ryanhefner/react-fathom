@@ -103,8 +103,9 @@ export function createGatsbyFathomPlugins(options: GatsbyFathomOptions) {
       fathomClient = Fathom
 
       fathomClient.load(siteId, {
-        auto: false, // We handle tracking manually
         ...loadOptions,
+        auto: false, // Gatsby's route handler owns tracking.
+        spa: undefined,
       })
     },
 

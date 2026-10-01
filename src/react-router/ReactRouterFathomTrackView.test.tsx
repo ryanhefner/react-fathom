@@ -33,6 +33,38 @@ function NavigateButton({ to }: { to: string }) {
 }
 
 describe('ReactRouterFathomTrackView', () => {
+  it('deduplicates StrictMode and same-route provider rerenders', async () => {
+    const client = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+    const tree = () => (
+      <React.StrictMode>
+        <MemoryRouter initialEntries={['/test-page']}>
+          <FathomProvider
+            client={client}
+            debug={{ enabled: true, console: false }}
+          >
+            <ReactRouterFathomTrackView transformUrl={(url) => url} />
+            <NavigateButton to="/new-page" />
+          </FathomProvider>
+        </MemoryRouter>
+      </React.StrictMode>
+    )
+    const view = render(tree())
+    await waitFor(() => expect(client.trackPageview).toHaveBeenCalledTimes(1))
+    view.rerender(tree())
+    expect(client.trackPageview).toHaveBeenCalledTimes(1)
+    view.getByText('Navigate').click()
+    await waitFor(() => expect(client.trackPageview).toHaveBeenCalledTimes(2))
+  })
+
   beforeEach(() => {
     vi.clearAllMocks()
     delete (window as { location?: unknown }).location
