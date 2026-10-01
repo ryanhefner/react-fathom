@@ -31,10 +31,6 @@ export function SiteFooter({ year }: SiteFooterProps) {
             <SiteLink href="https://www.ryanhefner.com" color="fg">
               Ryan Hefner
             </SiteLink>
-            ,{' '}
-            <SiteLink href="https://commune.software" color="fg">
-              Commune Software
-            </SiteLink>
             .
           </Text>
           <SiteLink

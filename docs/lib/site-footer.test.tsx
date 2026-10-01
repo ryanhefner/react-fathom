@@ -14,7 +14,7 @@ import { SiteFooter } from '../components/docs/SiteFooter'
 describe('shared site footer', () => {
   afterEach(cleanup)
 
-  it('includes the copyright holders, credit links, and MIT license', () => {
+  it('includes Ryan’s credit and MIT license without repeating the Commune sub-footer', () => {
     render(
       <ChakraProvider value={defaultSystem}>
         <SiteFooter year={2026} />
@@ -23,16 +23,15 @@ describe('shared site footer', () => {
     const footer = screen.getByRole('contentinfo', {
       name: 'Site credits and license',
     })
-    expect(footer).toHaveTextContent(
-      '© 2025–2026 Ryan Hefner, Commune Software.',
-    )
+    expect(footer).toHaveTextContent('© 2025–2026 Ryan Hefner.')
     expect(screen.getByRole('link', { name: 'Ryan Hefner' })).toHaveAttribute(
       'href',
       'https://www.ryanhefner.com',
     )
     expect(
-      screen.getByRole('link', { name: 'Commune Software' }),
-    ).toHaveAttribute('href', 'https://commune.software')
+      screen.queryByRole('link', { name: 'Commune Software' }),
+    ).not.toBeInTheDocument()
+    expect(footer).not.toHaveTextContent('Commune')
     expect(screen.getByRole('link', { name: 'MIT license' })).toHaveAttribute(
       'href',
       'https://github.com/ryanhefner/react-fathom/blob/main/LICENSE',
