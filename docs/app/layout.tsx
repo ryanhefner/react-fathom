@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 
 import { Provider } from './provider'
 import { CommuneFooter } from '../components/docs/CommuneFooter'
+import { SiteFooter } from '../components/docs/SiteFooter'
 
 const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
 
@@ -90,6 +91,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Provider>
           {children}
+          <SiteFooter year={new Date().getFullYear()} />
           <CommuneFooter />
         </Provider>
       </body>

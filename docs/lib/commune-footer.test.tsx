@@ -23,7 +23,7 @@ describe('COMMUNE sub-footer', () => {
         <CommuneFooter />
       </ChakraProvider>,
     )
-    const footer = screen.getByRole('contentinfo', {
+    const footer = screen.getByRole('region', {
       name: 'By Commune Software',
     })
     expect(footer).toHaveTextContent('By')
@@ -37,15 +37,32 @@ describe('COMMUNE sub-footer', () => {
     )
     expect(wordmark).toHaveAttribute('loading', 'lazy')
     expect(getComputedStyle(wordmark).height).toBe('auto')
-    expect(getComputedStyle(wordmark).filter).toBe('invert(1)')
+    expect(getComputedStyle(wordmark).filter).not.toBe('invert(1)')
+    // jsdom does not resolve CSS custom properties, so check Chakra's emitted
+    // token declarations rather than its incomplete computed color values.
+    const footerClass = [...footer.classList].find((name) =>
+      name.startsWith('css-'),
+    )
+    const footerRule = Array.from(document.styleSheets)
+      .flatMap((sheet) => Array.from(sheet.cssRules))
+      .find(
+        (rule) =>
+          'selectorText' in rule && rule.selectorText === `.${footerClass}`,
+      )
+    expect(footerRule?.cssText).toMatch(
+      /background(?:-color)?: var\(--chakra-colors-black\)/,
+    )
+    expect(footerRule?.cssText).toContain('color: var(--chakra-colors-white)')
     document.documentElement.classList.add('dark')
-    expect(getComputedStyle(wordmark).filter).toBe('none')
+    expect(getComputedStyle(wordmark).filter).not.toBe('invert(1)')
   })
 
   it('is mounted once in the shared layout, after the page content', () => {
     const layout = readFileSync('docs/app/layout.tsx', 'utf8')
     expect(layout.match(/<CommuneFooter\s*\/>/g)).toHaveLength(1)
-    expect(layout).toMatch(/<Provider>\s*\{children\}\s*<CommuneFooter\s*\/>/)
+    expect(layout).toMatch(
+      /<Provider>\s*\{children\}\s*<SiteFooter[^>]+\/>\s*<CommuneFooter\s*\/>/,
+    )
   })
 
   it('ships the self-contained SVG wordmark without executable or remote content', () => {

@@ -8,14 +8,16 @@ import { SiteLink } from './SiteLink'
 export function CommuneFooter() {
   return (
     <Container
-      as="footer"
+      as="section"
       aria-label="By Commune Software"
       maxW="full"
-      bg="bg"
-      color="fg"
+      bg="black"
+      color="white"
+      pt={{ base: 2, md: 8 }}
       pb={{ base: 4, md: 8 }}
+      _print={{ display: 'none' }}
     >
-      <VStack align="flex-start" gap={1} mt={{ base: 2, md: 8 }} w="full">
+      <VStack align="flex-start" gap={1} w="full">
         <Text fontSize={{ base: 'lg', md: '2xl' }} fontWeight={500}>
           By
         </Text>
@@ -23,11 +25,11 @@ export function CommuneFooter() {
           href="https://www.commune.software"
           display="block"
           w="full"
-          color="fg"
+          color="white"
           _hover={{ textDecoration: 'none' }}
           _focusVisible={{
             outline: '2px solid',
-            outlineColor: 'fg',
+            outlineColor: 'white',
             outlineOffset: '4px',
           }}
         >
@@ -38,8 +40,6 @@ export function CommuneFooter() {
             h="auto"
             loading="lazy"
             decoding="async"
-            filter="invert(1)"
-            _dark={{ filter: 'none' }}
           />
         </SiteLink>
       </VStack>

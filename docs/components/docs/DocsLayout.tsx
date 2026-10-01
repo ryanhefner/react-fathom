@@ -172,11 +172,6 @@ export function DocsLayout({
             </Flex>
           ) : null}
           {pagination ? <DocsPagination nav={nav} page={page} /> : null}
-          <Box as="footer" borderTopWidth="1px" mt={12} pt={6}>
-            <Text color="fg.muted" fontSize="sm">
-              MIT {new Date().getFullYear()} © Ryan Hefner
-            </Text>
-          </Box>
         </DocsArticle>
       </ChakraDocsLayout>
     </Box>
