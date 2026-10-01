@@ -9,11 +9,13 @@ describe('documentation prose theme', () => {
   it('uses pure black and white for the page canvas rather than palette near-black', () => {
     expect(testSystem.token('colors.black')).toBe('#000000')
     expect(testSystem.token('colors.white')).toBe('#ffffff')
-    expect(
-      siteThemeConfig.theme?.semanticTokens?.colors?.bg?.DEFAULT?.value,
-    ).toEqual({
-      _light: '{colors.white}',
-      _dark: '{colors.black}',
+    expect(siteThemeConfig.theme?.semanticTokens?.colors?.bg).toMatchObject({
+      DEFAULT: {
+        value: {
+          _light: '{colors.white}',
+          _dark: '{colors.black}',
+        },
+      },
     })
   })
   it('uses tight letter-spacing for headings while retaining medium weight', () => {
