@@ -33,7 +33,13 @@ const preferences = [
   },
 ]
 
-function DocsIntegrationProvider({ children }: { children: ReactNode }) {
+function DocsIntegrationProvider({
+  children,
+  siteUrl,
+}: {
+  children: ReactNode
+  siteUrl: string
+}) {
   const { trackEvent } = useFathom()
   const analytics = useMemo<DocsAnalyticsCallbacks>(
     () => ({
@@ -72,10 +78,10 @@ function DocsIntegrationProvider({ children }: { children: ReactNode }) {
         scrollMarginTop: siteSystem.token.var('spacing.docsScrollMargin'),
       },
       linkComponent: NextLink,
-      siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://react-fathom.com',
+      siteUrl,
       title: 'react-fathom',
     }),
-    [analytics],
+    [analytics, siteUrl],
   )
 
   return (
@@ -87,7 +93,13 @@ function DocsIntegrationProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export function Provider({ children }: { children: React.ReactNode }) {
+export function Provider({
+  children,
+  siteUrl,
+}: {
+  children: React.ReactNode
+  siteUrl: string
+}) {
   const siteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID || 'DEMO'
 
   return (
@@ -101,7 +113,9 @@ export function Provider({ children }: { children: React.ReactNode }) {
             system={siteSystem}
             codeBlockAdapter={codeBlockAdapter}
           >
-            <DocsIntegrationProvider>{children}</DocsIntegrationProvider>
+            <DocsIntegrationProvider siteUrl={siteUrl}>
+              {children}
+            </DocsIntegrationProvider>
             <EventStream forceShow />
           </PostkitProvider>
         </NextFathomProviderApp>

@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next'
 
-export const dynamic = 'force-static'
+import { SITE_URL } from '@/lib/site-metadata'
 
-const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
+export const dynamic = 'force-static'
 
 export default function robots(): MetadataRoute.Robots {
   return {

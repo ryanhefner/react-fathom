@@ -1,10 +1,9 @@
 import { MetadataRoute } from 'next'
 
 import { getDocsManifest } from '@/lib/chakra-docs'
+import { SITE_URL } from '@/lib/site-metadata'
 
 export const dynamic = 'force-static'
-
-const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const manifest = await getDocsManifest()

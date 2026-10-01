@@ -2,11 +2,11 @@ import type { ReactNode } from 'react'
 
 import type { Metadata } from 'next'
 
+import { SITE_URL } from '@/lib/site-metadata'
+
 import { Provider } from './provider'
 import { CommuneFooter } from '../components/docs/CommuneFooter'
 import { SiteFooter } from '../components/docs/SiteFooter'
-
-const SITE_URL = process.env.SITE_URL || 'https://react-fathom.com'
 
 export const metadata: Metadata = {
   title: {
@@ -89,7 +89,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <Provider>
+        <Provider siteUrl={SITE_URL}>
           {children}
           <SiteFooter year={new Date().getFullYear()} />
           <CommuneFooter />

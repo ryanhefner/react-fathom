@@ -4,6 +4,7 @@ import { DocsLayout } from '@/components/docs'
 import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { getDocsManifest } from '@/lib/chakra-docs'
 import { getLastUpdated } from '@/lib/docs'
+import { createPageMetadata } from '@/lib/site-metadata'
 import {
   createGenerateStaticParams,
   getAppRouterDoc,
@@ -28,10 +29,7 @@ export async function generateMetadata({
     return { title: 'Not Found' }
   }
 
-  return {
-    title: page.title,
-    description: page.description,
-  }
+  return createPageMetadata(page)
 }
 
 export default async function DocPage({
