@@ -105,6 +105,10 @@ export const siteThemeConfig = defineConfig({
   theme: {
     semanticTokens: {
       colors: {
+        'og.canvas': { value: '{colors.black}' },
+        'og.foreground': { value: '{colors.white}' },
+        'og.muted': { value: '{colors.gray.400}' },
+        'og.rule': { value: '{colors.gray.800}' },
         'fileTree.canvas': {
           value: { _light: '{colors.gray.50}', _dark: '{colors.gray.900}' },
         },

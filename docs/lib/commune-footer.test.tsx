@@ -62,7 +62,7 @@ describe('COMMUNE sub-footer', () => {
   })
 
   it('is mounted once in the shared layout, after the page content', () => {
-    const layout = readFileSync('docs/app/layout.tsx', 'utf8')
+    const layout = readFileSync('docs/app/site-experience.tsx', 'utf8')
     expect(layout.match(/<CommuneFooter\s*\/>/g)).toHaveLength(1)
     expect(layout).toMatch(
       /<Provider[^>]*>\s*\{children\}\s*<SiteFooter[^>]+\/>\s*<CommuneFooter\s*\/>/,

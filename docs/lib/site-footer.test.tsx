@@ -40,7 +40,7 @@ describe('shared site footer', () => {
   })
 
   it('mounts once globally and removes the redundant article-level footer', () => {
-    const layout = readFileSync('docs/app/layout.tsx', 'utf8')
+    const layout = readFileSync('docs/app/site-experience.tsx', 'utf8')
     expect(layout.match(/<SiteFooter\b/g)).toHaveLength(1)
     expect(layout.indexOf('<SiteFooter')).toBeLessThan(
       layout.indexOf('<CommuneFooter'),

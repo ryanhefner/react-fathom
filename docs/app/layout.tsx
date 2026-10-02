@@ -4,9 +4,7 @@ import type { Metadata } from 'next'
 
 import { SITE_URL } from '@/lib/site-metadata'
 
-import { Provider } from './provider'
-import { CommuneFooter } from '../components/docs/CommuneFooter'
-import { SiteFooter } from '../components/docs/SiteFooter'
+import { SiteExperience } from './site-experience'
 
 export const metadata: Metadata = {
   title: {
@@ -89,11 +87,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <Provider siteUrl={SITE_URL}>
+        <SiteExperience siteUrl={SITE_URL} year={new Date().getFullYear()}>
           {children}
-          <SiteFooter year={new Date().getFullYear()} />
-          <CommuneFooter />
-        </Provider>
+        </SiteExperience>
       </body>
     </html>
   )
