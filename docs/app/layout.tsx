@@ -82,7 +82,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
         <link
           rel="stylesheet"
-          href="https://kits.fontstack.com/kit/q_2_tnzd.css"
+          href="https://kits.fontstack.com/kit/o0v0t0oi.css"
           precedence="default"
         />
       </head>
