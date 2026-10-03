@@ -10,6 +10,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import { testSystem } from './chakra-test-system'
 import {
   getOgImageContent,
+  isOgImageCapturePath,
   OG_IMAGE_DEFAULTS,
   OG_IMAGE_HEIGHT,
   OG_IMAGE_WIDTH,
@@ -97,8 +98,64 @@ describe('Open Graph capture page', () => {
     expect(document.querySelector('script')).toBeNull()
   })
 
-  it('omits the normal provider and footers on capture routes, including trailing slash', () => {
-    for (const pathname of ['/og-image', '/og-image/']) {
+  it('uses page defaults for SSR copy and query overrides without retaining the previous page', () => {
+    const defaults = {
+      title: 'React Native',
+      description: 'Analytics for native apps.',
+    }
+    expect(getOgImageContent(new URLSearchParams(), defaults)).toEqual(defaults)
+    navigation.params = new URLSearchParams({ title: 'Custom title' })
+    const { rerender } = render(
+      <ChakraProvider value={testSystem}>
+        <OgImagePage defaults={defaults} />
+      </ChakraProvider>,
+    )
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Custom title',
+    )
+    expect(screen.getByText(defaults.description)).toBeInTheDocument()
+    const nextDefaults = {
+      title: 'Next.js',
+      description: 'Analytics for Next.',
+    }
+    navigation.params = new URLSearchParams()
+    rerender(
+      <ChakraProvider value={testSystem}>
+        <OgImagePage defaults={nextDefaults} />
+      </ChakraProvider>,
+    )
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Next.js',
+    )
+    expect(screen.queryByText(defaults.description)).not.toBeInTheDocument()
+  })
+
+  it('does not treat normal site routes or PNG requests as capture pages', () => {
+    for (const path of [
+      '/',
+      '/docs/react-native',
+      '/withoss',
+      '/social-image.png',
+      '/docs/react-native/social-image.png',
+      '/og-image.svg',
+      '/og-image/docs/react/social-image.png',
+      '/docs/social-image/setup',
+    ]) {
+      expect(isOgImageCapturePath(path)).toBe(false)
+    }
+  })
+
+  it('omits the normal provider and footers on all capture routes, including trailing slash', () => {
+    for (const pathname of [
+      '/og-image',
+      '/og-image/',
+      '/og-image/docs/react-native',
+      '/social-image',
+      '/social-image/',
+      '/docs/social-image',
+      '/docs/next/app-router/social-image/',
+      '/withoss/social-image',
+    ]) {
       navigation.pathname = pathname
       render(
         <SiteExperience siteUrl="https://react-fathom.com" year={2026}>

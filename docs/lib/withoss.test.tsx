@@ -10,6 +10,7 @@ import { cleanup, render, screen, within } from '@testing-library/react'
 
 import { testSystem } from './chakra-test-system'
 import { ossProjects } from './oss-projects'
+import { WITH_OSS_PAGE } from './site-metadata'
 import { SiteFooter } from '../components/docs/SiteFooter'
 import { WithOssPage } from '../components/docs/WithOssPage'
 
@@ -87,8 +88,9 @@ describe('open-source credits', () => {
 
   it('exports page metadata and includes the route in the sitemap', () => {
     expect(readFileSync('docs/app/withoss/page.tsx', 'utf8')).toContain(
-      "route: '/withoss'",
+      'createPageMetadata(WITH_OSS_PAGE)',
     )
+    expect(WITH_OSS_PAGE.route).toBe('/withoss')
     expect(readFileSync('docs/app/sitemap.ts', 'utf8')).toContain(
       "new URL('/withoss', SITE_URL)",
     )

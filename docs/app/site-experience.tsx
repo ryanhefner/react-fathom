@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 
 import { usePathname } from 'next/navigation'
 
+import { isOgImageCapturePath } from '@/lib/og-image'
 import { ChakraProvider } from '@chakra-ui/react'
 
 import { Provider } from './provider'
@@ -22,7 +23,7 @@ export function SiteExperience({
   year: number
 }) {
   const pathname = usePathname()
-  if (pathname === '/og-image' || pathname === '/og-image/') {
+  if (isOgImageCapturePath(pathname)) {
     return <ChakraProvider value={siteSystem}>{children}</ChakraProvider>
   }
   return (

@@ -17,6 +17,13 @@ export const SITE_URL = resolveSiteUrl(
   process.env.SITE_URL,
 )
 
+export const WITH_OSS_PAGE = {
+  route: '/withoss',
+  title: 'Made w/ Open-Source Software',
+  description:
+    'The key open-source projects behind react-fathom and its documentation site.',
+} as const
+
 export function createPageMetadata(page: {
   route: string
   title: string

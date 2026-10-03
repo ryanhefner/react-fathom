@@ -4,7 +4,11 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 
 import { useSearchParams } from 'next/navigation'
 
-import { getOgImageContent, OG_IMAGE_DEFAULTS } from '@/lib/og-image'
+import {
+  getOgImageContent,
+  OG_IMAGE_DEFAULTS,
+  type OgImageContent,
+} from '@/lib/og-image'
 import {
   Box,
   Flex,
@@ -86,30 +90,41 @@ export function OgImageCard({
 
 function QueryCopy({
   onChange,
+  defaults,
 }: {
-  onChange: (copy: ReturnType<typeof getOgImageContent>) => void
+  onChange: (value: { key: string; copy: OgImageContent }) => void
+  defaults: OgImageContent
 }) {
   const query = useSearchParams().toString()
   useEffect(() => {
-    onChange(getOgImageContent(new URLSearchParams(query)))
-  }, [onChange, query])
+    onChange({
+      key: JSON.stringify([defaults.title, defaults.description]),
+      copy: getOgImageContent(new URLSearchParams(query), defaults),
+    })
+  }, [onChange, query, defaults])
   return null
 }
 
-export function OgImagePage() {
-  const [copy, setCopy] = useState<ReturnType<typeof getOgImageContent> | null>(
-    null,
-  )
+export function OgImagePage({
+  defaults = OG_IMAGE_DEFAULTS,
+}: {
+  defaults?: OgImageContent
+}) {
+  const [state, setCopy] = useState<{
+    key: string
+    copy: OgImageContent
+  } | null>(null)
+  const copy =
+    state?.key === JSON.stringify([defaults.title, defaults.description])
+      ? state.copy
+      : null
   return (
     <>
       {/* Only query reading suspends; the capture canvas stays mounted. */}
       <Suspense fallback={null}>
-        <QueryCopy onChange={setCopy} />
+        <QueryCopy onChange={setCopy} defaults={defaults} />
       </Suspense>
-      <OgImageCard
-        {...(copy ?? OG_IMAGE_DEFAULTS)}
-        captureReady={copy !== null}
-      />
+      <OgImageCard {...(copy ?? defaults)} captureReady={copy !== null} />
     </>
   )
 }
