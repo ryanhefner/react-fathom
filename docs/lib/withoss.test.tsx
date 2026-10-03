@@ -29,6 +29,12 @@ describe('open-source credits', () => {
         name: 'Made with open-source software',
       }),
     ).toBeInTheDocument()
+    const projects = screen.getByRole('region', {
+      name: ossProjectGroups[0].title,
+    }).parentElement!
+    expect(getComputedStyle(projects).display).toBe('flex')
+    expect(getComputedStyle(projects).flexDirection).toBe('column')
+    expect(getComputedStyle(projects).gap).toBe('var(--chakra-spacing-16)')
     for (const group of ossProjectGroups) {
       const section = screen.getByRole('region', { name: group.title })
       expect(
@@ -36,6 +42,9 @@ describe('open-source credits', () => {
       ).toBeInTheDocument()
       expect(within(section).getAllByRole('listitem')).toHaveLength(
         group.projects.length,
+      )
+      expect(getComputedStyle(within(section).getByRole('list')).gap).toBe(
+        '0px',
       )
       for (const project of group.projects) {
         expect(within(section).getByText(project.name)).toBeInTheDocument()
