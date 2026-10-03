@@ -3,6 +3,8 @@ packages:
   - examples/*
 autoInstallPeers: false
 overrides:
+  '@chakra-docs/core': file:docs/.yalc/@chakra-docs/core
+  '@chakra-docs/search': file:docs/.yalc/@chakra-docs/search
   '@types/react': 19.3.0
   '@types/react-dom': 19.2.3
   js-yaml: 3.15.2
