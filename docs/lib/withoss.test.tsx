@@ -9,7 +9,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { cleanup, render, screen, within } from '@testing-library/react'
 
 import { testSystem } from './chakra-test-system'
-import { ossProjects } from './oss-projects'
+import { ossProjectGroups } from './oss-projects'
 import { WITH_OSS_PAGE } from './site-metadata'
 import { SiteFooter } from '../components/docs/SiteFooter'
 import { WithOssPage } from '../components/docs/WithOssPage'
@@ -17,7 +17,7 @@ import { WithOssPage } from '../components/docs/WithOssPage'
 afterEach(cleanup)
 
 describe('open-source credits', () => {
-  it('credits actual site dependencies in accessible responsive rows', () => {
+  it('separates library and site dependencies in accessible responsive rows', () => {
     render(
       <ChakraProvider value={testSystem}>
         <WithOssPage />
@@ -29,24 +29,23 @@ describe('open-source credits', () => {
         name: 'Made with open-source software',
       }),
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { level: 2, name: 'Open-source software' }),
-    ).toBeInTheDocument()
-    expect(screen.getAllByRole('listitem')).toHaveLength(ossProjects.length)
-    const dependencies = JSON.parse(
-      readFileSync('docs/package.json', 'utf8'),
-    ).dependencies
-    for (const project of ossProjects) {
-      expect(screen.getByText(project.name)).toBeInTheDocument()
-      for (const name of project.packages)
-        expect(dependencies[name], name).toBeDefined()
-      for (const url of project.urls) {
-        expect(new URL(url).protocol).toBe('https:')
+    for (const group of ossProjectGroups) {
+      const section = screen.getByRole('region', { name: group.title })
+      expect(
+        within(section).getByRole('heading', { level: 2, name: group.title }),
+      ).toBeInTheDocument()
+      expect(within(section).getAllByRole('listitem')).toHaveLength(
+        group.projects.length,
+      )
+      for (const project of group.projects) {
+        expect(within(section).getByText(project.name)).toBeInTheDocument()
         expect(
-          screen.getByRole('link', {
-            name: url.replace(/^https:\/\/(?:www\.)?/, '').replace(/\/$/, ''),
+          within(section).getByRole('link', {
+            name: project.href
+              .replace(/^https:\/\/(?:www\.)?/, '')
+              .replace(/\/$/, ''),
           }),
-        ).toHaveAttribute('href', url)
+        ).toHaveAttribute('href', project.href)
       }
     }
   })

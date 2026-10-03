@@ -1,8 +1,5 @@
 'use client'
 
-import { Fragment } from 'react'
-
-import { ossProjects } from '@/lib/oss-projects'
 import {
   Box,
   Container,
@@ -16,6 +13,7 @@ import {
 
 import { OssMark } from './OssMark'
 import { SiteLink } from './SiteLink'
+import { ossProjectGroups } from '../../lib/oss-projects'
 
 export function WithOssPage() {
   const styles = useSlotRecipe({ key: 'siteWithOss' })()
@@ -33,41 +31,36 @@ export function WithOssPage() {
           <OssMark size="hero" decorative />
         </Heading>
         <Text css={styles.intro}>
-          This library and documentation site are built with open-source
-          software. In appreciation of the community behind them, here are the
-          key projects that make the site possible.
+          Built on the open web, with open-source software. Thank you to the
+          maintainers and contributors behind our library and documentation
+          site.
         </Text>
       </Flex>
-      <Box as="section" aria-labelledby="oss-projects" css={styles.projects}>
-        <Heading as="h2" id="oss-projects" css={styles.sectionTitle}>
-          Open-source software
-        </Heading>
-        <Stack as="ul" css={styles.list}>
-          {ossProjects.map((project) => (
-            <Grid as="li" key={project.name} css={styles.row}>
-              <Text css={styles.name}>{project.name}</Text>
-              <Text css={styles.description}>{project.description}</Text>
-              <Box css={styles.urls}>
-                {project.urls.map((url, index) => (
-                  <Fragment key={url}>
-                    {index > 0 && (
-                      <Text as="span" aria-hidden="true">
-                        {' '}
-                        /{' '}
-                      </Text>
-                    )}
-                    <SiteLink href={url} css={styles.projectLink}>
-                      {url
+      <Stack css={styles.projects}>
+        {ossProjectGroups.map((group) => (
+          <Box as="section" key={group.id} aria-labelledby={`oss-${group.id}`}>
+            <Heading as="h2" id={`oss-${group.id}`} css={styles.sectionTitle}>
+              {group.title}
+            </Heading>
+            <Text css={styles.sectionDescription}>{group.description}</Text>
+            <Stack as="ul" css={styles.list}>
+              {group.projects.map((project) => (
+                <Grid as="li" key={project.name} css={styles.row}>
+                  <Text css={styles.name}>{project.name}</Text>
+                  <Text css={styles.description}>{project.description}</Text>
+                  <Box css={styles.urls}>
+                    <SiteLink href={project.href} css={styles.projectLink}>
+                      {project.href
                         .replace(/^https:\/\/(?:www\.)?/, '')
                         .replace(/\/$/, '')}
                     </SiteLink>
-                  </Fragment>
-                ))}
-              </Box>
-            </Grid>
-          ))}
-        </Stack>
-      </Box>
+                  </Box>
+                </Grid>
+              ))}
+            </Stack>
+          </Box>
+        ))}
+      </Stack>
     </Container>
   )
 }
