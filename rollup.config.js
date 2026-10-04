@@ -12,6 +12,10 @@ const pkg = require('./package.json')
 const defaultOutputOptions = {
   name: pkg.name,
   exports: 'named',
+  // Next's CommonJS entry files need explicit extensions when imported by
+  // native Node ESM (for example, externalized Pages Router SSR dependencies).
+  paths: (id) =>
+    ['next/navigation', 'next/compat/router'].includes(id) ? `${id}.js` : id,
   globals: {
     'fathom-client': 'Fathom',
     react: 'React',

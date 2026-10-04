@@ -132,11 +132,14 @@ try {
     join(consumerDirectory, 'smoke.mjs'),
     `import * as ReactFathom from 'react-fathom'
 import * as ReactFathomDebug from 'react-fathom/debug'
+import * as ReactFathomNext from 'react-fathom/next'
 
 if (
   typeof ReactFathom.FathomProvider !== 'function' ||
   typeof ReactFathom.useFathom !== 'function' ||
-  typeof ReactFathomDebug.EventStream !== 'function'
+  typeof ReactFathomDebug.EventStream !== 'function' ||
+  typeof ReactFathomNext.NextFathomTrackViewPages !== 'function' ||
+  typeof ReactFathomNext.NextFathomTrackViewApp !== 'function'
 ) {
   throw new Error('Packed ESM exports are incomplete.')
 }
@@ -161,11 +164,14 @@ console.log('ok packed ESM runtime and subpath resolution')
     join(consumerDirectory, 'smoke.cjs'),
     `const ReactFathom = require('react-fathom')
 const ReactFathomDebug = require('react-fathom/debug')
+const ReactFathomNext = require('react-fathom/next')
 
 if (
   typeof ReactFathom.FathomProvider !== 'function' ||
   typeof ReactFathom.useFathom !== 'function' ||
-  typeof ReactFathomDebug.EventStream !== 'function'
+  typeof ReactFathomDebug.EventStream !== 'function' ||
+  typeof ReactFathomNext.NextFathomTrackViewPages !== 'function' ||
+  typeof ReactFathomNext.NextFathomTrackViewApp !== 'function'
 ) {
   throw new Error('Packed CommonJS exports are incomplete.')
 }
