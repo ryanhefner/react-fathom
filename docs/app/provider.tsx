@@ -1,16 +1,17 @@
 'use client'
 
-import { useMemo, type ReactNode } from 'react'
+import { Suspense, useMemo, type ReactNode } from 'react'
 
 import { LuCheck, LuCopy } from 'react-icons/lu'
 
-import { useFathom } from '@/lib/fathom'
-import { NextFathomProviderApp } from '@/lib/fathom-next'
 import {
-  DocsPreferences,
-  DocsProvider,
-  type DocsAnalyticsCallbacks,
-} from '@chakra-docs/chakra'
+  createDocsAnalytics,
+  getAnalyticsUrl,
+  getFathomConfig,
+} from '@/lib/analytics'
+import { FathomProvider, useFathom, type FathomClient } from '@/lib/fathom'
+import { NextFathomTrackViewApp } from '@/lib/fathom-next'
+import { DocsPreferences, DocsProvider } from '@chakra-docs/chakra'
 import { NextLink } from '@chakra-docs/next/link'
 import { createChakraDocsShikiAdapter } from '@chakra-docs/shiki'
 import { ChakraProvider } from '@chakra-ui/react'
@@ -23,6 +24,18 @@ import { EventStream } from '../components/docs/EventStream'
 const codeBlockAdapter = createChakraDocsShikiAdapter({
   themes: { light: 'github-dark', dark: 'github-dark' },
 })
+
+// The interactive event stream still works without sending demo traffic.
+const previewClient: FathomClient = {
+  blockTrackingForMe: () => {},
+  enableTrackingForMe: () => {},
+  isTrackingEnabled: () => false,
+  load: () => {},
+  setSite: () => {},
+  trackPageview: () => {},
+  trackEvent: () => {},
+  trackGoal: () => {},
+}
 
 const preferences = [
   {
@@ -41,30 +54,7 @@ function DocsIntegrationProvider({
   siteUrl: string
 }) {
   const { trackEvent } = useFathom()
-  const analytics = useMemo<DocsAnalyticsCallbacks>(
-    () => ({
-      onCodeCopy: () => trackEvent('docs-code-copy'),
-      onHeadingLinkCopy: () => trackEvent('docs-heading-link-copy'),
-      onPackageCommandCopy: ({ manager }) =>
-        trackEvent(`docs-package-command-copy-${manager}`),
-      onPageAction: ({ action }) => trackEvent(`docs-page-action-${action}`),
-      onPageCopy: ({ format }) => trackEvent(`docs-page-copy-${format}`),
-      onPageFeedback: ({ value }) => trackEvent(`docs-page-feedback-${value}`),
-      onPreferenceChange: ({ id, value, source }) => {
-        if (source !== 'storage') trackEvent(`docs-${id}-select-${value}`)
-      },
-      onSearch: (query) => {
-        if (query) trackEvent('docs-search-query')
-      },
-      onSearchClose: ({ reason }) => trackEvent(`docs-search-close-${reason}`),
-      onSearchError: () => trackEvent('docs-search-error'),
-      onSearchOpen: () => trackEvent('docs-search-open'),
-      onSearchResults: () => trackEvent('docs-search-results'),
-      onSearchResultSelect: (_result, { interaction }) =>
-        trackEvent(`docs-search-result-select-${interaction}`),
-    }),
-    [trackEvent],
-  )
+  const analytics = useMemo(() => createDocsAnalytics(trackEvent), [trackEvent])
   const config = useMemo(
     () => ({
       analytics,
@@ -100,15 +90,26 @@ export function Provider({
   children: React.ReactNode
   siteUrl: string
 }) {
-  const siteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID || 'DEMO'
+  const config = useMemo(
+    () =>
+      getFathomConfig(
+        process.env.NEXT_PUBLIC_FATHOM_SITE_ID,
+        process.env.NEXT_PUBLIC_FATHOM_CUSTOM_DOMAIN,
+      ),
+    [],
+  )
 
   return (
     <ChakraProvider value={siteSystem}>
       <ColorModeProvider>
-        <NextFathomProviderApp
-          siteId={siteId}
+        <FathomProvider
+          {...config}
+          client={config ? undefined : previewClient}
           debug={{ enabled: true, console: false }}
         >
+          <Suspense fallback={null}>
+            <NextFathomTrackViewApp transformUrl={getAnalyticsUrl} />
+          </Suspense>
           <PostkitProvider
             system={siteSystem}
             codeBlockAdapter={codeBlockAdapter}
@@ -118,7 +119,7 @@ export function Provider({
             </DocsIntegrationProvider>
             <EventStream forceShow />
           </PostkitProvider>
-        </NextFathomProviderApp>
+        </FathomProvider>
       </ColorModeProvider>
     </ChakraProvider>
   )
