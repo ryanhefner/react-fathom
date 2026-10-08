@@ -11,7 +11,7 @@
   "dependencies": {
     "@react-fathom/example-ui": "workspace:*",
     "fathom-client": "^3.6.0",
-    "next": "^16.1.0",
+    "next": "16.3.8",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-fathom": "workspace:*"
