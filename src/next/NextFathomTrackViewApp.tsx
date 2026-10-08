@@ -2,9 +2,11 @@
 
 import React, { useEffect, useRef } from 'react'
 
-import { usePathname, useSearchParams } from 'next/navigation.js'
+import { usePathname, useSearchParams } from 'next/navigation'
 
-import { useFathom } from '../hooks/useFathom'
+import { useFathom } from '../hooks/useFathom.js'
+import type { FathomClient } from '../types.js'
+import { buildTrackingUrl } from '../utils.js'
 
 export interface NextFathomTrackViewAppProps {
   /**
@@ -12,6 +14,22 @@ export interface NextFathomTrackViewAppProps {
    * @default false
    */
   disableAutoTrack?: boolean
+  /**
+   * Transform the URL before tracking.
+   * Useful for stripping sensitive parameters or normalizing URLs.
+   *
+   * @example
+   * ```tsx
+   * <NextFathomTrackViewApp
+   *   transformUrl={(url) => {
+   *     const u = new URL(url)
+   *     u.searchParams.delete('token')
+   *     return u.toString()
+   *   }}
+   * />
+   * ```
+   */
+  transformUrl?: (url: string) => string | null | undefined
 }
 
 /**
@@ -40,38 +58,49 @@ export interface NextFathomTrackViewAppProps {
  */
 export const NextFathomTrackViewApp: React.FC<NextFathomTrackViewAppProps> = ({
   disableAutoTrack = false,
+  transformUrl,
 }) => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const hasTrackedInitialPageview = useRef(false)
+  const lastNavigation = useRef<{ key: string; client: FathomClient } | null>(
+    null,
+  )
   const { trackPageview, client } = useFathom()
 
   // Track pageviews on route changes
   useEffect(() => {
-    if (!trackPageview || !client || disableAutoTrack) {
+    if (!trackPageview || !client || disableAutoTrack || !pathname) {
       return
     }
 
     const searchString = searchParams?.toString()
-    const url =
-      pathname +
-      (searchString !== undefined && searchString !== ''
-        ? `?${searchString}`
-        : '')
+    const key = JSON.stringify([pathname, searchString ?? ''])
+    if (
+      lastNavigation.current?.key === key &&
+      lastNavigation.current.client === client
+    )
+      return
+    // Remember the navigation, not every URL ever visited. Returning to an
+    // earlier route counts again, but effect replay and callback changes do not.
+    // Remember skipped URLs too so returning from a suppressed route counts.
+    lastNavigation.current = { key, client }
+    const url = buildTrackingUrl({
+      pathname,
+      search: searchString,
+      transformUrl,
+    })
 
-    // Track initial pageview only once
-    if (!hasTrackedInitialPageview.current) {
-      hasTrackedInitialPageview.current = true
-      trackPageview({
-        url: window.location.origin + url,
-      })
-    } else {
-      // Track subsequent route changes
-      trackPageview({
-        url: window.location.origin + url,
-      })
+    if (url) {
+      trackPageview({ url })
     }
-  }, [pathname, searchParams, trackPageview, client, disableAutoTrack])
+  }, [
+    pathname,
+    searchParams,
+    trackPageview,
+    client,
+    disableAutoTrack,
+    transformUrl,
+  ])
 
   // This component doesn't render anything
   return null

@@ -10,7 +10,19 @@ import pluginJs from '@eslint/js'
 export default [
   // Ignore patterns
   {
-    ignores: ['dist/**'],
+    ignores: [
+      '**/node_modules/**',
+      '**/.next/**',
+      '**/.cache/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/coverage/**',
+      '**/out/**',
+      'types/**',
+      'docs/public/pagefind/**',
+      'examples/gatsby/public/**',
+      '**/next-env.d.ts',
+    ],
   },
 
   // Base JavaScript recommended config
@@ -126,6 +138,34 @@ export default [
           varsIgnorePattern: '^_',
         },
       ],
+    },
+  },
+
+  // Test doubles intentionally use loose boundary types and anonymous mock
+  // components that are not part of the published API.
+  {
+    files: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react/display-name': 'off',
+      'react-hooks/globals': 'off',
+    },
+  },
+
+  // Apostrophes and quotation marks in documentation/example prose are
+  // intentional text, not unsafe HTML interpolation.
+  {
+    files: ['docs/**/*.{js,jsx,ts,tsx}', 'examples/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'react/no-unescaped-entities': 'off',
+    },
+  },
+
+  // Expo loads Metro configuration through CommonJS.
+  {
+    files: ['examples/react-native/metro.config.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ]

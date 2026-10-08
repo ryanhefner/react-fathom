@@ -1,19 +1,29 @@
 // WebView-based client (recommended for Fathom Pro)
-export { FathomWebView, type FathomWebViewRef, type FathomWebViewProps } from './FathomWebView'
-export { createWebViewClient, type WebViewFathomClient, type WebViewClientOptions } from './createWebViewClient'
+export {
+  FathomWebView,
+  type FathomWebViewRef,
+  type FathomWebViewProps,
+} from './FathomWebView.js'
+export {
+  createWebViewClient,
+  type WebViewClientOptions,
+  type WebViewFathomClient,
+  type WebViewRefSource,
+} from './createWebViewClient.js'
 
 // Provider components
-export { NativeFathomProvider } from './NativeFathomProvider'
-export { FathomProvider } from '../FathomProvider'
+export { NativeFathomProvider } from './NativeFathomProvider.js'
+export { FathomProvider } from '../FathomProvider.js'
 
 // Hooks
-export { useFathom } from '../hooks/useFathom'
-export { useAppStateTracking } from './useAppStateTracking'
-export { useNavigationTracking } from './useNavigationTracking'
+export { useFathom } from '../hooks/useFathom.js'
+export { useAppStateTracking } from './useAppStateTracking.js'
+export { useNavigationTracking } from './useNavigationTracking.js'
 
 // Types
 export type {
   NativeFathomProviderProps,
+  NavigationContainerRefLike,
   UseNavigationTrackingOptions,
   UseAppStateTrackingOptions,
   // Re-exported from core
@@ -21,9 +31,6 @@ export type {
   EventOptions,
   LoadOptions,
   PageViewOptions,
-} from './types'
+} from './types.js'
 
-export type {
-  FathomContextInterface,
-  FathomProviderProps,
-} from '../types'
+export type { FathomContextInterface, FathomProviderProps } from '../types.js'

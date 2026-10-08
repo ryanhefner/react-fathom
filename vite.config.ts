@@ -1,11 +1,19 @@
+import { fileURLToPath } from 'node:url'
+
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./docs', import.meta.url)) },
+  },
   test: {
     coverage: {
       reporter: ['clover', 'html', 'json', 'lcov'],
     },
-    include: ['./src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    include: [
+      './src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+      './docs/lib/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+    ],
     environment: 'jsdom',
     setupFiles: ['./tools/test-setup.ts'],
     globals: true,

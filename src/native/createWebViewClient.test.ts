@@ -31,6 +31,7 @@ describe('createWebViewClient', () => {
       expect(client.isTrackingEnabled).toBeDefined()
       expect(client.processQueue).toBeDefined()
       expect(client.getQueueLength).toBeDefined()
+      expect(client.setWebViewRef).toBeDefined()
       expect(client.setWebViewReady).toBeDefined()
     })
 
@@ -42,6 +43,25 @@ describe('createWebViewClient', () => {
     it('should start with empty queue', () => {
       const client = createWebViewClient(() => null)
       expect(client.getQueueLength()).toBe(0)
+    })
+
+    it('should accept a React-style ref object', () => {
+      const mockRef = createMockWebViewRef(true)
+      const client = createWebViewClient({ current: mockRef })
+
+      client.trackEvent('button-click')
+
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', undefined)
+    })
+
+    it('should allow attaching a WebView after client creation', () => {
+      const mockRef = createMockWebViewRef(true)
+      const client = createWebViewClient(() => null)
+
+      client.setWebViewRef(mockRef)
+      client.trackEvent('button-click')
+
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', undefined)
     })
   })
 
@@ -61,7 +81,9 @@ describe('createWebViewClient', () => {
 
       client.trackEvent('button-click', { _value: 100 })
 
-      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', { _value: 100 })
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', {
+        _value: 100,
+      })
     })
 
     it('should call trackGoal on WebView immediately', () => {
@@ -148,7 +170,9 @@ describe('createWebViewClient', () => {
       client.setWebViewReady()
 
       expect(mockRef.trackPageview).toHaveBeenCalledWith({ url: '/test' })
-      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', { _value: 100 })
+      expect(mockRef.trackEvent).toHaveBeenCalledWith('button-click', {
+        _value: 100,
+      })
       expect(client.getQueueLength()).toBe(0)
     })
 
@@ -201,6 +225,22 @@ describe('createWebViewClient', () => {
       expect(mockRef.trackEvent).toHaveBeenCalledWith('event2', undefined)
       expect(mockRef.trackEvent).toHaveBeenCalledWith('event3', undefined)
     })
+
+    it('should disable queuing when maxQueueSize is zero or negative', () => {
+      const mockRef = createMockWebViewRef(false)
+      const zeroQueueClient = createWebViewClient(() => mockRef, {
+        maxQueueSize: 0,
+      })
+      const negativeQueueClient = createWebViewClient(() => mockRef, {
+        maxQueueSize: -1,
+      })
+
+      zeroQueueClient.trackEvent('event1')
+      negativeQueueClient.trackEvent('event2')
+
+      expect(zeroQueueClient.getQueueLength()).toBe(0)
+      expect(negativeQueueClient.getQueueLength()).toBe(0)
+    })
   })
 
   describe('queue disabled', () => {
@@ -217,6 +257,62 @@ describe('createWebViewClient', () => {
   })
 
   describe('tracking blocked', () => {
+    it.each([
+      { enableQueue: true },
+      { enableQueue: false },
+      { maxQueueSize: 0 },
+    ])(
+      'persists opt-out independently of the analytics queue: %j',
+      (options) => {
+        const ref = createMockWebViewRef(false)
+        const client = createWebViewClient(() => ref, options)
+        client.trackEvent('before-opt-out')
+        client.trackPageview({ url: '/private' })
+        client.blockTrackingForMe()
+        expect(client.getQueueLength()).toBe(0)
+        ref.isReady = () => true
+        client.setWebViewReady()
+        expect(ref.blockTrackingForMe).toHaveBeenCalledTimes(1)
+        expect(ref.trackEvent).not.toHaveBeenCalled()
+        expect(ref.trackPageview).not.toHaveBeenCalled()
+        expect(client.isTrackingEnabled()).toBe(false)
+      },
+    )
+
+    it('does not resurrect pre-opt-out events after re-enabling', () => {
+      const ref = createMockWebViewRef(false)
+      const client = createWebViewClient(() => ref)
+      client.trackEvent('discard-me')
+      client.blockTrackingForMe()
+      client.enableTrackingForMe()
+      client.trackEvent('new-event')
+      ref.isReady = () => true
+      client.setWebViewReady()
+      expect(ref.enableTrackingForMe).toHaveBeenCalledTimes(1)
+      expect(ref.trackEvent).toHaveBeenCalledExactlyOnceWith(
+        'new-event',
+        undefined,
+      )
+      expect(
+        vi.mocked(ref.enableTrackingForMe).mock.invocationCallOrder[0],
+      ).toBeLessThan(vi.mocked(ref.trackEvent).mock.invocationCallOrder[0])
+    })
+
+    it('reapplies opt-out to replacement and reloaded WebViews', () => {
+      const first = createMockWebViewRef()
+      const second = createMockWebViewRef()
+      const client = createWebViewClient(() => first)
+      client.blockTrackingForMe()
+      client.setWebViewRef(null)
+      client.setWebViewReady()
+      expect(first.blockTrackingForMe).toHaveBeenCalledTimes(1)
+      client.setWebViewRef(second)
+      client.setWebViewReady()
+      client.setWebViewReady()
+      expect(second.blockTrackingForMe).toHaveBeenCalledTimes(2)
+      expect(second.trackEvent).not.toHaveBeenCalled()
+    })
+
     it('should not track pageview when blocked', () => {
       const mockRef = createMockWebViewRef(true)
       const client = createWebViewClient(() => mockRef)

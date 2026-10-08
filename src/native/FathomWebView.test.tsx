@@ -1,6 +1,7 @@
 import React, { createRef, act } from 'react'
 
 import { describe, expect, it, vi, beforeEach } from 'vitest'
+
 import { render } from '@testing-library/react'
 
 import { FathomWebView, type FathomWebViewRef } from './FathomWebView'
@@ -77,6 +78,22 @@ describe('FathomWebView', () => {
       const source = JSON.parse(webview.getAttribute('data-source') || '{}')
 
       expect(source.html).toContain('data-site="MY_CUSTOM_SITE_ID"')
+    })
+
+    it('should escape interpolated HTML attribute values', () => {
+      const { getByTestId } = render(
+        <FathomWebView
+          siteId={'SITE"><script>alert(1)</script>'}
+          scriptDomain={'analytics.example.com"><script>alert(1)</script>'}
+          loadOptions={{ spa: '"><script>alert(1)</script>' as 'auto' }}
+        />,
+      )
+
+      const webview = getByTestId('webview')
+      const source = JSON.parse(webview.getAttribute('data-source') || '{}')
+
+      expect(source.html).not.toContain('<script>alert(1)</script>')
+      expect(source.html).toContain('&quot;&gt;&lt;script&gt;')
     })
 
     it('should use default scriptDomain', () => {
@@ -287,11 +304,28 @@ describe('FathomWebView', () => {
       // Simulate error message from WebView
       mockWebViewInstance?.onMessage?.({
         nativeEvent: {
-          data: JSON.stringify({ type: 'error', message: 'Script failed to load' }),
+          data: JSON.stringify({
+            type: 'error',
+            message: 'Script failed to load',
+          }),
         },
       })
 
       expect(onError).toHaveBeenCalledWith('Script failed to load')
+    })
+
+    it('should normalize invalid WebView error messages', () => {
+      const onError = vi.fn()
+
+      render(<FathomWebView siteId="TEST_SITE" onError={onError} />)
+
+      mockWebViewInstance?.onMessage?.({
+        nativeEvent: {
+          data: JSON.stringify({ type: 'error', message: { secret: true } }),
+        },
+      })
+
+      expect(onError).toHaveBeenCalledWith('Unknown Fathom WebView error')
     })
 
     it('should handle malformed messages gracefully', () => {
@@ -384,6 +418,19 @@ describe('FathomWebView', () => {
 
       expect(source.html).toContain('data-auto="false"')
     })
+
+    it.each([undefined, true])(
+      'requires explicit opt-in for hidden-page tracking: %s',
+      (auto) => {
+        const { getByTestId } = render(
+          <FathomWebView siteId="TEST_SITE" loadOptions={{ auto }} />,
+        )
+        const source = JSON.parse(
+          getByTestId('webview').getAttribute('data-source') || '{}',
+        )
+        expect(source.html.includes('data-auto="false"')).toBe(auto !== true)
+      },
+    )
 
     it('should include data-canonical attribute when canonical is false', () => {
       const { getByTestId } = render(

@@ -16,8 +16,8 @@ export default function About() {
         </h2>
         <p>
           The <code>NextFathomTrackViewPages</code> component in{' '}
-          <code>pages/_app.tsx</code> automatically tracks pageviews whenever the
-          route changes. This is done using Next.js Pages Router&apos;s{' '}
+          <code>pages/_app.tsx</code> automatically tracks pageviews whenever
+          the route changes. This is done using Next.js Pages Router&apos;s{' '}
           <code>useRouter</code> hook and listening to route change events.
         </p>
         <h2 style={{ marginTop: '2rem', marginBottom: '1rem' }}>

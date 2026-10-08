@@ -1,5 +1,10 @@
-import type { FathomClient, EventOptions, LoadOptions, PageViewOptions } from '../types'
-import type { FathomWebViewRef } from './FathomWebView'
+import type {
+  EventOptions,
+  FathomClient,
+  LoadOptions,
+  PageViewOptions,
+} from '../types.js'
+import type { FathomWebViewRef } from './FathomWebView.js'
 
 export interface WebViewClientOptions {
   /**
@@ -20,7 +25,7 @@ export interface WebViewClientOptions {
 }
 
 interface QueuedCommand {
-  type: 'pageview' | 'event' | 'goal' | 'block' | 'enable'
+  type: 'pageview' | 'event' | 'goal'
   args: unknown[]
   timestamp: number
 }
@@ -55,18 +60,35 @@ interface QueuedCommand {
 export interface WebViewFathomClient extends FathomClient {
   processQueue: () => number
   getQueueLength: () => number
+  setWebViewRef: (webViewRef: FathomWebViewRef | null) => void
   setWebViewReady: () => void
 }
 
+export type WebViewRefSource =
+  | (() => FathomWebViewRef | null | undefined)
+  | { readonly current: FathomWebViewRef | null | undefined }
+
 export function createWebViewClient(
-  getWebViewRef: () => FathomWebViewRef | null | undefined,
+  webViewRefSource: WebViewRefSource,
   options: WebViewClientOptions = {},
 ): WebViewFathomClient {
   const { debug = false, enableQueue = true, maxQueueSize = 100 } = options
+  const queueLimit = Number.isFinite(maxQueueSize)
+    ? Math.max(0, Math.floor(maxQueueSize))
+    : 100
 
   let isTrackingBlocked = false
-  let currentSiteId: string | undefined
-  let isLoaded = false
+  let hasTrackingPreference = false
+  let synchronizedRef: FathomWebViewRef | undefined
+  let synchronizedBlocked: boolean | undefined
+  let attachedWebViewRef: FathomWebViewRef | null | undefined
+
+  const getWebViewRef = () =>
+    attachedWebViewRef !== undefined
+      ? attachedWebViewRef
+      : typeof webViewRefSource === 'function'
+        ? webViewRefSource()
+        : webViewRefSource.current
 
   // Queue for commands sent before WebView is ready
   const commandQueue: QueuedCommand[] = []
@@ -83,16 +105,30 @@ export function createWebViewClient(
     }
   }
 
+  // Consent is state, not a queue entry: it cannot be dropped by queue limits,
+  // and must reach a new/reloaded WebView before any analytics commands.
+  const synchronizeTrackingPreference = (ref: FathomWebViewRef) => {
+    if (
+      !hasTrackingPreference ||
+      (synchronizedRef === ref && synchronizedBlocked === isTrackingBlocked)
+    )
+      return
+    if (isTrackingBlocked) ref.blockTrackingForMe()
+    else ref.enableTrackingForMe()
+    synchronizedRef = ref
+    synchronizedBlocked = isTrackingBlocked
+  }
+
   /**
    * Queue a command for later execution
    */
   const queueCommand = (type: QueuedCommand['type'], args: unknown[]) => {
-    if (!enableQueue) {
+    if (!enableQueue || queueLimit === 0) {
       warn('Queue disabled, dropping command:', type)
       return
     }
 
-    if (commandQueue.length >= maxQueueSize) {
+    if (commandQueue.length >= queueLimit) {
       commandQueue.shift()
       log('Queue full, removed oldest command')
     }
@@ -103,7 +139,7 @@ export function createWebViewClient(
       timestamp: Date.now(),
     })
 
-    log(`Command queued (${commandQueue.length}/${maxQueueSize}):`, type)
+    log(`Command queued (${commandQueue.length}/${queueLimit}):`, type)
   }
 
   /**
@@ -115,6 +151,11 @@ export function createWebViewClient(
       return 0
     }
 
+    synchronizeTrackingPreference(ref)
+    if (isTrackingBlocked) {
+      commandQueue.length = 0
+      return 0
+    }
     log(`Processing ${commandQueue.length} queued commands`)
     let processed = 0
 
@@ -133,12 +174,6 @@ export function createWebViewClient(
           break
         case 'goal':
           ref.trackGoal(command.args[0] as string, command.args[1] as number)
-          break
-        case 'block':
-          ref.blockTrackingForMe()
-          break
-        case 'enable':
-          ref.enableTrackingForMe()
           break
       }
 
@@ -160,6 +195,7 @@ export function createWebViewClient(
     const ref = getWebViewRef()
 
     if (ref?.isReady()) {
+      synchronizeTrackingPreference(ref)
       executor()
     } else {
       queueCommand(type, args)
@@ -167,10 +203,8 @@ export function createWebViewClient(
   }
 
   const client: WebViewFathomClient = {
-    load: (siteId: string, opts?: LoadOptions) => {
-      currentSiteId = siteId
-      isLoaded = true
-      log('Client loaded with site ID:', siteId)
+    load: (siteId: string, loadOptions?: LoadOptions) => {
+      log('Client loaded with site ID:', siteId, loadOptions)
 
       // Process any queued commands now that we're "loaded"
       // (actual WebView readiness is separate)
@@ -217,7 +251,6 @@ export function createWebViewClient(
     },
 
     setSite: (id: string) => {
-      currentSiteId = id
       log('Site ID changed to:', id)
       // Note: The WebView loads with a specific site ID, so changing it
       // at runtime would require reloading the WebView
@@ -229,19 +262,15 @@ export function createWebViewClient(
 
     blockTrackingForMe: () => {
       isTrackingBlocked = true
-      executeOrQueue('block', [], () => {
-        const ref = getWebViewRef()
-        ref?.blockTrackingForMe()
-      })
+      hasTrackingPreference = true
+      commandQueue.length = 0
+      processQueue()
       log('Tracking blocked')
     },
 
     enableTrackingForMe: () => {
       isTrackingBlocked = false
-      executeOrQueue('enable', [], () => {
-        const ref = getWebViewRef()
-        ref?.enableTrackingForMe()
-      })
+      hasTrackingPreference = true
       log('Tracking enabled')
 
       // Process queue when tracking is re-enabled
@@ -257,11 +286,16 @@ export function createWebViewClient(
 
     getQueueLength: () => commandQueue.length,
 
+    setWebViewRef: (webViewRef) => {
+      attachedWebViewRef = webViewRef
+    },
+
     /**
      * Call this when the WebView signals it's ready.
      * This will flush any queued commands.
      */
     setWebViewReady: () => {
+      synchronizedRef = undefined
       log('WebView ready, processing queue')
       processQueue()
     },

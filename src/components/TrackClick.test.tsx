@@ -93,19 +93,19 @@ describe('TrackClick', () => {
   it('should not prevent default when preventDefault is false', () => {
     render(
       <TrackClick eventName="test-event" preventDefault={false}>
-        <a href="/test">Link</a>
+        <button>Click me</button>
       </TrackClick>,
       { wrapper },
     )
 
-    const link = screen.getByText('Link')
+    const button = screen.getByText('Click me')
     const clickEvent = new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
     })
     const preventDefaultSpy = vi.spyOn(clickEvent, 'preventDefault')
 
-    fireEvent(link, clickEvent)
+    fireEvent(button, clickEvent)
 
     expect(preventDefaultSpy).not.toHaveBeenCalled()
     expect(mockTrackEvent).toHaveBeenCalledTimes(1)

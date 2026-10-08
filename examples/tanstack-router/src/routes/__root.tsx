@@ -1,0 +1,30 @@
+import { FathomProvider } from 'react-fathom'
+import { TanStackRouterFathomTrackView } from 'react-fathom/tanstack-router'
+
+import { ExampleLayoutSimple } from '@react-fathom/example-ui'
+import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+
+const siteId = import.meta.env.VITE_FATHOM_SITE_ID || 'DEMO'
+
+// Custom Link component for ExampleLayoutSimple
+function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
+  return <Link to={to}>{children}</Link>
+}
+
+export const Route = createRootRoute({
+  component: () => (
+    <FathomProvider
+      siteId={siteId}
+      clientOptions={{ auto: false }}
+      debug={{ enabled: true }}
+    >
+      <TanStackRouterFathomTrackView />
+      <ExampleLayoutSimple
+        linkComponent={NavLink}
+        frameworkName="TanStack Router"
+      >
+        <Outlet />
+      </ExampleLayoutSimple>
+    </FathomProvider>
+  ),
+})

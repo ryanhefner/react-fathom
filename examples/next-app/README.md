@@ -2,26 +2,30 @@
 
 A complete example of integrating privacy-focused analytics into a **Next.js 13+ App Router** application using `react-fathom`.
 
+## Live Demo
+
+Visit [next-app.react-fathom.com](https://next-app.react-fathom.com) to see this example in action.
+
 ## Why This Approach?
 
 The Next.js App Router introduces React Server Components, which require special handling for client-side analytics. This example shows the recommended pattern using `NextFathomProviderApp`, a pre-configured Client Component that works seamlessly in Server Component layouts.
 
 ## Features Demonstrated
 
-| Feature | Description |
-|---------|-------------|
-| Automatic Pageview Tracking | Tracks page views on every route change |
-| Manual Event Tracking | Track custom events with `useFathom` hook |
-| Goal Tracking | Track conversions and goals |
-| TypeScript Support | Full type safety throughout |
-| Server Component Compatible | Works in `app/layout.tsx` |
+| Feature                     | Description                               |
+| --------------------------- | ----------------------------------------- |
+| Automatic Pageview Tracking | Tracks page views on every route change   |
+| Manual Event Tracking       | Track custom events with `useFathom` hook |
+| Goal Tracking               | Track conversions and goals               |
+| TypeScript Support          | Full type safety throughout               |
+| Server Component Compatible | Works in `app/layout.tsx`                 |
 
 ## Quick Start
 
 ### 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Configure Fathom
@@ -35,7 +39,7 @@ NEXT_PUBLIC_FATHOM_SITE_ID=your-site-id-here
 ### 3. Run the app
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see it in action.
@@ -61,6 +65,7 @@ export default function RootLayout({ children }) {
 ```
 
 `NextFathomProviderApp` automatically:
+
 - Loads the Fathom script
 - Tracks pageviews on route changes
 - Provides the `useFathom` hook to all child components
@@ -77,12 +82,8 @@ export default function MyComponent() {
 
   return (
     <>
-      <button onClick={() => trackEvent('button-click')}>
-        Track Event
-      </button>
-      <button onClick={() => trackGoal('SIGNUP', 0)}>
-        Track Goal
-      </button>
+      <button onClick={() => trackEvent('button-click')}>Track Event</button>
+      <button onClick={() => trackGoal('SIGNUP', 0)}>Track Goal</button>
     </>
   )
 }
@@ -94,6 +95,10 @@ export default function MyComponent() {
 app/
 ├── layout.tsx      # FathomProvider setup
 ├── page.tsx        # Home page with event tracking
+├── docs/
+│   └── page.tsx    # Self-documenting integration guide
+├── events/
+│   └── page.tsx    # Interactive event tracking demo
 ├── about/
 │   └── page.tsx    # Static page (auto pageview tracking)
 └── contact/
@@ -102,6 +107,6 @@ app/
 
 ## Learn More
 
-- [react-fathom Documentation](../../README.md)
+- [react-fathom Documentation](https://react-fathom.dev/docs/nextjs)
 - [Next.js App Router Guide](https://nextjs.org/docs/app)
 - [Fathom Analytics](https://usefathom.com/ref/EKONBS)

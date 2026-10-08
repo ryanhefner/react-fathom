@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "gatsby",
+  "buildCommand": "cd ../.. && pnpm build && pnpm --dir examples/gatsby build",
+  "installCommand": "cd ../.. && corepack enable && pnpm install --frozen-lockfile",
+  "outputDirectory": "public"
+}

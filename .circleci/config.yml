@@ -1,47 +1,107 @@
-# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
 version: 2.1
-
-# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
-# See: https://circleci.com/docs/2.0/orb-intro/
-orbs:
-  node: circleci/node@5.2.0
 
 jobs:
   build-test-package:
     docker:
-      - image: cimg/node:22.15.1
+      - image: cimg/node:24.21.0
     steps:
       - checkout
 
-      # Download and cache dependencies
+      - run:
+          name: Enable pnpm
+          command: corepack enable
+
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
+            - v3-pnpm-dependencies-
 
-      - run: yarn
+      - run:
+          name: Install workspace dependencies
+          command: pnpm install --frozen-lockfile
 
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - ~/.local/share/pnpm/store
+          key: v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
 
-      - run: yarn build
+      - run:
+          name: Audit dependencies
+          command: pnpm security:audit
 
-      # run tests!
-      - run: yarn test:ci
+      - run:
+          name: Check formatting
+          command: pnpm format:check
 
-      # send code coverage info to coveralls
-      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      - run:
+          name: Lint
+          command: pnpm lint
 
-      # send code coverage info to codecov
-      - run: bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Test with coverage
+          command: pnpm test:ci
+
+      - run:
+          name: Verify packed package
+          command: pnpm release:smoke
+
+      - run:
+          name: Build documentation
+          command: pnpm --dir docs build
+
+  build-examples:
+    docker:
+      - image: cimg/node:24.21.0
+    steps:
+      - checkout
+
+      - run:
+          name: Enable pnpm
+          command: corepack enable
+
+      - restore_cache:
+          keys:
+            - v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
+            - v3-pnpm-dependencies-
+
+      - run:
+          name: Install workspace dependencies
+          command: pnpm install --frozen-lockfile
+
+      - save_cache:
+          paths:
+            - ~/.local/share/pnpm/store
+          key: v3-pnpm-dependencies-{{ checksum "pnpm-lock.yaml" }}
+
+      - run:
+          name: Build package
+          command: pnpm build
+
+      - run:
+          name: Build browser examples
+          command: |
+            pnpm --dir examples/next-app build
+            pnpm --dir examples/next-pages build
+            pnpm --dir examples/react build
+            pnpm --dir examples/tanstack-router build
+
+      - run:
+          name: Build Gatsby example
+          command: |
+            GATSBY_TELEMETRY_DISABLED=1 \
+              XDG_CONFIG_HOME=/tmp/react-fathom-gatsby-config \
+              pnpm --dir examples/gatsby build
+
+      - run:
+          name: Validate Expo example
+          command: |
+            pnpm --dir examples/react-native typecheck
+            EXPO_NO_TELEMETRY=1 pnpm --dir examples/react-native build:web
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  test-package: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  test-package:
     jobs:
       - build-test-package
+      - build-examples

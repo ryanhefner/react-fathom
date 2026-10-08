@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { FathomProvider } from '../FathomProvider'
-import { useFathom } from '../hooks/useFathom'
 import { NextFathomTrackViewPages } from './NextFathomTrackViewPages'
+import { useFathom } from '../hooks/useFathom'
 
 // Mock Next.js Pages Router hook
 const mockRouter = {
@@ -29,23 +29,21 @@ vi.mock('next/compat/router', () => ({
   useRouter: () => mockRouter,
 }))
 
-// Mock fathom-client
-vi.mock('fathom-client', () => {
-  const mockFathomDefault = {
-    trackEvent: vi.fn(),
-    trackPageview: vi.fn(),
-    trackGoal: vi.fn(),
-    load: vi.fn(),
-    setSite: vi.fn(),
-    blockTrackingForMe: vi.fn(),
-    enableTrackingForMe: vi.fn(),
-    isTrackingEnabled: vi.fn(() => true),
-  }
+const mockFathomClient = vi.hoisted(() => ({
+  trackEvent: vi.fn(),
+  trackPageview: vi.fn(),
+  trackGoal: vi.fn(),
+  load: vi.fn(),
+  setSite: vi.fn(),
+  blockTrackingForMe: vi.fn(),
+  enableTrackingForMe: vi.fn(),
+  isTrackingEnabled: vi.fn(() => true),
+}))
 
-  return {
-    default: mockFathomDefault,
-  }
-})
+vi.mock('fathom-client', () => ({
+  ...mockFathomClient,
+  default: mockFathomClient,
+}))
 
 describe('NextFathomTrackViewPages', () => {
   beforeEach(() => {
@@ -55,6 +53,8 @@ describe('NextFathomTrackViewPages', () => {
     window.location = {
       href: 'https://example.com/test-page',
       origin: 'https://example.com',
+      pathname: '/test-page',
+      search: '',
     } as Location
   })
 
@@ -160,29 +160,29 @@ describe('NextFathomTrackViewPages', () => {
     expect(trackPageviewSpy).not.toHaveBeenCalled()
   })
 
-  it('should not track when client is not available', async () => {
-    // This test verifies that the component doesn't track when client is not available
-    // The component should gracefully handle missing client
-    try {
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <FathomProvider siteId="TEST_SITE_ID">
-          <NextFathomTrackViewPages />
-          {children}
-        </FathomProvider>
+  it('should use the default Fathom client when no client is provided', async () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider siteId="TEST_SITE_ID">
+        <NextFathomTrackViewPages />
+        {children}
+      </FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    await waitFor(() => {
+      expect(mockFathomClient.load).toHaveBeenCalledWith(
+        'TEST_SITE_ID',
+        undefined,
       )
-
-      renderHook(() => useFathom(), { wrapper })
-
-      await waitFor(() => {
-        expect(mockRouter.events.on).not.toHaveBeenCalled()
+      expect(mockFathomClient.trackPageview).toHaveBeenCalledWith({
+        url: 'https://example.com/test-page',
       })
-
-      // Component should not crash and should not track
-      expect(true).toBe(true)
-    } catch (error) {
-      // If there's an error with Next.js hooks, skip this test
-      expect(error).toBeDefined()
-    }
+      expect(mockRouter.events.on).toHaveBeenCalledWith(
+        'routeChangeComplete',
+        expect.any(Function),
+      )
+    })
   })
 
   it('should clean up event listeners on unmount', async () => {
@@ -217,6 +217,99 @@ describe('NextFathomTrackViewPages', () => {
       'routeChangeComplete',
       expect.any(Function),
     )
+  })
+
+  it('should apply transformUrl to initial pageview', async () => {
+    // Set up window.location with a token parameter
+    delete (window as { location?: unknown }).location
+    window.location = {
+      href: 'https://example.com/test-page?token=secret&page=1',
+      origin: 'https://example.com',
+      pathname: '/test-page',
+      search: '?token=secret&page=1',
+    } as Location
+
+    const trackPageviewSpy = vi.fn()
+    const client = {
+      trackEvent: vi.fn(),
+      trackPageview: trackPageviewSpy,
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const transformUrl = (url: string) => {
+      const u = new URL(url)
+      u.searchParams.delete('token')
+      return u.toString()
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={client} siteId="TEST_SITE_ID">
+        <NextFathomTrackViewPages transformUrl={transformUrl} />
+        {children}
+      </FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    await waitFor(() => {
+      expect(trackPageviewSpy).toHaveBeenCalled()
+    })
+
+    // URL should have token param stripped
+    expect(trackPageviewSpy).toHaveBeenCalledWith({
+      url: 'https://example.com/test-page?page=1',
+    })
+  })
+
+  it('should apply transformUrl to route change pageviews', async () => {
+    const trackPageviewSpy = vi.fn()
+    const client = {
+      trackEvent: vi.fn(),
+      trackPageview: trackPageviewSpy,
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const transformUrl = (url: string) => {
+      const u = new URL(url)
+      u.searchParams.delete('token')
+      return u.toString()
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={client} siteId="TEST_SITE_ID">
+        <NextFathomTrackViewPages transformUrl={transformUrl} />
+        {children}
+      </FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    await waitFor(() => {
+      expect(mockRouter.events.on).toHaveBeenCalled()
+    })
+
+    // Get the handler that was registered
+    const onCall = mockRouter.events.on.mock.calls.find(
+      (call) => call[0] === 'routeChangeComplete',
+    )
+    const handler = onCall?.[1]
+
+    // Simulate a route change with a token parameter
+    handler?.('/new-page?token=secret&id=123')
+
+    expect(trackPageviewSpy).toHaveBeenLastCalledWith({
+      url: 'https://example.com/new-page?id=123',
+    })
   })
 
   it('should have displayName', () => {

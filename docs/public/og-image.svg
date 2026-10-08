@@ -1,0 +1,58 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg1" cx="25%" cy="25%" r="50%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <radialGradient id="bg2" cx="75%" cy="75%" r="50%">
+      <stop offset="0%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect width="1200" height="630" fill="url(#bg1)"/>
+  <rect width="1200" height="630" fill="url(#bg2)"/>
+
+  <!-- React Logo -->
+  <g transform="translate(480, 200)">
+    <circle cx="0" cy="0" r="12" fill="#61dafb"/>
+    <g stroke="#61dafb" stroke-width="6" fill="none">
+      <ellipse rx="66" ry="25.2"/>
+      <ellipse rx="66" ry="25.2" transform="rotate(60)"/>
+      <ellipse rx="66" ry="25.2" transform="rotate(120)"/>
+    </g>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="230" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="white" letter-spacing="-1">
+    <tspan x="560" dx="80">react-fathom</tspan>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="310" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#a1a1aa">
+    Privacy-focused analytics for React
+  </text>
+
+  <!-- Framework Tags -->
+  <g transform="translate(600, 400)">
+    <rect x="-540" y="-20" width="100" height="40" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <text x="-490" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#e4e4e7">React</text>
+
+    <rect x="-420" y="-20" width="100" height="40" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <text x="-370" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#e4e4e7">Next.js</text>
+
+    <rect x="-300" y="-20" width="140" height="40" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <text x="-230" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#e4e4e7">React Router</text>
+
+    <rect x="-140" y="-20" width="100" height="40" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <text x="-90" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#e4e4e7">Gatsby</text>
+
+    <rect x="-20" y="-20" width="110" height="40" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <text x="35" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#e4e4e7">TanStack</text>
+
+    <rect x="110" y="-20" width="140" height="40" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <text x="180" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#e4e4e7">React Native</text>
+  </g>
+</svg>

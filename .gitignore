@@ -5,6 +5,7 @@ node_modules
 coverage
 dist
 types
+*.tsbuildinfo
 
 # Include Rollup config
 !rollup.config.js
@@ -12,3 +13,16 @@ types
 
 # Misc
 .DS_Store
+
+# Local credentials and linked-package development
+.env
+.env.*
+!.env.example
+!.env.*.example
+.npmrc
+.yalc/
+yalc.lock
+
+# Framework output
+.next/
+out/

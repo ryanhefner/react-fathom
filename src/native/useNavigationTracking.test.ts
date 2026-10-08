@@ -152,6 +152,37 @@ describe('useNavigationTracking', () => {
     expect(mockTrackPageview).toHaveBeenCalledTimes(1)
   })
 
+  it('should track parameter changes on the same route when params are included', async () => {
+    const navigationRef = createMockNavigationRef('Profile', { userId: '1' })
+
+    renderHook(
+      () =>
+        useNavigationTracking({
+          navigationRef: navigationRef as any,
+          includeParams: true,
+        }),
+      { wrapper: createWrapper() },
+    )
+
+    await waitFor(() => {
+      expect(mockTrackPageview).toHaveBeenCalledWith({
+        url: '/Profile?userId=1',
+      })
+    })
+
+    mockTrackPageview.mockClear()
+    navigationRef.current.__setRoute('Profile', { userId: '2' })
+
+    act(() => {
+      stateChangeCallback?.()
+    })
+
+    expect(mockTrackPageview).toHaveBeenCalledWith({
+      url: '/Profile?userId=2',
+      referrer: '/Profile?userId=1',
+    })
+  })
+
   it('should transform route names when transformRouteName is provided', async () => {
     const navigationRef = createMockNavigationRef('Home')
 
@@ -371,6 +402,28 @@ describe('useNavigationTracking', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 50))
 
+    expect(mockTrackPageview).not.toHaveBeenCalled()
+  })
+
+  it('should ignore malformed navigation state', async () => {
+    const navigationRef = {
+      current: {
+        getRootState: () => ({ index: 2, routes: [] }),
+        addListener: vi.fn(() => vi.fn()),
+      },
+    }
+
+    expect(() =>
+      renderHook(
+        () =>
+          useNavigationTracking({
+            navigationRef,
+          }),
+        { wrapper: createWrapper() },
+      ),
+    ).not.toThrow()
+
+    await new Promise((resolve) => setTimeout(resolve, 10))
     expect(mockTrackPageview).not.toHaveBeenCalled()
   })
 

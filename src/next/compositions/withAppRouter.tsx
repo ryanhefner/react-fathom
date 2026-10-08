@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import type { ComponentType } from 'react'
 
-import { FathomProvider } from '../../FathomProvider'
-import type { FathomProviderProps } from '../../types'
-import { NextFathomTrackViewApp } from '../NextFathomTrackViewApp'
-import type { NextFathomProviderProps } from '../types'
+import { FathomProvider } from '../../FathomProvider.js'
+import type { FathomProviderProps } from '../../types.js'
+import { NextFathomTrackViewApp } from '../NextFathomTrackViewApp.js'
+import { routerClientOptions } from '../router-options.js'
+import type { NextFathomProviderProps } from '../types.js'
 
 /**
  * Higher-order component that wraps your Next.js App Router app with FathomProvider
@@ -26,7 +27,7 @@ import type { NextFathomProviderProps } from '../types'
  * export default withAppRouter(RootLayout, {
  *   siteId: 'YOUR_SITE_ID',
  *   clientOptions: {
- *     spa: 'auto',
+ *     honorDNT: true,
  *   },
  * })
  * ```
@@ -37,10 +38,21 @@ const withAppRouter = <P extends object>(
 ): ComponentType<P> => {
   const WithAppRouter: React.FC<P> = (props) => {
     // Extract disableAutoTrack for the tracking component
-    const { disableAutoTrack, ...fathomProviderProps } = providerProps ?? {}
+    const {
+      disableAutoTrack = false,
+      clientOptions,
+      ...fathomProviderProps
+    } = providerProps ?? {}
+    const resolvedOptions = useMemo(
+      () => routerClientOptions(clientOptions, disableAutoTrack),
+      [clientOptions, disableAutoTrack],
+    )
 
     return (
-      <FathomProvider {...(fathomProviderProps as FathomProviderProps)}>
+      <FathomProvider
+        {...(fathomProviderProps as FathomProviderProps)}
+        clientOptions={resolvedOptions}
+      >
         <NextFathomTrackViewApp disableAutoTrack={disableAutoTrack} />
         <Component {...props} />
       </FathomProvider>

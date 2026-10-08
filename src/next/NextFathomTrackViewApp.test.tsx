@@ -2,11 +2,11 @@ import React from 'react'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { renderHook, waitFor } from '@testing-library/react'
+import { render, renderHook, waitFor } from '@testing-library/react'
 
 import { FathomProvider } from '../FathomProvider'
-import { useFathom } from '../hooks/useFathom'
 import { NextFathomTrackViewApp } from './NextFathomTrackViewApp'
+import { useFathom } from '../hooks/useFathom'
 
 // Mock Next.js App Router hooks
 const mockPathname = '/test-page'
@@ -17,27 +17,64 @@ vi.mock('next/navigation', () => ({
   useSearchParams: vi.fn(() => mockSearchParams),
 }))
 
-// Mock fathom-client
-vi.mock('fathom-client', () => {
-  const mockFathomDefault = {
-    trackEvent: vi.fn(),
-    trackPageview: vi.fn(),
-    trackGoal: vi.fn(),
-    load: vi.fn(),
-    setSite: vi.fn(),
-    blockTrackingForMe: vi.fn(),
-    enableTrackingForMe: vi.fn(),
-    isTrackingEnabled: vi.fn(() => true),
-  }
+const mockFathomClient = vi.hoisted(() => ({
+  trackEvent: vi.fn(),
+  trackPageview: vi.fn(),
+  trackGoal: vi.fn(),
+  load: vi.fn(),
+  setSite: vi.fn(),
+  blockTrackingForMe: vi.fn(),
+  enableTrackingForMe: vi.fn(),
+  isTrackingEnabled: vi.fn(() => true),
+}))
 
-  return {
-    default: mockFathomDefault,
-  }
-})
+vi.mock('fathom-client', () => ({
+  ...mockFathomClient,
+  default: mockFathomClient,
+}))
 
 describe('NextFathomTrackViewApp', () => {
-  beforeEach(() => {
+  it('tracks once under Strict Mode and ignores same-route provider rerenders', async () => {
+    const view = () => (
+      <React.StrictMode>
+        <FathomProvider client={mockFathomClient} debug={{ enabled: false }}>
+          <NextFathomTrackViewApp transformUrl={(url) => url} />
+        </FathomProvider>
+      </React.StrictMode>
+    )
+    const { rerender } = render(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(1)
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(1)
+    const navigation = await import('next/navigation')
+    vi.mocked(navigation.usePathname).mockReturnValue('/second')
+    rerender(view())
+    vi.mocked(navigation.usePathname).mockReturnValue(mockPathname)
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(3)
+  })
+  it('counts returning from a URL suppressed by transformUrl', async () => {
+    const view = () => (
+      <FathomProvider client={mockFathomClient}>
+        <NextFathomTrackViewApp
+          transformUrl={(url) => (url.includes('/private') ? null : url)}
+        />
+      </FathomProvider>
+    )
+    const { rerender } = render(view())
+    const navigation = await import('next/navigation')
+    vi.mocked(navigation.usePathname).mockReturnValue('/private')
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(1)
+    vi.mocked(navigation.usePathname).mockReturnValue(mockPathname)
+    rerender(view())
+    expect(mockFathomClient.trackPageview).toHaveBeenCalledTimes(2)
+  })
+  beforeEach(async () => {
     vi.clearAllMocks()
+    const nextNavigation = await import('next/navigation')
+    vi.mocked(nextNavigation.usePathname).mockReturnValue(mockPathname)
+    vi.mocked(nextNavigation.useSearchParams).mockReturnValue(mockSearchParams)
     delete (window as { location?: unknown }).location
     window.location = {
       href: 'https://example.com/test-page?foo=bar',
@@ -188,28 +225,25 @@ describe('NextFathomTrackViewApp', () => {
     expect(trackPageviewSpy).not.toHaveBeenCalled()
   })
 
-  it('should not track when client is not available', async () => {
-    // This test verifies that the component doesn't track when client is not available
-    // The component should gracefully handle missing client
-    try {
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <FathomProvider siteId="TEST_SITE_ID">
-          <NextFathomTrackViewApp />
-          {children}
-        </FathomProvider>
+  it('should use the default Fathom client when no client is provided', async () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider siteId="TEST_SITE_ID">
+        <NextFathomTrackViewApp />
+        {children}
+      </FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    await waitFor(() => {
+      expect(mockFathomClient.load).toHaveBeenCalledWith(
+        'TEST_SITE_ID',
+        undefined,
       )
-
-      renderHook(() => useFathom(), { wrapper })
-
-      // Wait a bit to ensure no tracking happens
-      await new Promise((resolve) => setTimeout(resolve, 100))
-
-      // Component should not crash and should not track
-      expect(true).toBe(true)
-    } catch (error) {
-      // If there's an error with Next.js hooks, skip this test
-      expect(error).toBeDefined()
-    }
+      expect(mockFathomClient.trackPageview).toHaveBeenCalledWith({
+        url: 'https://example.com/test-page?foo=bar',
+      })
+    })
   })
 
   it('should use trackPageview from context which merges defaultPageviewOptions', async () => {
@@ -257,6 +291,50 @@ describe('NextFathomTrackViewApp', () => {
         url: expect.stringContaining('/test-page'),
       }),
     )
+  })
+
+  it('should apply transformUrl to tracked URL', async () => {
+    const trackPageviewSpy = vi.fn()
+    const client = {
+      trackEvent: vi.fn(),
+      trackPageview: trackPageviewSpy,
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+
+    const nextNavigation = await import('next/navigation')
+    vi.mocked(nextNavigation.usePathname).mockReturnValue('/test-page')
+    vi.mocked(nextNavigation.useSearchParams).mockReturnValue(
+      new URLSearchParams('?token=secret&page=1'),
+    )
+
+    const transformUrl = (url: string) => {
+      const u = new URL(url)
+      u.searchParams.delete('token')
+      return u.toString()
+    }
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={client} siteId="TEST_SITE_ID">
+        <NextFathomTrackViewApp transformUrl={transformUrl} />
+        {children}
+      </FathomProvider>
+    )
+
+    renderHook(() => useFathom(), { wrapper })
+
+    await waitFor(() => {
+      expect(trackPageviewSpy).toHaveBeenCalled()
+    })
+
+    // URL should have token param stripped
+    expect(trackPageviewSpy).toHaveBeenCalledWith({
+      url: 'https://example.com/test-page?page=1',
+    })
   })
 
   it('should have displayName', () => {
