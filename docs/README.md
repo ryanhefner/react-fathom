@@ -1,5 +1,13 @@
 # Documentation site
 
+## LLM documentation
+
+The build exports `/llms.txt` (a documentation index) and `/llms-full.txt`
+(all published Markdown/MDX source content) into `out/`. They use the same docs
+manifest as the site and exclude draft and hidden pages. Index links point to
+the canonical documentation pages; no per-page Markdown endpoint is assumed.
+Rebuild the site after editing docs and verify both text URLs after deployment.
+
 ## Open Graph image capture
 
 `/og-image` is a dedicated **1200 × 630** page for OpenGraphs screenshots.
