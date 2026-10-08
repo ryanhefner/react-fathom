@@ -24,7 +24,7 @@ describe('shared site footer', () => {
     const footer = screen.getByRole('contentinfo', {
       name: 'Site credits and license',
     })
-    expect(footer).toHaveTextContent('© 2025–2026 Ryan Hefner.')
+    expect(footer).toHaveTextContent('© 2025–2026 — Ryan Hefner')
     expect(screen.getByRole('link', { name: 'Ryan Hefner' })).toHaveAttribute(
       'href',
       'https://www.ryanhefner.com',
@@ -42,10 +42,11 @@ describe('shared site footer', () => {
   it('mounts once globally and removes the redundant article-level footer', () => {
     const layout = readFileSync('docs/app/site-experience.tsx', 'utf8')
     expect(layout.match(/<SiteFooter\b/g)).toHaveLength(1)
-    expect(layout.indexOf('<SiteFooter')).toBeLessThan(
-      layout.indexOf('<CommuneFooter'),
+    expect(layout).toMatch(
+      /className="site-wrapper"[\s\S]*className="site-content"[\s\S]*\{children\}[\s\S]*<SiteFooter[^>]+\/>[\s\S]*<\/Box>\s*<CommuneFooter/,
     )
     const article = readFileSync('docs/components/docs/DocsLayout.tsx', 'utf8')
     expect(article).not.toMatch(/as="footer"|© Ryan Hefner/)
+    expect(article).not.toContain('minH="100vh"')
   })
 })

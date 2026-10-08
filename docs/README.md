@@ -7,7 +7,7 @@ It uses the site's Suisse font kit and Chakra theme, with a fixed black/white
 palette independent of system color mode. Navigation, footers, analytics, and
 the event stream are intentionally absent.
 
-Capture `https://react-fathom.com/og-image` after deployment, using a 1200 × 630
+Capture `https://react-fathom.dev/og-image` after deployment, using a 1200 × 630
 viewport. The local preview is `http://react-fathom.test/og-image`.
 A hosted capture service needs a publicly reachable URL; `.test` domains are
 for local review only. Wait for `[data-og-ready="true"]` before capturing (or

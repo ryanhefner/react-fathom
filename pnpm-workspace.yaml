@@ -3,8 +3,6 @@ packages:
   - examples/*
 autoInstallPeers: false
 overrides:
-  '@chakra-docs/core': file:docs/.yalc/@chakra-docs/core
-  '@chakra-docs/search': file:docs/.yalc/@chakra-docs/search
   '@types/react': 19.3.0
   '@types/react-dom': 19.2.3
   js-yaml: 3.15.2
@@ -26,6 +24,12 @@ minimumReleaseAgeExclude:
   - '@next/swc-win32-arm64-msvc@16.3.7'
   - '@next/swc-win32-x64-msvc@16.3.7'
   - next@16.3.7
+  - '@chakra-docs/chakra@0.3.0'
+  - '@chakra-docs/core@0.3.0'
+  - '@chakra-docs/next@0.3.0'
+  - '@chakra-docs/search@0.3.0'
+  - '@chakra-docs/shiki@0.3.0'
+  - '@chakra-docs/source-filesystem@0.3.0'
 allowBuilds:
   '@parcel/watcher': true
   core-js: true

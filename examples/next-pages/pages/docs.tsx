@@ -167,7 +167,7 @@ NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID`}</code>
           <ul>
             <li>
               <a
-                href="https://react-fathom.com/docs/nextjs"
+                href="https://react-fathom.dev/docs/nextjs"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: '#0070f3' }}
@@ -177,7 +177,7 @@ NEXT_PUBLIC_FATHOM_SITE_ID=YOUR_SITE_ID`}</code>
             </li>
             <li>
               <a
-                href="https://react-fathom.com/docs/api"
+                href="https://react-fathom.dev/docs/api"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: '#0070f3' }}

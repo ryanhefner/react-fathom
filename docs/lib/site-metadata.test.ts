@@ -4,7 +4,7 @@ import { createPageMetadata, resolveSiteUrl } from './site-metadata'
 
 describe('site metadata', () => {
   it('uses one normalized public origin, with a server-only fallback', () => {
-    expect(resolveSiteUrl()).toBe('https://react-fathom.com')
+    expect(resolveSiteUrl()).toBe('https://react-fathom.dev')
     expect(
       resolveSiteUrl('https://public.test/path/', 'https://server.test'),
     ).toBe('https://public.test')

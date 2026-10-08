@@ -6,7 +6,7 @@
 
 **Privacy-focused analytics for React, Next.js, and React Native.**
 
-📖 **[Full Documentation](https://react-fathom.com)** · [API Reference](https://react-fathom.com/docs/api/providers) · [Troubleshooting](https://react-fathom.com/docs/troubleshooting)
+📖 **[Full Documentation](https://react-fathom.dev)** · [API Reference](https://react-fathom.dev/docs/api/providers) · [Troubleshooting](https://react-fathom.dev/docs/troubleshooting)
 
 ## Quick Start
 
@@ -87,7 +87,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-📖 [Full Next.js guide](https://react-fathom.com/docs/nextjs)
+📖 [Full Next.js guide](https://react-fathom.dev/docs/nextjs)
 
 ### Next.js Pages Router
 
@@ -106,7 +106,7 @@ function MyApp({ Component, pageProps }) {
 }
 ```
 
-📖 [Full Next.js guide](https://react-fathom.com/docs/nextjs)
+📖 [Full Next.js guide](https://react-fathom.dev/docs/nextjs)
 
 ### React Router / Remix
 
@@ -128,7 +128,7 @@ function App() {
 }
 ```
 
-📖 [Full React Router guide](https://react-fathom.com/docs/react-router)
+📖 [Full React Router guide](https://react-fathom.dev/docs/react-router)
 
 ### Gatsby
 
@@ -145,7 +145,7 @@ export const wrapRootElement = ({ element }) => (
 )
 ```
 
-📖 [Full Gatsby guide](https://react-fathom.com/docs/gatsby)
+📖 [Full Gatsby guide](https://react-fathom.dev/docs/gatsby)
 
 ### TanStack Router
 
@@ -165,7 +165,7 @@ export const Route = createRootRoute({
 })
 ```
 
-📖 [Full TanStack Router guide](https://react-fathom.com/docs/tanstack-router)
+📖 [Full TanStack Router guide](https://react-fathom.dev/docs/tanstack-router)
 
 ### Hooks
 
@@ -199,7 +199,7 @@ function MyComponent() {
 }
 ```
 
-📖 [Hooks API reference](https://react-fathom.com/docs/api/hooks)
+📖 [Hooks API reference](https://react-fathom.dev/docs/api/hooks)
 
 ### Declarative Components
 
@@ -223,7 +223,7 @@ function MyPage() {
 }
 ```
 
-📖 [Components API reference](https://react-fathom.com/docs/api/components)
+📖 [Components API reference](https://react-fathom.dev/docs/api/components)
 
 ### React Native
 
@@ -243,7 +243,7 @@ function App() {
 }
 ```
 
-📖 [Full React Native guide](https://react-fathom.com/docs/react-native)
+📖 [Full React Native guide](https://react-fathom.dev/docs/react-native)
 
 ### Debug Mode
 
@@ -306,7 +306,7 @@ Debug mode does not block actual tracking—events are still sent to Fathom.
 | `<TrackClick>`    | Track event on click                      |
 | `<TrackVisible>`  | Track when visible (IntersectionObserver) |
 
-📖 [Full API Reference](https://react-fathom.com/docs/api/providers)
+📖 [Full API Reference](https://react-fathom.dev/docs/api/providers)
 
 ## Common Issues
 
@@ -323,20 +323,20 @@ Debug mode does not block actual tracking—events are still sent to Fathom.
 <FathomProvider siteId="..." clientOptions={{ auto: false }}>
 ```
 
-📖 [Full Troubleshooting Guide](https://react-fathom.com/docs/troubleshooting)
+📖 [Full Troubleshooting Guide](https://react-fathom.dev/docs/troubleshooting)
 
 ## Documentation
 
-- 📖 [Getting Started](https://react-fathom.com/docs/getting-started)
-- ⚛️ [React Guide](https://react-fathom.com/docs/react)
-- 🛤️ [React Router Guide](https://react-fathom.com/docs/react-router)
-- 🏠 [Gatsby Guide](https://react-fathom.com/docs/gatsby)
-- 🧭 [TanStack Router Guide](https://react-fathom.com/docs/tanstack-router)
-- ⚡ [Next.js Guide](https://react-fathom.com/docs/nextjs)
-- 📱 [React Native Guide](https://react-fathom.com/docs/react-native)
-- 📚 [API Reference](https://react-fathom.com/docs/api/providers)
-- 🔧 [Troubleshooting](https://react-fathom.com/docs/troubleshooting)
-- 🤝 [Contributing](https://react-fathom.com/docs/contributing)
+- 📖 [Getting Started](https://react-fathom.dev/docs/getting-started)
+- ⚛️ [React Guide](https://react-fathom.dev/docs/react)
+- 🛤️ [React Router Guide](https://react-fathom.dev/docs/react-router)
+- 🏠 [Gatsby Guide](https://react-fathom.dev/docs/gatsby)
+- 🧭 [TanStack Router Guide](https://react-fathom.dev/docs/tanstack-router)
+- ⚡ [Next.js Guide](https://react-fathom.dev/docs/nextjs)
+- 📱 [React Native Guide](https://react-fathom.dev/docs/react-native)
+- 📚 [API Reference](https://react-fathom.dev/docs/api/providers)
+- 🔧 [Troubleshooting](https://react-fathom.dev/docs/troubleshooting)
+- 🤝 [Contributing](https://react-fathom.dev/docs/contributing)
 
 ## License
 

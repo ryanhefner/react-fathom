@@ -9,12 +9,12 @@
     "start": "next start"
   },
   "dependencies": {
-    "@chakra-docs/chakra": "file:.yalc/@chakra-docs/chakra",
-    "@chakra-docs/core": "file:.yalc/@chakra-docs/core",
-    "@chakra-docs/next": "file:.yalc/@chakra-docs/next",
-    "@chakra-docs/search": "file:.yalc/@chakra-docs/search",
-    "@chakra-docs/shiki": "file:.yalc/@chakra-docs/shiki",
-    "@chakra-docs/source-filesystem": "file:.yalc/@chakra-docs/source-filesystem",
+    "@chakra-docs/chakra": "0.3.0",
+    "@chakra-docs/core": "0.3.0",
+    "@chakra-docs/next": "0.3.0",
+    "@chakra-docs/search": "0.3.0",
+    "@chakra-docs/shiki": "0.3.0",
+    "@chakra-docs/source-filesystem": "0.3.0",
     "@chakra-ui/react": "^3.29.0",
     "@emotion/react": "^11.13.0",
     "@postkit/react": "0.2.0",

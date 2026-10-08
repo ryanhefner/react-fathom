@@ -27,9 +27,14 @@ export function Navbar({ searchRecords }: NavbarProps) {
     <Box as="header" css={styles.root}>
       <Container css={styles.container}>
         <Flex justify="space-between" align="center" h="full">
-          <SiteLink href="/" css={styles.brand}>
-            react-fathom
-          </SiteLink>
+          <Flex css={styles.brandGroup}>
+            <SiteLink href="/" css={styles.brand}>
+              react-fathom
+            </SiteLink>
+            <Box as="span" css={styles.version}>
+              v0.3.0
+            </Box>
+          </Flex>
           <HStack gap={2}>
             <DocsSiteSearch records={searchRecords} />
             <Tooltip.Root>

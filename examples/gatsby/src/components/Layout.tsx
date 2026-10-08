@@ -79,7 +79,7 @@ export function Layout({ children }: LayoutProps) {
                 </Text>
                 <HStack gap={4} fontSize="xs">
                   <Link
-                    href="https://react-fathom.com/docs"
+                    href="https://react-fathom.dev/docs"
                     color="fg.muted"
                     _hover={{ color: 'fg' }}
                   >

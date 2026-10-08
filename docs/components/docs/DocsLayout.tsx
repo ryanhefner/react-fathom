@@ -14,6 +14,7 @@ import {
 import type { DocsNavItem, DocsPage, DocsSearchRecord } from '@chakra-docs/core'
 import { Box, Flex, Text } from '@chakra-ui/react'
 
+import { DocsMobileControls } from './DocsMobileControls'
 import { DocsSiteSearch } from './DocsSiteSearch'
 import { Navbar } from './Navbar'
 
@@ -96,24 +97,31 @@ export function DocsLayout({
   )
 
   return (
-    <Box minH="100vh">
+    <Box>
       <Navbar searchRecords={searchRecords} />
       <ChakraDocsLayout
         headings={page.headings}
-        mobileNavigationProps={{
-          onOpenChange: ({ open }) =>
-            trackEvent(
-              `docs-mobile-navigation-${open ? 'expand' : 'collapse'}`,
-            ),
-          search: <DocsSiteSearch records={searchRecords} />,
-          title: 'Browse documentation',
-        }}
+        mobileNavigation={false}
+        mobileToc={false}
         nav={nav}
         onSidebarExpandedChange={handleSidebarExpandedChange}
         page={page}
         sidebarCollapsible
         sidebarDefaultExpanded="active"
       >
+        <DocsMobileControls
+          nav={nav}
+          page={page}
+          search={<DocsSiteSearch records={searchRecords} />}
+          sidebarProps={{
+            collapsible: true,
+            defaultExpanded: 'active',
+            onExpandedChange: handleSidebarExpandedChange,
+          }}
+          onOpenChange={({ open }) =>
+            trackEvent(`docs-mobile-navigation-${open ? 'expand' : 'collapse'}`)
+          }
+        />
         <DocsArticle
           breadcrumbs={
             breadcrumbs || pageActions ? (

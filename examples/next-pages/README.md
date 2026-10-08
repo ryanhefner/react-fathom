@@ -105,6 +105,6 @@ If you're planning to migrate to the App Router, check out the [next-app example
 
 ## Learn More
 
-- [react-fathom Documentation](https://react-fathom.com/docs/nextjs)
+- [react-fathom Documentation](https://react-fathom.dev/docs/nextjs)
 - [Next.js Pages Router Guide](https://nextjs.org/docs/pages)
 - [Fathom Analytics](https://usefathom.com/ref/EKONBS)

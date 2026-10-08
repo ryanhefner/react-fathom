@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export function resolveSiteUrl(publicUrl?: string, serverUrl?: string): string {
-  const url = new URL(publicUrl || serverUrl || 'https://react-fathom.com')
+  const url = new URL(publicUrl || serverUrl || 'https://react-fathom.dev')
   if (
     !['https:', 'http:'].includes(url.protocol) ||
     url.username ||

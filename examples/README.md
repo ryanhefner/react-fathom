@@ -85,6 +85,6 @@ Each example includes self-documenting documentation and demonstrates:
 
 ## Learn More
 
-- [react-fathom Documentation](https://react-fathom.com/docs)
+- [react-fathom Documentation](https://react-fathom.dev/docs)
 - [Fathom Analytics Documentation](https://usefathom.com/docs)
 - [Next.js Documentation](https://nextjs.org/docs)

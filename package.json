@@ -23,7 +23,7 @@
     "privacy",
     "tree-shakeable"
   ],
-  "homepage": "https://github.com/ryanhefner/react-fathom#readme",
+  "homepage": "https://react-fathom.dev",
   "engines": {
     "node": ">=20"
   },

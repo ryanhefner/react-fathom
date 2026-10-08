@@ -107,6 +107,6 @@ app/
 
 ## Learn More
 
-- [react-fathom Documentation](https://react-fathom.com/docs/nextjs)
+- [react-fathom Documentation](https://react-fathom.dev/docs/nextjs)
 - [Next.js App Router Guide](https://nextjs.org/docs/app)
 - [Fathom Analytics](https://usefathom.com/ref/EKONBS)

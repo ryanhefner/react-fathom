@@ -73,7 +73,7 @@ export function OgImageCard({
           <Text css={styles.description}>{description}</Text>
         </Box>
         <Flex css={styles.bottom}>
-          <Text css={styles.address}>react-fathom.com</Text>
+          <Text css={styles.address}>react-fathom.dev</Text>
           <Flex css={styles.credit}>
             <Text>By</Text>
             <Image

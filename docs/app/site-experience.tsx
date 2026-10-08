@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 
 import { isOgImageCapturePath } from '@/lib/og-image'
-import { ChakraProvider } from '@chakra-ui/react'
+import { Box, ChakraProvider } from '@chakra-ui/react'
 
 import { Provider } from './provider'
 import { siteSystem } from './system'
@@ -28,8 +28,17 @@ export function SiteExperience({
   }
   return (
     <Provider siteUrl={siteUrl}>
-      {children}
-      <SiteFooter year={year} />
+      <Box
+        className="site-wrapper"
+        display="flex"
+        flexDirection="column"
+        minH="100dvh"
+      >
+        <Box className="site-content" flexGrow="1">
+          {children}
+        </Box>
+        <SiteFooter year={year} />
+      </Box>
       <CommuneFooter />
     </Provider>
   )

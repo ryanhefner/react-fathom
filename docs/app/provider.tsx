@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useMemo, type ReactNode } from 'react'
+import { Suspense, useEffect, useMemo, type ReactNode } from 'react'
 
 import { LuCheck, LuCopy } from 'react-icons/lu'
 
@@ -55,6 +55,7 @@ function DocsIntegrationProvider({
 }) {
   const { trackEvent } = useFathom()
   const analytics = useMemo(() => createDocsAnalytics(trackEvent), [trackEvent])
+  useEffect(() => analytics.cancelPendingSearchTracking, [analytics])
   const config = useMemo(
     () => ({
       analytics,

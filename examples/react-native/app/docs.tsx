@@ -126,14 +126,14 @@ function App() {
         <Text style={styles.sectionTitle}>Learn More</Text>
         <TouchableOpacity
           onPress={() =>
-            Linking.openURL('https://react-fathom.com/docs/react-native')
+            Linking.openURL('https://react-fathom.dev/docs/react-native')
           }
         >
           <Text style={styles.link}>Full Documentation →</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            Linking.openURL('https://react-fathom.com/docs/api/native')
+            Linking.openURL('https://react-fathom.dev/docs/api/native')
           }
         >
           <Text style={styles.link}>API Reference →</Text>

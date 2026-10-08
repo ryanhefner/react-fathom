@@ -101,6 +101,6 @@ function App() {
 
 ## Learn More
 
-- [react-fathom Documentation](https://react-fathom.com/docs/react-native)
+- [react-fathom Documentation](https://react-fathom.dev/docs/react-native)
 - [Fathom Analytics](https://usefathom.com/ref/EKONBS)
 - [Expo Documentation](https://docs.expo.dev)

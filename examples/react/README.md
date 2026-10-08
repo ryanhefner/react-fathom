@@ -60,5 +60,5 @@ src/
 
 ## Learn More
 
-- [react-fathom Documentation](https://react-fathom.com/docs)
+- [react-fathom Documentation](https://react-fathom.dev/docs)
 - [Fathom Analytics](https://usefathom.com/ref/EKONBS)

@@ -192,10 +192,10 @@ function CTAButton() {
           Learn More
         </Heading>
         <VStack align="stretch" gap={2}>
-          <Link href="https://react-fathom.com/docs" color="blue.500">
+          <Link href="https://react-fathom.dev/docs" color="blue.500">
             Full Documentation →
           </Link>
-          <Link href="https://react-fathom.com/docs/api" color="blue.500">
+          <Link href="https://react-fathom.dev/docs/api" color="blue.500">
             API Reference →
           </Link>
           <Link

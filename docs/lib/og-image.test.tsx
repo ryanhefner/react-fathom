@@ -74,6 +74,7 @@ describe('Open Graph capture page', () => {
       OG_IMAGE_DEFAULTS.title,
     )
     expect(screen.getByText(OG_IMAGE_DEFAULTS.description)).toBeInTheDocument()
+    expect(screen.getByText('react-fathom.dev')).toBeInTheDocument()
     expect(
       screen.getByRole('img', { name: 'Commune Software' }),
     ).toHaveAttribute('src', '/assets/commune-software-wordmark.svg')
@@ -158,7 +159,7 @@ describe('Open Graph capture page', () => {
     ]) {
       navigation.pathname = pathname
       render(
-        <SiteExperience siteUrl="https://react-fathom.com" year={2026}>
+        <SiteExperience siteUrl="https://react-fathom.dev" year={2026}>
           <OgImageCard />
         </SiteExperience>,
       )
@@ -174,7 +175,7 @@ describe('Open Graph capture page', () => {
   it('preserves the regular provider and shared footers on ordinary routes', () => {
     navigation.pathname = '/withoss'
     render(
-      <SiteExperience siteUrl="https://react-fathom.com" year={2026}>
+      <SiteExperience siteUrl="https://react-fathom.dev" year={2026}>
         <p>Ordinary page</p>
       </SiteExperience>,
     )
@@ -183,6 +184,24 @@ describe('Open Graph capture page', () => {
     expect(
       screen.getByRole('region', { name: 'By Commune Software' }),
     ).toBeInTheDocument()
+
+    const wrapper = document.querySelector<HTMLElement>('.site-wrapper')
+    const content = document.querySelector<HTMLElement>('.site-content')
+    const footer = screen.getByRole('contentinfo')
+    const commune = screen.getByRole('region', {
+      name: 'By Commune Software',
+    })
+
+    expect(wrapper).not.toBeNull()
+    expect(content).not.toBeNull()
+    expect(wrapper).toContainElement(content)
+    expect(wrapper).toContainElement(footer)
+    expect(wrapper).not.toContainElement(commune)
+    expect(wrapper?.nextElementSibling).toBe(commune)
+    expect(getComputedStyle(wrapper!).display).toBe('flex')
+    expect(getComputedStyle(wrapper!).flexDirection).toBe('column')
+    expect(getComputedStyle(wrapper!).minHeight).toBe('100dvh')
+    expect(getComputedStyle(content!).flexGrow).toBe('1')
   })
 
   it('marks the capture route noindex without replacing existing image metadata', () => {
