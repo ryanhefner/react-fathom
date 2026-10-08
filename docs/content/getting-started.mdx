@@ -13,12 +13,14 @@ npm install react-fathom fathom-client
 
 ## Peer Dependencies
 
+Use Node.js 20 or newer. Install the peer dependencies for the integrations you use; React Native requires `react-native-webview` only when using the native entrypoint.
+
 | Package                  | Version   | Required for                           |
 | ------------------------ | --------- | -------------------------------------- |
 | `react`                  | >= 16.8   | All                                    |
 | `react-dom`              | >= 16.8   | Web only                               |
 | `fathom-client`          | >= 3.0.0  | Web only (not needed for React Native) |
-| `next`                   | >= 10.0.0 | Next.js providers only                 |
+| `next`                   | >= 13.0.0 | Next.js providers only                 |
 | `react-router-dom`       | >= 6.0.0  | React Router / Remix only              |
 | `@reach/router`          | >= 1.3.0  | Gatsby only                            |
 | `gatsby`                 | >= 4.0.0  | Gatsby only                            |
