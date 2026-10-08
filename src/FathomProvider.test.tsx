@@ -278,6 +278,98 @@ describe('FathomProvider', () => {
     )
   })
 
+  it('should isolate failing debug subscribers and honor unsubscription', () => {
+    const subscriberError = new Error('debug subscriber failed')
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const client: FathomClient = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={client} debug={{ enabled: true, console: false }}>
+        {children}
+      </FathomProvider>
+    )
+    const { result } = renderHook(() => useFathom(), { wrapper })
+    const failingSubscriber = vi.fn(() => {
+      throw subscriberError
+    })
+    const healthySubscriber = vi.fn()
+    const unsubscribe = result.current.subscribeToDebug?.(failingSubscriber)
+    result.current.subscribeToDebug?.(healthySubscriber)
+
+    expect(() => result.current.trackEvent('first')).not.toThrow()
+    expect(errorSpy).toHaveBeenCalledWith(
+      '[react-fathom] Debug subscriber error:',
+      subscriberError,
+    )
+    expect(healthySubscriber).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'event', eventName: 'first' }),
+    )
+    expect(client.trackEvent).toHaveBeenCalledWith('first', {})
+
+    unsubscribe?.()
+    result.current.trackEvent('second')
+    expect(failingSubscriber).toHaveBeenCalledTimes(1)
+    expect(healthySubscriber).toHaveBeenCalledTimes(2)
+    expect(errorSpy).toHaveBeenCalledTimes(1)
+    expect(client.trackEvent).toHaveBeenCalledWith('second', {})
+  })
+
+  it('should log readable debug labels for events, pageviews, and goals', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const client: FathomClient = {
+      trackEvent: vi.fn(),
+      trackPageview: vi.fn(),
+      trackGoal: vi.fn(),
+      load: vi.fn(),
+      setSite: vi.fn(),
+      blockTrackingForMe: vi.fn(),
+      enableTrackingForMe: vi.fn(),
+      isTrackingEnabled: vi.fn(() => true),
+    }
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FathomProvider client={client} debug>
+        {children}
+      </FathomProvider>
+    )
+    const { result } = renderHook(() => useFathom(), { wrapper })
+
+    result.current.trackEvent('signup', { _value: 50 })
+    result.current.trackPageview({ url: '/docs' })
+    result.current.trackPageview()
+    result.current.trackGoal('purchase', 2999)
+    result.current.trackGoal('free-signup', 0)
+
+    for (const label of [
+      '🎯 Event: signup',
+      '📄 Pageview: /docs',
+      '📄 Pageview: (current page)',
+      '🏆 Goal: purchase ($29.99)',
+      '🏆 Goal: free-signup ($0.00)',
+    ]) {
+      expect(logSpy).toHaveBeenCalledWith(
+        `%c[react-fathom] ${label}`,
+        expect.any(String),
+        expect.anything(),
+      )
+    }
+    expect(logSpy).toHaveBeenCalledWith(
+      '%c[react-fathom] 🎯 Event: signup',
+      expect.any(String),
+      { _value: 50 },
+    )
+    expect(client.trackEvent).toHaveBeenCalledWith('signup', { _value: 50 })
+    expect(client.trackPageview).toHaveBeenCalledTimes(2)
+    expect(client.trackGoal).toHaveBeenCalledTimes(2)
+  })
+
   it('should provide trackEvent function', () => {
     const mockClient = {
       trackEvent: vi.fn(),
