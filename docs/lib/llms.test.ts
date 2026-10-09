@@ -21,7 +21,13 @@ vi.mock('./chakra-docs', async () => {
   }
   const manifest = createDocsManifest({
     collections: [
-      { id: 'docs', name: 'Documentation', pages: [page], nav: [] },
+      {
+        id: 'docs',
+        name: 'Documentation',
+        basePath: '/docs',
+        pages: [page],
+        nav: [],
+      },
     ],
   })
   return { getDocsManifest: async () => manifest }
