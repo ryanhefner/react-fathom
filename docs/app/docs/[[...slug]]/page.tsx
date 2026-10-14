@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { DocsLayout } from '@/components/docs'
 import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { OgImagePage } from '@/components/docs/OgImagePage'
+import { StructuredData } from '@/components/docs/StructuredData'
 import { getDocsManifest } from '@/lib/chakra-docs'
 import { getLastUpdated } from '@/lib/docs'
 import { OG_IMAGE_DEFAULTS } from '@/lib/og-image'
@@ -79,13 +80,16 @@ export default async function DocPage({
   const lastUpdated = getLastUpdated(page.slug)
 
   return (
-    <DocsLayout
-      lastUpdated={lastUpdated}
-      nav={manifest.nav}
-      page={page}
-      searchRecords={manifest.search}
-    >
-      <DocsMarkdown source={page.body ?? ''} />
-    </DocsLayout>
+    <>
+      <StructuredData page={page} documentation />
+      <DocsLayout
+        lastUpdated={lastUpdated}
+        nav={manifest.nav}
+        page={page}
+        searchRecords={manifest.search}
+      >
+        <DocsMarkdown source={page.body ?? ''} />
+      </DocsLayout>
+    </>
   )
 }
