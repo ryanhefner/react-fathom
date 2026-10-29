@@ -1,6 +1,6 @@
 {
   "name": "react-fathom",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Fathom Analytics providers, hooks, and route-aware tracking for React, Next.js, and React Native, with TypeScript support.",
   "keywords": [
     "fathom",

@@ -119,7 +119,7 @@ try {
         devDependencies: {
           '@types/react': '19.2.9',
           jsdom: '30.1.1',
-          next: '16.3.8',
+          next: '16.4.2',
           typescript: '5.9.3',
         },
       },

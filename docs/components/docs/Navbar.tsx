@@ -32,7 +32,7 @@ export function Navbar({ searchRecords }: NavbarProps) {
               react-fathom
             </SiteLink>
             <Box as="span" css={styles.version}>
-              v0.3.0
+              v0.3.1
             </Box>
           </Flex>
           <HStack gap={2}>

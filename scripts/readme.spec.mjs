@@ -8,6 +8,24 @@ const root = new URL('../', import.meta.url)
 const readme = readFileSync(new URL('README.md', root), 'utf8')
 const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'))
 
+test('release version matches the documentation header and changelog', () => {
+  const header = readFileSync(
+    new URL('docs/components/docs/Navbar.tsx', root),
+    'utf8',
+  )
+  const changelog = readFileSync(
+    new URL('docs/content/changelog.mdx', root),
+    'utf8',
+  )
+  assert.ok(header.includes(`v${manifest.version}`))
+  assert.ok(changelog.includes(`### ${manifest.version}\n`))
+})
+
+test('the packed consumer smoke uses the patched Next.js baseline', () => {
+  const smoke = readFileSync(new URL('scripts/release-smoke.mjs', root), 'utf8')
+  assert.ok(smoke.includes(`next: '${manifest.devDependencies.next}'`))
+})
+
 test('npm metadata retains discoverable package details and direct support links', () => {
   assert.equal(manifest.homepage, 'https://react-fathom.dev')
   assert.equal(
