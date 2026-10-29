@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
-    "postbuild": "node --test ../scripts/site-structured-data.test.mjs",
+    "postbuild": "node --test ../scripts/site-structured-data.test.mjs && node ../scripts/docs-smoke.mjs",
     "postyalc": "cd .. && corepack pnpm install --offline --ignore-scripts",
     "start": "next start"
   },

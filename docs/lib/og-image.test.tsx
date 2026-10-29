@@ -206,7 +206,7 @@ describe('Open Graph capture page', () => {
 
   it('marks the capture route noindex without replacing existing image metadata', () => {
     expect(readFileSync('docs/app/og-image/page.tsx', 'utf8')).toContain(
-      'index: false',
+      "createCaptureMetadata('/og-image')",
     )
     expect(readFileSync('docs/app/sitemap.ts', 'utf8')).not.toContain(
       "'/og-image'",

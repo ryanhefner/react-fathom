@@ -1,5 +1,24 @@
 # Documentation site
 
+## Build and deployment checks
+
+From the repository root, run `nvm use`, `corepack enable`, and
+`pnpm install --frozen-lockfile`. Build the local library with `pnpm build`, then
+run `pnpm --dir docs build`. The site consumes that local library through its
+public exports; no yalc setup is required.
+
+The build checks generated structured data, README documentation links and
+anchors, sitemap destinations, and robots/LLM files. Run `pnpm docs:smoke` after
+building to additionally serve the static export on a temporary loopback port
+and check GET/HEAD, discovery files, and real 404 behavior. This test server is
+not part of the deployed app. `pnpm release:check` includes the HTTP check.
+
+For Vercel, use `docs` as the Root Directory, the **Next.js** Framework Preset,
+and leave the Output Directory override **off**. The committed configuration
+builds the workspace library before the docs site. Vercel reads Next's build
+manifests from `.next`; do not point its Output Directory at `out`.
+The `docs/out` directory remains the static artifact for other hosts.
+
 ## LLM documentation
 
 The build exports `/llms.txt` (a documentation index) and `/llms-full.txt`

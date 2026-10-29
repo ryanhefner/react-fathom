@@ -6,42 +6,78 @@
 
 **Privacy-focused analytics for React, Next.js, and React Native.**
 
-📖 **[Full Documentation](https://react-fathom.dev)** · [API Reference](https://react-fathom.dev/docs/api/providers) · [Troubleshooting](https://react-fathom.dev/docs/troubleshooting)
+📖 **[Documentation](https://react-fathom.dev)** · [Getting started](https://react-fathom.dev/docs/getting-started) · [API reference](https://react-fathom.dev/docs/api/providers) · [Issues](https://github.com/ryanhefner/react-fathom/issues)
 
-## Quick Start
+Created by [Ryan Hefner](https://www.ryanhefner.com) and [Commune Software](https://commune.software).
+
+## Choose your integration
+
+| Application          | Start with                                                          |
+| -------------------- | ------------------------------------------------------------------- |
+| Plain React          | `FathomProvider` and hooks from `react-fathom`                      |
+| Next.js App Router   | `NextFathomProviderApp` from `react-fathom/next`                    |
+| Next.js Pages Router | `FathomProvider` plus `NextFathomTrackViewPages`                    |
+| React Router / Remix | `ReactRouterFathomTrackView` from `react-fathom/react-router`       |
+| TanStack Router      | `TanStackRouterFathomTrackView` from `react-fathom/tanstack-router` |
+| Gatsby               | `GatsbyFathomTrackView` from `react-fathom/gatsby`                  |
+| React Native         | `NativeFathomProvider` from `react-fathom/native`                   |
+
+Framework integrations are optional. Install only the peer packages your app uses;
+plain React does not require Next.js, Gatsby, or React Native.
+
+## Install
 
 ```bash
 npm install react-fathom fathom-client
 ```
 
-```tsx
-// App.tsx or layout.tsx
-import { FathomProvider } from 'react-fathom'
+This assumes an existing React application with `react` and `react-dom` installed.
+The library supports React 16.8 and newer. Repository development uses the pinned
+Node 24 and pnpm versions; that development pin does not change consumer React
+compatibility.
 
-function App() {
+## Quick start: plain React
+
+Copy this into your app's `App.tsx`. Replace `YOUR_FATHOM_SITE_ID` with the site ID
+from your Fathom dashboard. A site ID is public configuration, not an API key;
+never put Fathom account API credentials in client code.
+
+<!-- quickstart:react:start -->
+
+```tsx
+import { FathomProvider, useFathom } from 'react-fathom'
+
+function SignupButton() {
+  const { trackEvent } = useFathom()
+  return <button onClick={() => trackEvent('signup-click')}>Sign up</button>
+}
+
+export default function App() {
   return (
     <FathomProvider siteId="YOUR_FATHOM_SITE_ID">
-      <YourApp />
+      <main>
+        <h1>Your application</h1>
+        <SignupButton />
+      </main>
     </FathomProvider>
   )
 }
 ```
 
-```tsx
-// Any component
-import { useFathom } from 'react-fathom'
+<!-- quickstart:react:end -->
 
-function MyComponent() {
-  const { trackEvent } = useFathom()
-  return <button onClick={() => trackEvent('signup-click')}>Sign Up</button>
-}
-```
+The default Fathom client records the initial pageview. For router-driven
+navigation, use the integration for your router below. Give pageview tracking one
+owner: set `clientOptions={{ auto: false }}` when adding a router tracking
+component rather than combining it with the client's automatic tracking.
 
-Pageviews are tracked automatically.
+If your app has a Content Security Policy, allow the Fathom script and collection
+requests for your configured domain. Check the browser console and Network tab
+when events do not arrive; see [troubleshooting](https://react-fathom.dev/docs/troubleshooting).
 
 ## Why react-fathom?
 
-[Fathom Analytics](https://usefathom.com/ref/EKONBS) is a privacy-focused alternative to Google Analytics—no cookies, no consent banners, GDPR compliant by default.
+[Fathom Analytics](https://usefathom.com/ref/EKONBS) is a privacy-focused analytics service. This package provides React integrations; it does not determine your application's legal compliance or consent requirements.
 
 The official `fathom-client` works, but:
 
@@ -50,7 +86,7 @@ The official `fathom-client` works, but:
 | Web only—no React Native                | **Full React Native support** with offline event queuing                                                                          |
 | Next.js App Router requires boilerplate | **`NextFathomProviderApp`** works directly in Server Component layouts                                                            |
 | Imperative API only                     | **Hooks** (`useFathom`, `useTrackOnMount`, `useTrackOnVisible`) and **declarative components** (`<TrackClick>`, `<TrackVisible>`) |
-| No tree-shaking                         | **Fully tree-shakeable**—bundle only what you use                                                                                 |
+| Integrations scattered across app code  | **Focused package entry points** for each router and platform                                                                     |
 
 **New to Fathom?** Get a **$10 credit** with [this referral link](https://usefathom.com/ref/EKONBS).
 
@@ -70,13 +106,19 @@ The official `fathom-client` works, but:
 
 ### Next.js App Router
 
+Keep your root layout a Server Component. The exported Next provider owns its
+client boundary and route pageviews; do not add another tracker inside it.
+
+<!-- quickstart:next-app:start -->
+
 ```tsx
 // app/layout.tsx
+import type { ReactNode } from 'react'
 import { NextFathomProviderApp } from 'react-fathom/next'
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html>
+    <html lang="en">
       <body>
         <NextFathomProviderApp siteId="YOUR_SITE_ID">
           {children}
@@ -87,16 +129,21 @@ export default function RootLayout({ children }) {
 }
 ```
 
+<!-- quickstart:next-app:end -->
+
 📖 [Full Next.js guide](https://react-fathom.dev/docs/nextjs)
 
 ### Next.js Pages Router
 
+<!-- quickstart:next-pages:start -->
+
 ```tsx
 // pages/_app.tsx
+import type { AppProps } from 'next/app'
 import { FathomProvider } from 'react-fathom'
 import { NextFathomTrackViewPages } from 'react-fathom/next'
 
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <FathomProvider siteId="YOUR_SITE_ID" clientOptions={{ auto: false }}>
       <NextFathomTrackViewPages />
@@ -105,6 +152,8 @@ function MyApp({ Component, pageProps }) {
   )
 }
 ```
+
+<!-- quickstart:next-pages:end -->
 
 📖 [Full Next.js guide](https://react-fathom.dev/docs/nextjs)
 
@@ -314,7 +363,8 @@ Debug mode does not block actual tracking—events are still sent to Fathom.
 
 1. Verify site ID matches your [Fathom dashboard](https://app.usefathom.com)
 2. Check for ad blockers (test in incognito)
-3. Add `{ includedDomains: ['localhost'] }` to `clientOptions`
+3. Review any `includedDomains`/`excludedDomains` settings for the current host
+4. Check that your Content Security Policy permits your configured Fathom domain
 
 **Duplicate pageviews?**
 
@@ -337,6 +387,22 @@ Debug mode does not block actual tracking—events are still sent to Fathom.
 - 📚 [API Reference](https://react-fathom.dev/docs/api/providers)
 - 🔧 [Troubleshooting](https://react-fathom.dev/docs/troubleshooting)
 - 🤝 [Contributing](https://react-fathom.dev/docs/contributing)
+
+## Development
+
+Use `nvm use` and `corepack enable` to select the versions in `.nvmrc` and
+`packageManager`, then run `pnpm install --frozen-lockfile`. `pnpm release:check`
+verifies the library and docs. To preview the docs locally, run `pnpm build`
+followed by `pnpm --dir docs dev`. The docs use the local library through its
+public exports; no yalc setup is required.
+
+## Help and contributing
+
+[Open an issue](https://github.com/ryanhefner/react-fathom/issues), read the
+[contributing guide](https://react-fathom.dev/docs/contributing), or
+[support development](https://github.com/sponsors/ryanhefner). See
+[Fathom troubleshooting](https://react-fathom.dev/docs/troubleshooting) for
+site IDs, network failures, and router setup.
 
 ## License
 
