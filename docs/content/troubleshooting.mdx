@@ -46,6 +46,19 @@ Open your browser's Network tab and look for requests to `cdn.usefathom.com`:
 | Blocked requests | Ad blocker interference                   |
 | Failed requests  | Check site ID and domain configuration    |
 
+### 5. Content Security Policy
+
+A Content Security Policy can block analytics even when the provider and site ID
+are correct. Check the browser console for CSP violations, then allow the exact
+script origin and collection destinations used by your Fathom setup in the
+appropriate `script-src`, `connect-src`, or `img-src` directives. If you use a
+custom domain, its origin needs to be allowed instead of assuming that only
+`cdn.usefathom.com` is used. Merge these rules with your existing policy rather
+than disabling CSP or broadly allowing all hosts.
+
+The site ID is public browser configuration. Fathom account API credentials are
+not needed by the provider and must remain on the server.
+
 ---
 
 ## Duplicate Pageviews

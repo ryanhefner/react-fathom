@@ -68,6 +68,13 @@ export const ossProjectGroups = [
       'Projects used to build and run this website. Shared dependencies appear in both sections when they serve both.',
     projects: [
       {
+        name: 'react-structured',
+        packages: ['react-structured'],
+        description:
+          'Typed, safely serialized Schema.org JSON-LD for each public page.',
+        href: 'https://react-structured.dev/',
+      },
+      {
         name: 'React',
         packages: ['react', 'react-dom'],
         description: 'The component and rendering foundation for this site.',
@@ -78,6 +85,12 @@ export const ossProjectGroups = [
         packages: ['next'],
         description: 'Routing, static generation, and site builds.',
         href: 'https://nextjs.org/',
+      },
+      {
+        name: 'next-meta',
+        packages: ['next-meta'],
+        description: 'Composable canonical and social metadata for the site.',
+        href: 'https://next-meta.dev/',
       },
       {
         name: 'Chakra UI',

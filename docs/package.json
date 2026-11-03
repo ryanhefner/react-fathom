@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
+    "postbuild": "node --test ../scripts/site-structured-data.test.mjs && node ../scripts/docs-smoke.mjs",
     "postyalc": "cd .. && corepack pnpm install --offline --ignore-scripts",
     "start": "next start"
   },
@@ -20,19 +21,22 @@
     "@postkit/react": "0.2.0",
     "fathom-client": "^3.6.0",
     "gray-matter": "^4.0.3",
-    "next": "16.3.8",
+    "next": "16.4.2",
+    "next-meta": "0.5.0",
     "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.4.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-fathom": "workspace:*",
     "react-icons": "^5.7.0",
-    "reading-time": "^1.5.0"
+    "reading-time": "^1.5.0",
+    "react-structured": "0.2.0"
   },
   "devDependencies": {
     "@types/mdx": "^2.0.14",
     "@types/node": "^25.0.10",
     "@types/react": "^19.2.7",
+    "@types/react-dom": "19.2.3",
     "typescript": "^5.7.0"
   }
 }

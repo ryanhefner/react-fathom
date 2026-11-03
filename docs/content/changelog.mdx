@@ -7,6 +7,37 @@ View the full release history on [GitHub Releases](https://github.com/ryanhefner
 
 ## Recent Releases
 
+### 0.3.1
+
+**October 29, 2026**
+
+- Add complete React, Next.js App Router, and Pages Router quick starts, clearer integration choices, and focused package metadata.
+- Clarify public site IDs versus private credentials, pageview ownership, and the Content Security Policy needed for Fathom requests.
+- Add page-specific metadata and structured data, machine-readable documentation files, and updated OSS credits to the documentation site.
+- Update Next.js documentation, integration examples, and packed-consumer checks to 16.4.2.
+- Verify the actual README examples, package exports, production site artifacts, and static HTTP behavior in automated checks.
+
+No public API or peer dependency changes are required for this patch.
+
+### 0.3.0
+
+**October 8, 2026**
+
+- Add React Router and Remix, Gatsby, and TanStack Router integrations with dedicated package entrypoints.
+- Add provider debug mode, the `useDebugSubscription` hook, and the `EventStream` panel from `react-fathom/debug`, with console controls and production safety warnings.
+- Add provider error callbacks, resolved-client refs, and inherited default tracking options for nested providers. Support preconfigured clients without a `siteId` and explicit debug opt-out in nested providers.
+- Add shared, SSR-safe tracking URL construction with query, hash, and `transformUrl` controls across router adapters.
+- Prevent duplicate router pageviews and competing Fathom embed tracking. Make the Next.js App Router provider safe for static generation with a Suspense boundary.
+- Harden the React Native WebView bridge, bounded offline queue, app-state events, and navigation tracking. Discard queued analytics on opt-out and persist tracking consent.
+- Publish focused ESM and CommonJS subpath exports with preserved client directives and NodeNext-compatible TypeScript declarations.
+- Replace the Nextra site with the Chakra UI and Chakra Docs documentation site at [react-fathom.dev](https://react-fathom.dev), with updated framework guides and examples.
+- Add clean-build checks, packed-consumer verification, expanded test coverage, and GitHub Actions publishing with npm provenance.
+
+Compatibility starts at Node.js 20 and Next.js 13 when using the Next.js adapter.
+Install `fathom-client` alongside `react-fathom` for browser analytics. Framework
+and React Native peer dependencies remain optional unless their adapters are used;
+the React Native WebView integration requires `react-native-webview`.
+
 ### 0.2.0
 
 **January 2026**

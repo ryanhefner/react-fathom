@@ -47,7 +47,7 @@ jobs:
 
       - run:
           name: Build documentation
-          command: pnpm --dir docs build
+          command: pnpm --dir docs build && pnpm docs:smoke
 
   build-examples:
     docker:

@@ -1,7 +1,7 @@
 {
   "name": "react-fathom",
-  "version": "0.3.0",
-  "description": "Privacy-focused Fathom Analytics for React, Next.js, and React Native with automatic pageview tracking and TypeScript support.",
+  "version": "0.3.1",
+  "description": "Fathom Analytics providers, hooks, and route-aware tracking for React, Next.js, and React Native, with TypeScript support.",
   "keywords": [
     "fathom",
     "fathom-analytics",
@@ -14,14 +14,10 @@
     "gatsby",
     "tanstack-router",
     "nextjs",
-    "next.js",
     "typescript",
     "pageview",
-    "privacy-first",
-    "mobile",
-    "tracking",
-    "privacy",
-    "tree-shakeable"
+    "event-tracking",
+    "privacy"
   ],
   "homepage": "https://react-fathom.dev",
   "engines": {
@@ -32,11 +28,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ryanhefner/react-fathom.git"
+    "url": "git+https://github.com/ryanhefner/react-fathom.git"
   },
   "author": "Ryan Hefner <hi@ryanhefner.com> (https://www.ryanhefner.com)",
   "contributors": [
-    "Commune Software <hello@commune.software> (https://www.commune.software)"
+    "Commune Software <hello@commune.software> (https://commune.software)"
   ],
   "license": "MIT",
   "funding": [
@@ -56,7 +52,9 @@
   "type": "module",
   "files": [
     "dist",
-    "types"
+    "types",
+    "README.md",
+    "LICENSE"
   ],
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/es/index.js",
@@ -171,9 +169,11 @@
     "security:audit": "pnpm --filter react-fathom --filter react-fathom-docs audit --prod --audit-level high",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
-    "release:validate": "node --test scripts/validate-release.spec.mjs scripts/registry-release.spec.mjs",
-    "release:smoke": "pnpm build && node scripts/release-smoke.mjs",
-    "release:check": "pnpm security:audit && pnpm format:check && pnpm lint && pnpm release:validate && pnpm test:ci && pnpm release:smoke && pnpm --dir docs build",
+    "release:validate": "node --test scripts/validate-release.spec.mjs scripts/registry-release.spec.mjs scripts/readme.spec.mjs",
+    "release:smoke": "pnpm build && node scripts/readme-smoke.mjs && node scripts/release-smoke.mjs",
+    "release:check": "pnpm security:audit && pnpm format:check && pnpm lint && pnpm release:validate && pnpm test:ci && pnpm release:smoke && pnpm --dir docs build && pnpm docs:smoke",
+    "docs:verify": "node scripts/docs-smoke.mjs",
+    "docs:smoke": "node scripts/docs-smoke.mjs --http",
     "dev:all": "node scripts/dev-all.js",
     "dev:proxy": "node scripts/dev-all.js --proxy"
   },
@@ -250,7 +250,7 @@
     "gatsby": "^5.16.1",
     "globals": "^17.0.0",
     "jsdom": "^30.1.1",
-    "next": "16.3.8",
+    "next": "16.4.2",
     "prettier": "^3.0.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { OG_IMAGE_DEFAULTS } from './og-image'
-import { WITH_OSS_PAGE } from './site-metadata'
+import { SITE_URL, WITH_OSS_PAGE } from './site-metadata'
 import {
   createSocialImageMetadata,
   getSocialImagePage,
@@ -122,7 +122,7 @@ describe('generated social-image routes', () => {
 
   it('marks templates noindex and retains normal page metadata and existing image URLs', async () => {
     expect(createSocialImageMetadata('/')).toMatchObject({
-      alternates: { canonical: '/social-image' },
+      alternates: { canonical: new URL('/social-image', SITE_URL).href },
       robots: { index: false, follow: false },
     })
     expect(
@@ -130,7 +130,9 @@ describe('generated social-image routes', () => {
         params: Promise.resolve({ slug: ['react', 'social-image'] }),
       }),
     ).toMatchObject({
-      alternates: { canonical: '/docs/react/social-image' },
+      alternates: {
+        canonical: new URL('/docs/react/social-image', SITE_URL).href,
+      },
       robots: { index: false, follow: false },
     })
     expect(
@@ -139,8 +141,8 @@ describe('generated social-image routes', () => {
       }),
     ).toMatchObject({
       title: 'React',
-      alternates: { canonical: '/docs/react' },
-      openGraph: { images: [{ url: '/og-image.svg' }] },
+      alternates: { canonical: new URL('/docs/react', SITE_URL).href },
+      openGraph: { images: [{ url: new URL('/og-image.svg', SITE_URL).href }] },
     })
   })
 })
